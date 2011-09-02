@@ -101,21 +101,27 @@ server.createContext("/", (function(){
 	models = exports.fromFiles("app/models"),
 	controllers = exports.fromFiles("app/controllers");
 
-	while(line = buf.readLine()) {
+	while((line = buf.readLine()) != null) {
 		let r = {};
-		[r.method,r.url,r.action] = line.split(/\s+/);
+		[r.method,r.url,r.action] = new String(line).split(/\s+/);
 		routes.push(r)
 	}
 	return function(htex) {
 		exports.buffer = new java.lang.StringBuilder();
 		for each(let route in routes) {
-			let params = {};
+			let params = {}, keys = [];
 			if(!route.method === "*" && !route.method === htex.getRequestMethod())
 				continue;
-			let r = new RegExp(route.url.replace(/\{(\w+)\}/g,function(m){
-				params[m[1]] = "";
+			let r = new RegExp(route.url.replace(/\{(\w+)\}/g,function(m,key){
+				keys.push(key)
 				return "([\\w0-9]+)";
-			}))
+			}));
+			new String(htex.getRequestURI()).replace(r,function(m){
+				Array.shift(arguments,1).forEach(function(v,k){
+					params[keys[k]] = v;
+					print(keys[k],v)
+				})
+			});
 		}
 		t.sendResponseHeaders(200,exports.buffer.length());
 		t.getResponseBody().write(exports.buffer.toString().getBytes());
