@@ -106,9 +106,9 @@ exports.fromFiles = function(folder,skip) {
 	return objects;
 };
 server.createContext("/", (function(){
-	var routes = require("conf/routes.js")
-	models = exports.fromFiles("app/models"),
+	var models = exports.fromFiles("app/models"),
 	controllers = exports.fromFiles("app/controllers"),
+	routes = require("conf/routes.js").routes,
 	action = null;
 	return function(htex) {
 		exports.buffer = new java.lang.StringBuilder();
@@ -120,7 +120,7 @@ server.createContext("/", (function(){
 				keys.push(key)
 				return "([\\w0-9]+)";
 			}));
-			if(!uri.match(reg))
+			if(!reg.test(uri))
 				continue;
 			uri.replace(reg,function(m){
 				Array.slice(arguments,1,keys.length+1).forEach(function(v,k){
@@ -128,7 +128,8 @@ server.createContext("/", (function(){
 				})
 			});
 			action = route[2].call({},params);
-			action.call({},Object.extend(params,{/* GET DATA FROM SOMEWHERE*/}))
+			print(action)
+			//action.call({},Object.extend(params,{/* GET DATA FROM SOMEWHERE*/}))
 		}
 		t.sendResponseHeaders(200,exports.buffer.length());
 		t.getResponseBody().write(exports.buffer.toString().getBytes());
