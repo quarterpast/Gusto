@@ -126,6 +126,5 @@ server.createContext("/", (function(){
 		t.close();
 	}
 }()));
-print("oh hai")
 server.start();
-print("kthxbai")
+print("oh hai")
