@@ -35,11 +35,8 @@ String.prototype.printf = function() {
 });
 
 var addr = new java.net.InetSocketAddress("localhost", 8000),
-    server = HttpServer.create(addr, 10),
-    controllerFiles = new File("app/controllers").listFiles()
-                          .filter(function(f) f.getName().substr(-3) == ".js"),
-    controllers = [],
-    models = [];
+    server = HttpServer.create(addr, 10);
+
 exports.buffer = (function(){
 	var inner = "";
 	return {
@@ -97,13 +94,13 @@ exports.fromFiles = function(folder,skip) {
 	}
 	return objects;
 };
-models = exports.fromFiles("app/models");
-controllers = exports.fromFiles("app/controllers");
-
 server.createContext("/", (function(){
 	var buf = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream("conf/routes")))),
 	routes = [],
-	line = "";
+	line = "",
+	models = exports.fromFiles("app/models"),
+	controllers = exports.fromFiles("app/controllers");
+
 	while(line = buf.readLine()) {
 		let r = {};
 		[r.method,r.url,r.action] = line.split(/\s+/);
