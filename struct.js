@@ -40,13 +40,27 @@ var addr = new java.net.InetSocketAddress("localhost", 8000),
                           .filter(function(f) f.getName().substr(-3) == ".js"),
     controllers = [],
     models = [];
+exports.buffer = (function(){
+	var inner = "";
+	return {
+		toString: function() inner,
+		append: function(a) {
+			inner += ""+a;
+			return this;
+		},
+		charAt: function(i) inner[i],
+		indexOf: function(s,i) inner.indexOf(s,i),
+		insert: function(i,a) {
+			inner = inner.substr(0,i)+a+inner.substr(i);
+			return this;
+		},
+		length: function() inner.length
+	};
+}())
 exports.controller = function(actions) {
-	var write = function(string) {
-		exports.buffer.append(string)
-	},
 	spec = {
-		"render": function(args) {
-			write(JSON.stringify(args));
+		"renderJSON": function(args) {
+			exports.buffer.append(string)
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
