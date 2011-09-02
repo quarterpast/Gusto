@@ -27,8 +27,7 @@ String.prototype.printf = function() {
 	'Undefined',
 	'Function',
 	'Array',
-	'Object',
-	'Arguments'
+	'Object'
 ].forEach(function(type) {
 	Object['is'+type] = function(test) {
 		return Object.prototype.toString.call(test) === '[object %s]'.printf(type);
