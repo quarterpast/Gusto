@@ -1,5 +1,5 @@
 const mvc = require(require.main.id);
-const models = mvc.models(module.id);
+const models = mvc.fromFiles("app/models",module.id);
 var Comment = function(){}
 exports.post = mvc.model({
 	title: String,

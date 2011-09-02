@@ -38,14 +38,15 @@ var addr = new java.net.InetSocketAddress("localhost", 8000),
     server = HttpServer.create(addr, 10),
     controllerFiles = new File("app/controllers").listFiles()
                           .filter(function(f) f.getName().substr(-3) == ".js"),
-    modelFiles      = new File("app/models").listFiles()
-                          .filter(function(f) f.getName().substr(-3) == ".js"),
     controllers = [],
     models = [];
 exports.controller = function(actions) {
-	var spec = {
+	var write = function(string) {
+		exports.buffer.append(string)
+	},
+	spec = {
 		"render": function(args) {
-			print(this.render)
+			write(JSON.stringify(args));
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
@@ -71,30 +72,24 @@ exports.model = function(spec) {
 		}
 	};
 };
-exports.models = function(id) {
-	var models = {};
-	for each(let file in modelFiles) {
-		if(file.getName() == id) continue;
-		let basename = file.getName().split(".").slice(0,-1).join(".")
-		models[basename] = require(file.getPath())[basename];
-	}
-	return models;
-};
-exports.controllers = function(id) {
-	var controllers = {};
-	for each(let file in controllerFiles) {
-		if(file.getName() == id) continue;
+exports.fromFiles = function(folder,skip) {
+	var files = new File(folder).listFiles()
+                  .filter(function(f) f.getName().substr(-3) == ".js"),
+  objects = {};
+	for each(let file in files) {
+		if(file.getName() === skip) continue;
 		let basename = file.getName().substring(0,file.getName().length()-3)
-		controllers[basename] = require(file.getPath())[basename];
+		objects[basename] = require(file.getPath())[basename];
 	}
-	return controllers;
+	return objects;
 };
-models = exports.models();
-controllers = exports.controllers();
+models = exports.fromFiles("app/models");
+controllers = exports.fromFiles("app/controllers");
 server.createContext("/",  function(t){
-	controllers.posts.index()
-	t.sendResponseHeaders(200,bytes.length);
-	t.getResponseBody().write(bytes);
+	exports.buffer = new java.lang.StringBuilder();
+	controllers.posts.index({a:"a"})
+	t.sendResponseHeaders(200,exports.buffer.length());
+	t.getResponseBody().write(exports.buffer.toString().getBytes());
 	os.close();
 	t.close();
 });
