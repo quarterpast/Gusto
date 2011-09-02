@@ -99,13 +99,32 @@ exports.fromFiles = function(folder,skip) {
 };
 models = exports.fromFiles("app/models");
 controllers = exports.fromFiles("app/controllers");
-server.createContext("/",  function(t){
-	exports.buffer = new java.lang.StringBuilder();
-	controllers.posts.index({a:"a"})
-	t.sendResponseHeaders(200,exports.buffer.length());
-	t.getResponseBody().write(exports.buffer.toString().getBytes());
-	os.close();
-	t.close();
-});
+
+server.createContext("/", (function(){
+	var buf = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream("conf/routes")))),
+	routes = [],
+	line = "";
+	while(line = buf.readLine()) {
+		let r = {};
+		[r.method,r.url,r.action] = line.split(/\s+/);
+		routes.push(r)
+	}
+	return function(htex) {
+		exports.buffer = new java.lang.StringBuilder();
+		for each(let route in routes) {
+			let params = {};
+			if(!route.method === "*" && !route.method === htex.getRequestMethod())
+				continue;
+			let r = new RegExp(route.url.replace(/\{(\w+)\}/g,function(m){
+				params[m[1]] = "";
+				return "([\\w0-9]+)";
+			}))
+		}
+		t.sendResponseHeaders(200,exports.buffer.length());
+		t.getResponseBody().write(exports.buffer.toString().getBytes());
+		os.close();
+		t.close();
+	}
+}()));
 print("oh hai")
 server.start();
