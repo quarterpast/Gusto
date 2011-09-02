@@ -21,6 +21,17 @@ String.prototype.printf = function() {
 	}
 	return string;
 };
+Object.extend = function(d,s,m) {
+	for(let p in s) {
+		if(s.hasOwnProperty(p) && m && !(p in d)) {
+			d[p] = s[p];
+		}
+	}
+	return d;
+}
+Object.unbox = function(obj) {
+	Object.extend((function() this).call(null),obj,true);
+};
 [
 	'String',
 	'Number',
@@ -95,33 +106,29 @@ exports.fromFiles = function(folder,skip) {
 	return objects;
 };
 server.createContext("/", (function(){
-	var buf = new BufferedReader(new InputStreamReader(new DataInputStream(new FileInputStream("conf/routes")))),
-	routes = [],
-	line = "",
+	var routes = require("conf/routes.js")
 	models = exports.fromFiles("app/models"),
-	controllers = exports.fromFiles("app/controllers");
-
-	while((line = buf.readLine()) != null) {
-		let r = {};
-		[r.method,r.url,r.action] = new String(line).split(/\s+/);
-		routes.push(r)
-	}
+	controllers = exports.fromFiles("app/controllers"),
+	action = null;
 	return function(htex) {
 		exports.buffer = new java.lang.StringBuilder();
 		for each(let route in routes) {
-			let params = {}, keys = [];
-			if(!route.method === "*" && !route.method === htex.getRequestMethod())
+			let params = {}, keys = [], uri = new String(htex.getRequestURI());
+			if(!route[0] === "*" && !route[0] === htex.getRequestMethod())
 				continue;
-			let r = new RegExp(route.url.replace(/\{(\w+)\}/g,function(m,key){
+			let reg = new RegExp(route[1].replace(/\{(\w+)\}/g,function(m,key){
 				keys.push(key)
 				return "([\\w0-9]+)";
 			}));
-			new String(htex.getRequestURI()).replace(r,function(m){
-				Array.shift(arguments,1).forEach(function(v,k){
+			if(!uri.match(reg))
+				continue;
+			uri.replace(reg,function(m){
+				Array.slice(arguments,1,keys.length+1).forEach(function(v,k){
 					params[keys[k]] = v;
-					print(keys[k],v)
 				})
 			});
+			action = route[2].call({},params);
+			action.call({},Object.extend(params,{/* GET DATA FROM SOMEWHERE*/}))
 		}
 		t.sendResponseHeaders(200,exports.buffer.length());
 		t.getResponseBody().write(exports.buffer.toString().getBytes());
