@@ -75,7 +75,7 @@ exports.model = function(spec) {
 	};
 };
 exports.models = function(id) {
-	var models = [];
+	var models = {};
 	for each(let file in modelFiles) {
 		if(file.getName() == id) continue;
 		let basename = file.getName().split(".").slice(0,-1).join(".")
@@ -85,7 +85,7 @@ exports.models = function(id) {
 };
 exports.controllers = function(id) {
 	print(id)
-	var controllers = [];
+	var controllers = {};
 	for each(let file in controllerFiles) {
 		if(file.getName() == id) continue;
 		let basename = file.getName().split(".").slice(0,-1).join(".")
