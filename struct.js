@@ -44,14 +44,12 @@ var addr = new java.net.InetSocketAddress("localhost", 8000),
     controllers = [],
     models = [];
 exports.controller = function(actions) {
-	print("controller")
 	var spec = {
 		"render": function(args) {
-			print(this.render.caller)
+			print(this.render)
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
-		print(action)
 		spec[name] = function() {
 			action.apply(spec,arguments);
 		}
@@ -84,11 +82,10 @@ exports.models = function(id) {
 	return models;
 };
 exports.controllers = function(id) {
-	print(id)
 	var controllers = {};
 	for each(let file in controllerFiles) {
 		if(file.getName() == id) continue;
-		let basename = file.getName().split(".").slice(0,-1).join(".")
+		let basename = file.getName().substring(0,file.getName().length()-3)
 		controllers[basename] = require(file.getPath())[basename];
 	}
 	return controllers;
@@ -96,7 +93,7 @@ exports.controllers = function(id) {
 models = exports.models();
 controllers = exports.controllers();
 server.createContext("/",  function(t){
-	print(controllers)
+	controllers.posts.index()
 	t.sendResponseHeaders(200,bytes.length);
 	t.getResponseBody().write(bytes);
 	os.close();
