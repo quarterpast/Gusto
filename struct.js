@@ -33,7 +33,7 @@ String.prototype.parseQuery = function() {
 	}
 	return out;
 };
-//Array.prototype._ = function() this.reduce(function(a,n) a += n,<></>);
+Object.defineProperty(Array.prototype,"_", {value:function() this.reduce(function(a,n) a += n,<></>)});
 Object.extend = function(d,s,m) {
 	for(let p in s) {
 		if(s.hasOwnProperty(p)) {
