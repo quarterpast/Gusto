@@ -6,18 +6,21 @@ importPackage(java.io);
 	'Undefined',
 	'Function',
 	'Array',
-	'Object'
+	'Object',
+	"global"
 ].forEach(function(type) {
 	Object['is'+type] = function(test) {
 		return Object.prototype.toString.call(test) === '[object '+type+']';
 	};
 });
 String.prototype.parseQuery = function() {
+	if(this == "") return {};
 	var parts = this.split("&"), out = {};
 	for each(let part in parts) {
 		let comp = part.split("="),
 		    k = comp.shift().replace(/\[\]$/,""),
 		    v = decodeURIComponent(comp.join("=").replace("+"," "));
+		if(v == '') v = true;
 		if(k in out) {
 			if(Object.isArray(out[k])) {
 				out[k].push(v);
@@ -29,7 +32,8 @@ String.prototype.parseQuery = function() {
 		}
 	}
 	return out;
-}
+};
+//Array.prototype._ = function() this.reduce(function(a,n) a += n,<></>);
 Object.extend = function(d,s,m) {
 	for(let p in s) {
 		if(s.hasOwnProperty(p)) {
@@ -65,6 +69,11 @@ exports.controller = function(actions) {
 	spec = {
 		"renderJSON": function(args) {
 			exports.buffer.append(JSON.stringify(args));
+		},
+		"render": function(action,args) {
+			print(arguments.callee.caller)
+			//[action,args] = Object.isString(action) ? [action,args] : ["undefined",action];
+
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
@@ -109,6 +118,7 @@ server.createContext("/", (function(){
 		exports.buffer = new java.lang.StringBuilder();
 		for each(let route in routes) {
 			let params = {}, keys = [], [uri,query] = new String(htex.getRequestURI()).split("?");
+			if(Object.isglobal(query)) query = "";
 			if(!route[0] === "*" && !route[0] === htex.getRequestMethod())
 				continue;
 			let reg = new RegExp("^"+route[1].replace(/\{(\w+)\}/g,function(m,key){

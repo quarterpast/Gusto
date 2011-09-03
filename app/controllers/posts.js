@@ -7,9 +7,12 @@ exports.posts = mvc.controller({
 	"new": function(params) {
 		var p = models.post.create({
 			title: params.title,
-			date: Date.now(),
+			date: params.date,
 			content: params.content
 		})
 		this.renderJSON(p)
+	},
+	"test": function() {
+		this.render();
 	}
 });
