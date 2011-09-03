@@ -55,7 +55,7 @@ exports.buffer = (function(){
 exports.controller = function(actions) {
 	spec = {
 		"renderJSON": function(args) {
-			exports.buffer.append(string)
+			exports.buffer.append(JSON.stringify(args))
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
@@ -104,10 +104,10 @@ server.createContext("/", (function(){
 			let params = {}, keys = [], uri = new String(htex.getRequestURI());
 			if(!route[0] === "*" && !route[0] === htex.getRequestMethod())
 				continue;
-			let reg = new RegExp(route[1].replace(/\{(\w+)\}/g,function(m,key){
+			let reg = new RegExp("^"+route[1].replace(/\{(\w+)\}/g,function(m,key){
 				keys.push(key)
 				return "([\\w0-9]+)";
-			}));
+			})+"$");
 			if(!reg.test(uri))
 				continue;
 			uri.replace(reg,function(m){
@@ -115,15 +115,14 @@ server.createContext("/", (function(){
 					params[keys[k]] = v;
 				})
 			});
-			action = route[2](params);
 			print(JSON.stringify(params))
+			action = route[2](params);
 			action(params);
 			break;
 		}
-		t.sendResponseHeaders(200,exports.buffer.length());
-		t.getResponseBody().write(exports.buffer.toString().getBytes());
-		os.close();
-		t.close();
+		htex.sendResponseHeaders(200,exports.buffer.length());
+		htex.getResponseBody().write(exports.buffer.toString().getBytes());
+		htex.close();
 		} catch(e) {print(e)}
 	}
 }()));
