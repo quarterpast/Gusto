@@ -1,13 +1,5 @@
 importPackage(Packages.com.sun.net.httpserver);
 importPackage(java.io);
-
-String.prototype.toNumber = function() {
-	return parseFloat(this);
-};
-String.prototype.toInteger = function(radix) {
-	return parseInt(this,radix);
-};
-
 [
 	'String',
 	'Number',
@@ -31,7 +23,6 @@ Object.extend = function(d,s,m) {
 Object.unbox = function(obj) {
 	Object.extend((function() this).call(null),obj,true);
 };
-
 var addr = new java.net.InetSocketAddress("localhost", 8000),
     server = HttpServer.create(addr, 10);
 
@@ -55,13 +46,11 @@ exports.buffer = (function(){
 exports.controller = function(actions) {
 	spec = {
 		"renderJSON": function(args) {
-			exports.buffer.append(JSON.stringify(args))
+			exports.buffer.append(JSON.stringify(args));
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
-			print(name)
 		spec[name] = action.bind(spec);
-		spec[name].name = name;
 	}
 	return spec;
 };
@@ -115,7 +104,6 @@ server.createContext("/", (function(){
 					params[keys[k]] = v;
 				})
 			});
-			print(JSON.stringify(params))
 			action = route[2](params);
 			action(params);
 			break;
