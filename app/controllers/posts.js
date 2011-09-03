@@ -2,13 +2,13 @@ const mvc = require(require.main.id);
 
 exports.posts = mvc.controller({
 	"index": function(params) {
-		this.render(params)
+		this.renderJSON(params)
 	},
-	"new": function() {
+	/*"new": function() {
 		mvc.fromFiles("app/models").post.create({
 			title: "test",
 			date: Date.now(),
 			content: "this is a test post"
 		})
-	}
+	}*/
 });

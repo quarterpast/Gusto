@@ -7,20 +7,19 @@ String.prototype.toNumber = function() {
 String.prototype.toInteger = function(radix) {
 	return parseInt(this,radix);
 };
-String.prototype.printf = function() {
-	var string = this, args = arguments, index = 0;
-	for(let [code,func] in Iterator({
-		'%': function() '%',
-		's': function(arg) arg.toString(),
-		'd': function(arg) arg.toInteger(10),
-		'f': function(arg) arg.toNumber()
-	})) {
-		string = string.replace('%'+code,function(m) {
-			return func(args[index++]);
-		},'g');
-	}
-	return string;
-};
+
+[
+	'String',
+	'Number',
+	'Undefined',
+	'Function',
+	'Array',
+	'Object'
+].forEach(function(type) {
+	Object['is'+type] = function(test) {
+		return Object.prototype.toString.call(test) === '[object '+type+']';
+	};
+});
 Object.extend = function(d,s,m) {
 	for(let p in s) {
 		if(s.hasOwnProperty(p) && m && !(p in d)) {
@@ -32,18 +31,6 @@ Object.extend = function(d,s,m) {
 Object.unbox = function(obj) {
 	Object.extend((function() this).call(null),obj,true);
 };
-[
-	'String',
-	'Number',
-	'Undefined',
-	'Function',
-	'Array',
-	'Object'
-].forEach(function(type) {
-	Object['is'+type] = function(test) {
-		return Object.prototype.toString.call(test) === '[object %s]'.printf(type);
-	};
-});
 
 var addr = new java.net.InetSocketAddress("localhost", 8000),
     server = HttpServer.create(addr, 10);
@@ -72,9 +59,9 @@ exports.controller = function(actions) {
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
-		spec[name] = function() {
-			action.apply(spec,arguments);
-		}
+			print(name)
+		spec[name] = action.bind(spec);
+		spec[name].name = name;
 	}
 	return spec;
 };
@@ -108,9 +95,10 @@ exports.fromFiles = function(folder,skip) {
 server.createContext("/", (function(){
 	var models = exports.fromFiles("app/models"),
 	controllers = exports.fromFiles("app/controllers"),
-	routes = require("conf/routes.js").routes,
+	routes = require("conf/routes.js").routes(controllers),
 	action = null;
 	return function(htex) {
+		try {
 		exports.buffer = new java.lang.StringBuilder();
 		for each(let route in routes) {
 			let params = {}, keys = [], uri = new String(htex.getRequestURI());
@@ -127,14 +115,16 @@ server.createContext("/", (function(){
 					params[keys[k]] = v;
 				})
 			});
-			action = route[2].call({},params);
-			print(action)
-			//action.call({},Object.extend(params,{/* GET DATA FROM SOMEWHERE*/}))
+			action = route[2](params);
+			print(JSON.stringify(params))
+			action(params);
+			break;
 		}
 		t.sendResponseHeaders(200,exports.buffer.length());
 		t.getResponseBody().write(exports.buffer.toString().getBytes());
 		os.close();
 		t.close();
+		} catch(e) {print(e)}
 	}
 }()));
 server.start();

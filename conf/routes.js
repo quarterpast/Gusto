@@ -1,3 +1,4 @@
-exports.routes = [
-["*","/{controller}/{action}",function(_) controllers[_.controller][_.action]]
+exports.routes = function($) [
+	["GET","/posts",function() $.posts.index],
+	["*","/{controller}/{action}",function(_) $[_.controller][_.action]]
 ]
