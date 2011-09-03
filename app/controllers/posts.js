@@ -4,11 +4,11 @@ exports.posts = mvc.controller({
 	"index": function(params) {
 		this.renderJSON(params)
 	},
-	"new": function() {
+	"new": function(params) {
 		var p = models.post.create({
-			title: "test",
+			title: params.title,
 			date: Date.now(),
-			content: "this is a test post"
+			content: params.content
 		})
 		this.renderJSON(p)
 	}

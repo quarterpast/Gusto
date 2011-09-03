@@ -12,14 +12,32 @@ importPackage(java.io);
 		return Object.prototype.toString.call(test) === '[object '+type+']';
 	};
 });
+String.prototype.parseQuery = function() {
+	var parts = this.split("&"), out = {};
+	for each(let part in parts) {
+		let comp = part.split("="),
+		    k = comp.shift().replace(/\[\]$/,""),
+		    v = decodeURIComponent(comp.join("=").replace("+"," "));
+		if(k in out) {
+			if(Object.isArray(out[k])) {
+				out[k].push(v);
+			} else {
+				out[k] = [out[k],v];
+			}
+		} else {
+			out[k] = v;
+		}
+	}
+	return out;
+}
 Object.extend = function(d,s,m) {
 	for(let p in s) {
-		if(s.hasOwnProperty(p) && m && !(p in d)) {
+		if(s.hasOwnProperty(p)) {
 			d[p] = s[p];
 		}
 	}
 	return d;
-}
+};
 Object.unbox = function(obj) {
 	Object.extend((function() this).call(null),obj,true);
 };
@@ -90,7 +108,7 @@ server.createContext("/", (function(){
 		try {
 		exports.buffer = new java.lang.StringBuilder();
 		for each(let route in routes) {
-			let params = {}, keys = [], uri = new String(htex.getRequestURI());
+			let params = {}, keys = [], [uri,query] = new String(htex.getRequestURI()).split("?");
 			if(!route[0] === "*" && !route[0] === htex.getRequestMethod())
 				continue;
 			let reg = new RegExp("^"+route[1].replace(/\{(\w+)\}/g,function(m,key){
@@ -104,8 +122,9 @@ server.createContext("/", (function(){
 					params[keys[k]] = v;
 				})
 			});
-			action = route[2](params);
-			action(params);
+			if(!Object.isFunction(route[2](params)))
+				continue;
+			route[2](params)(Object.extend(params,query.parseQuery()));
 			break;
 		}
 		htex.sendResponseHeaders(200,exports.buffer.length());
