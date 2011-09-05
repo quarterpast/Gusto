@@ -67,19 +67,18 @@ exports.buffer = (function(){
 }())
 exports.controller = function(actions) {
 	spec = {
-		"renderJSON": function(args) {
+		"renderJSON": function(action,args) {
 			exports.buffer.append(JSON.stringify(args));
 		},
-		"render": function(action,args) {
-			print(arguments.callee.caller)
-			//[action,args] = Object.isString(action) ? [action,args] : ["undefined",action];
+		"render": function(action,args,other) {
+			[action,args] = Object.isString(args) ? [args,other] : [action,args];
 
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
-		let context = spec;
-		for each(let [k,v] in Iterator(context)) {
-			v.bind(context,name);
+		let context = {};
+		for each(let [k,v] in Iterator(spec)) {
+			context[k] = v.bind(context,name);
 		}
 		spec[name] = action.bind(context);
 	}
