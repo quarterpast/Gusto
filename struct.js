@@ -77,7 +77,11 @@ exports.controller = function(actions) {
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
-		spec[name] = action.bind(spec);
+		let context = spec;
+		for each(let [k,v] in Iterator(context)) {
+			v.bind(context,name);
+		}
+		spec[name] = action.bind(context);
 	}
 	return spec;
 };
