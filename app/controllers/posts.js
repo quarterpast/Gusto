@@ -11,7 +11,7 @@ exports.posts = mvc.controller({
 			date: params.date,
 			content: params.content
 		})
-		this.renderJSON(p)
+		p.save();
 	},
 	"test": function() {
 		this.render();

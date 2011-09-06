@@ -1,23 +1,64 @@
 importPackage(Packages.com.sun.net.httpserver);
+importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
-var buffer;
+
 const addr = new java.net.InetSocketAddress("localhost", 8000),
       server = HttpServer.create(addr, 10),
       mvc = require("mvc.js").init(),
-      routes = require("conf/routes.js").routes(mvc.controllers());
+      routeEnv = {
+      	staticDir: function(dir) {return function(vars) {return function() {
+      		var file = new File(dir+"/"+vars.file);
+      		if(file.exists()) {
+      			let stream = new FileInputStream(file),
+      			    length = file.length(),
+      			    bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, length),
+      			    offset = 0,
+      			    numRead = 0;
+      			while (offset < bytes.length
+      				&& (numRead=stream.read(bytes, offset, bytes.length-offset)) >= 0) {
+      				offset += numRead;
+      			}
+      			stream.close();
+      			mvc.getBuffer().append(new java.lang.String(bytes));
+      			return {status:200,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
+      		}
+      		return {status:404};
+      	};};},
+      	staticFile: function(path) {return function() {return function() {
+      		print(path)
+      		var file = new File(path);
+      		if(file.exists()) {
+      			let stream = new FileInputStream(file),
+      			    length = file.length(),
+      			    bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, length),
+      			    offset = 0,
+      			    numRead = 0;
+      			while (offset < bytes.length
+      				&& (numRead=stream.read(bytes, offset, bytes.length-offset)) >= 0) {
+      				offset += numRead;
+      			}
+      			stream.close();
+      			mvc.getBuffer().append(new java.lang.String(bytes));
+      			return {status:200,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
+      		}
+      		return {status:404};
+      	};};},
+			},
+      routes = require("conf/routes.js").routes.call(routeEnv,mvc.controllers());
 
 
 server.createContext("/", function(htex) {
 	try {
+		var status = 404, type = "text/html";
 		mvc.setBuffer(new java.lang.StringBuilder());
 		for each(let route in routes) {
 			let params = {}, keys = [], [uri,query] = new String(htex.getRequestURI()).split("?");
 			if(Object.isglobal(query)) query = "";
 			if(!route[0] === "*" && !route[0] === htex.getRequestMethod())
 				continue;
-			let reg = new RegExp("^"+route[1].replace(/\{(\w+)\}/g,function(m,key){
+			let reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
 				keys.push(key)
-				return "([\\w0-9]+)";
+				return "([\\w0-9\/\.]+)";
 			})+"$");
 			if(!reg.test(uri))
 				continue;
@@ -28,14 +69,16 @@ server.createContext("/", function(htex) {
 			});
 			if(!Object.isFunction(route[2](params)))
 				continue;
-			route[2](params)(Object.extend(params,query.parseQuery()));
+			out = route[2](params)(Object.extend(params,query.parseQuery()));
+			type = "type" in out ? out.type : type;
+			status = "status" in out ? out.status : 200;
 			break;
 		}
 	} catch(e) {
 		mvc.getBuffer().append(e);
 	} finally {
-		htex.getResponseHeaders().add("Content-type","text/html");
-		htex.sendResponseHeaders(200,mvc.getBuffer().length());
+		htex.getResponseHeaders().add("Content-type",type);
+		htex.sendResponseHeaders(status,mvc.getBuffer().length());
 		htex.getResponseBody().write(mvc.getBuffer().toString().getBytes());
 		htex.close();
 	}
