@@ -48,7 +48,7 @@ exports.init = function(base) {
 			}
 			return spec;
 		},
-		model: function(model,spec) {
+		model: function(spec) {
 			//print(model)
 			return {
 				create: function(params) {
@@ -62,6 +62,10 @@ exports.init = function(base) {
 						this[k] = new type(params[k]);
 					}
 					return this;
+				},
+				save: function() {
+					print("save")
+					print(JSON.stringify(this))
 				}
 			}
 		}

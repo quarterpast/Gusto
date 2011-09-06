@@ -5,6 +5,7 @@ exports.posts = mvc.controller({
 		this.render(params)
 	},
 	"new": function(params) {
+		print("new")
 		var p = models.post.create({
 			title: params.title,
 			date: params.date,
