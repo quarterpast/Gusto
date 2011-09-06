@@ -1,5 +1,6 @@
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
+var buffer;
 exports.fromFiles = function(folder,skip) {
 	var files = new File(folder).listFiles()
 	                .filter(function(f) f.getName().substr(-3) == ".js"),
@@ -13,24 +14,27 @@ exports.fromFiles = function(folder,skip) {
 };
 exports.init = function(base) {
 	if(typeof base != "undefined") {
-		var name = (function(f) f.substr(0,f.length-3))(new File(base).getName());
+		var name = new File(base).getName(),
+		    thing = name.substr(0,name.length()-3);
 	}
 	return {
 		fromFiles: exports.fromFiles,
 		models: function(id) exports.fromFiles("app/models",id),
 		controllers: function(id) exports.fromFiles("app/controllers",id),
+		setBuffer: function(b) buffer = b,
+		getBuffer: function() buffer,
 		controller: function(actions) {
 			//print(controller)
 			spec = {
 				"renderJSON": function(action,args) {
-					exports.buffer.append(JSON.stringify(args));
+					buffer.append(JSON.stringify(args));
 				},
 				"render": function(action,args,other) {
 					[action,args] = Object.isString(args) ? [args,other] : [action,args];
 					args = Object.isUndefined(args) ? {} : args;
-					exports.buffer.append(controller+"\n");
-					exports.buffer.append(action+"\n");
-					exports.buffer.append(JSON.stringify(args));
+					buffer.append(thing+"\n");
+					buffer.append(action+"\n");
+					buffer.append(JSON.stringify(args));
 					
 				}
 			};

@@ -9,7 +9,7 @@ const addr = new java.net.InetSocketAddress("localhost", 8000),
 
 server.createContext("/", function(htex) {
 	try {
-		mvc.buffer = new java.lang.StringBuilder();
+		mvc.setBuffer(new java.lang.StringBuilder());
 		for each(let route in routes) {
 			let params = {}, keys = [], [uri,query] = new String(htex.getRequestURI()).split("?");
 			if(Object.isglobal(query)) query = "";
@@ -31,8 +31,8 @@ server.createContext("/", function(htex) {
 			route[2](params)(Object.extend(params,query.parseQuery()));
 			break;
 		}
-		htex.sendResponseHeaders(200,exports.buffer.length());
-		htex.getResponseBody().write(exports.buffer.toString().getBytes());
+		htex.sendResponseHeaders(200,mvc.getBuffer().length());
+		htex.getResponseBody().write(mvc.getBuffer().toString().getBytes());
 		htex.close();
 	} catch(e) {
 		print(e);
