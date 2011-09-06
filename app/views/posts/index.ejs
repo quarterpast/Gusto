@@ -1,1 +1,1 @@
-exports.template = function($) <ul>{[<li>{item}</li> for each(item in this.test)]._()}</ul>
+exports.template = function($) <ul>{[$.node("li",{},item) for each(item in this.test)]._()}</ul>
