@@ -48,23 +48,6 @@ Object.unbox = function(obj) {
 var addr = new java.net.InetSocketAddress("localhost", 8000),
     server = HttpServer.create(addr, 10);
 
-exports.buffer = (function(){
-	var inner = "";
-	return {
-		toString: function() inner,
-		append: function(a) {
-			inner += ""+a;
-			return this;
-		},
-		charAt: function(i) inner[i],
-		indexOf: function(s,i) inner.indexOf(s,i),
-		insert: function(i,a) {
-			inner = inner.substr(0,i)+a+inner.substr(i);
-			return this;
-		},
-		length: function() inner.length
-	};
-}())
 exports.controller = function(actions) {
 	spec = {
 		"renderJSON": function(action,args) {
@@ -72,7 +55,10 @@ exports.controller = function(actions) {
 		},
 		"render": function(action,args,other) {
 			[action,args] = Object.isString(args) ? [args,other] : [action,args];
-
+			args = Object.isUndefined(args) ? {} : args;
+			exports.buffer.append(action+"\n");
+			exports.buffer.append(JSON.stringify(args));
+			
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
