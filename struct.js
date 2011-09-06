@@ -25,7 +25,6 @@ const addr = new java.net.InetSocketAddress("localhost", 8000),
       		return {status:404};
       	};};},
       	staticFile: function(path) {return function() {return function() {
-      		print(path)
       		var file = new File(path);
       		if(file.exists()) {
       			let stream = new FileInputStream(file),
@@ -58,7 +57,7 @@ server.createContext("/", function(htex) {
 				continue;
 			let reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
 				keys.push(key)
-				return "([\\w0-9\/\.]+)";
+				return "([\\w0-9\.]+)";
 			})+"$");
 			if(!reg.test(uri))
 				continue;
