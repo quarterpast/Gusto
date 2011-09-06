@@ -12,6 +12,7 @@ exports.posts = mvc.controller({
 			content: params.content
 		})
 		p.save();
+		this.render("view",p)
 	},
 	"test": function() {
 		this.render();

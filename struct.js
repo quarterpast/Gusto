@@ -2,45 +2,42 @@ importPackage(Packages.com.sun.net.httpserver);
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
 
-const addr = new java.net.InetSocketAddress("localhost", 8000),
+const readBytes = function(file) {
+      	if(!file instanceof File) {
+      		throw new TypeError("are you high?");
+      	}
+      	if(file.exists()) {
+      		let stream = new FileInputStream(file),
+      		    length = file.length(),
+      		    bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, length),
+      		    offset = 0,
+      		    numRead = 0;
+      		while (offset < bytes.length
+      			&& (numRead=stream.read(bytes, offset, bytes.length-offset)) >= 0) {
+      			offset += numRead;
+      		}
+      		stream.close();
+      	} else return false;
+      },
+      addr = new java.net.InetSocketAddress("localhost", 8000),
       server = HttpServer.create(addr, 10),
       mvc = require("mvc.js").init(),
       routeEnv = {
       	staticDir: function(dir) {return function(vars) {return function() {
-      		var file = new File(dir+"/"+vars.file);
-      		if(file.exists()) {
-      			let stream = new FileInputStream(file),
-      			    length = file.length(),
-      			    bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, length),
-      			    offset = 0,
-      			    numRead = 0;
-      			while (offset < bytes.length
-      				&& (numRead=stream.read(bytes, offset, bytes.length-offset)) >= 0) {
-      				offset += numRead;
-      			}
-      			stream.close();
+      		var file = new File(dir+"/"+vars.file), bytes;
+      		if(bytes = readBytes(file)) {
       			mvc.getBuffer().append(new java.lang.String(bytes));
       			return {status:200,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
-      		}
-      		return {status:404};
+	      	}
+	      	return {status:404}
       	};};},
       	staticFile: function(path) {return function() {return function() {
       		var file = new File(path);
-      		if(file.exists()) {
-      			let stream = new FileInputStream(file),
-      			    length = file.length(),
-      			    bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, length),
-      			    offset = 0,
-      			    numRead = 0;
-      			while (offset < bytes.length
-      				&& (numRead=stream.read(bytes, offset, bytes.length-offset)) >= 0) {
-      				offset += numRead;
-      			}
-      			stream.close();
+      		if(bytes = readBytes(file)) {
       			mvc.getBuffer().append(new java.lang.String(bytes));
       			return {status:200,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
-      		}
-      		return {status:404};
+	      	}
+	      	return {status:404}
       	};};},
 			},
       routes = require("conf/routes.js").routes.call(routeEnv,mvc.controllers());

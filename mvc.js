@@ -18,7 +18,7 @@ exports.fromFiles = function(folder,skip) {
 exports.init = function(base) {
 	if(typeof base != "undefined") {
 		var name = new File(base).getName(),
-		    thing = name.substr(0,name.length()-3);
+		    base = name.substr(0,name.length()-3);
 	}
 	return {
 		fromFiles: exports.fromFiles,
@@ -35,7 +35,7 @@ exports.init = function(base) {
 				"render": function(action,args,other) {
 					[action,args] = Object.isString(args) ? [args,other] : [action,args];
 					args = Object.isUndefined(args) ? {} : args;
-					var template = require("app/views/"+thing+"/"+action+".ejs").template;
+					var template = require("app/views/"+base+"/"+action+".ejs").template;
 					buffer.append(template.call(args,templateEnv).toXMLString());
 				}
 			};
@@ -49,16 +49,16 @@ exports.init = function(base) {
 			return spec;
 		},
 		model: function(spec) {
-			//print(model)
-			var methods = {
-				save: function() {
-					print("save")
-					print(JSON.stringify(this))
-				}
-			}
 			return {
 				create: function(params) {
-					var out = new Object(methods);
+					var id = (new File("data/base")).listFiles().length(),
+					    out = {
+						save: function() {
+							print(id);
+							print("save")
+							print(JSON.stringify(this))
+						}
+					};
 					for each(let [k,v] in Iterator(spec)) {
 						var type = v;
 						if(!Object.isFunction(type)) {
