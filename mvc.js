@@ -28,7 +28,7 @@ exports.init = function(base) {
 		getBuffer: function() buffer,
 		controller: function(actions) {
 			//print(controller)
-			spec = {
+			var spec = {
 				"renderJSON": function(action,args) {
 					buffer.append(JSON.stringify(args));
 				},
@@ -50,8 +50,15 @@ exports.init = function(base) {
 		},
 		model: function(spec) {
 			//print(model)
+			var methods = {
+				save: function() {
+					print("save")
+					print(JSON.stringify(this))
+				}
+			}
 			return {
 				create: function(params) {
+					var out = new Object(methods);
 					for each(let [k,v] in Iterator(spec)) {
 						var type = v;
 						if(!Object.isFunction(type)) {
@@ -59,13 +66,9 @@ exports.init = function(base) {
 								type = type[0];
 							} else throw new TypeError("Must be a constructor or array constructor");
 						}
-						this[k] = new type(params[k]);
+						out[k] = new type(params[k]);
 					}
-					return this;
-				},
-				save: function() {
-					print("save")
-					print(JSON.stringify(this))
+					return out;
 				}
 			}
 		}
