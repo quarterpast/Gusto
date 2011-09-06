@@ -1,8 +1,8 @@
-const mvc = require(require.main.id);
-const models = mvc.fromFiles("app/models");
+const mvc = require("mvc.js").init(module.id),
+      models = mvc.models(module.id)
 exports.posts = mvc.controller({
 	"index": function(params) {
-		this.renderJSON(params)
+		this.render(params)
 	},
 	"new": function(params) {
 		var p = models.post.create({

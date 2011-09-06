@@ -1,6 +1,5 @@
-const mvc = require(require.main.id);
-Object.unbox(mvc.fromFiles("app/models",module.id));
-
+const mvc = require("mvc.js").init(module.id),
+      app = require("app.js");
 exports.post = mvc.model({
 	title: String,
 	date: Date,
