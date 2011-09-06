@@ -17,6 +17,7 @@ const readBytes = function(file) {
       			offset += numRead;
       		}
       		stream.close();
+      		return bytes;
       	} else return false;
       },
       addr = new java.net.InetSocketAddress("localhost", 8000),
