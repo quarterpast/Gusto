@@ -69,6 +69,7 @@ server.createContext("/", function(htex) {
 			if(!Object.isFunction(route[2](params)))
 				continue;
 			out = route[2](params)(Object.extend(params,query.parseQuery()));
+			out = Object.isglobal(out) ? {} : out;
 			type = "type" in out ? out.type : type;
 			status = "status" in out ? out.status : 200;
 			break;
