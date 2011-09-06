@@ -1,5 +1,8 @@
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
+const templateEnv = require("template.js");
+XML.ignoreWhitespace = false;
+XML.prettyPrinting = false;
 var buffer;
 exports.fromFiles = function(folder,skip) {
 	var files = new File(folder).listFiles()
@@ -32,10 +35,8 @@ exports.init = function(base) {
 				"render": function(action,args,other) {
 					[action,args] = Object.isString(args) ? [args,other] : [action,args];
 					args = Object.isUndefined(args) ? {} : args;
-					buffer.append(thing+"\n");
-					buffer.append(action+"\n");
-					buffer.append(JSON.stringify(args));
-					
+					var template = require("app/views/"+thing+"/"+action+".ejs").template;
+					buffer.append(template.call(args,templateEnv).toXMLString());
 				}
 			};
 			for each(let [name,action] in Iterator(actions)) {

@@ -31,11 +31,13 @@ server.createContext("/", function(htex) {
 			route[2](params)(Object.extend(params,query.parseQuery()));
 			break;
 		}
+	} catch(e) {
+		mvc.getBuffer().append(e);
+	} finally {
+		htex.getResponseHeaders().add("Content-type","text/html");
 		htex.sendResponseHeaders(200,mvc.getBuffer().length());
 		htex.getResponseBody().write(mvc.getBuffer().toString().getBytes());
 		htex.close();
-	} catch(e) {
-		print(e);
 	}
 });
 server.start();
