@@ -7,7 +7,7 @@ const appDir = environment['user.dir'],
 switch(arguments[0]) {
 case "run":
 	appMode = "testing";
-	require("server.js");
+	require("server.js").init(appDir,appMode);
 	break;
 default:
 	print("Struct help coming soon");

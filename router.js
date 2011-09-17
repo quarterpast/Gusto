@@ -15,5 +15,5 @@ exports = {
 			return {status:200,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
 		}
 		return {status:404}
-	};};},
-},
+	};};}
+};
