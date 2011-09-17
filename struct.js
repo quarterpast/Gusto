@@ -1,8 +1,9 @@
 importPackage(Packages.com.sun.net.httpserver);
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
-
-const readBytes = function(file) {
+const appDir = environment['user.dir'],
+      config = Object.extend(JSON.parse(readFile(appDir+"/conf/app.conf")),{appDir: appDir}),
+      readBytes = function(file) {
       	if(!file instanceof File) {
       		throw new TypeError("are you high?");
       	}
@@ -20,7 +21,7 @@ const readBytes = function(file) {
       		return bytes;
       	} else return false;
       },
-      addr = new java.net.InetSocketAddress("localhost", 8000),
+      addr = new java.net.InetSocketAddress(config.address || "localhost", config.port || 8000),
       server = HttpServer.create(addr, 10),
       mvc = require("mvc.js").init(),
       routeEnv = {
@@ -41,7 +42,7 @@ const readBytes = function(file) {
 	      	return {status:404}
       	};};},
 			},
-      routes = require("conf/routes.js").routes.call(routeEnv,mvc.controllers());
+      routes = require(appDir+"/conf/routes.js").routes.call(routeEnv,mvc.controllers());
 
 
 server.createContext("/", function(htex) {
@@ -82,4 +83,4 @@ server.createContext("/", function(htex) {
 	}
 });
 server.start();
-print("oh hai")
+print("Listening on "+addr);
