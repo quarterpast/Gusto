@@ -2,7 +2,10 @@ importPackage(Packages.com.sun.net.httpserver);
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
 const appDir = environment['user.dir'],
-      config = Object.extend(JSON.parse(readFile(appDir+"/conf/app.conf")),{appDir: appDir}),
+      appMode = "testing";
+require.paths.push(appDir);
+
+const config = Object.extend(JSON.parse(readFile(appDir+"/conf/app.conf")),{appDir: appDir}),
       readBytes = function(file) {
       	if(!file instanceof File) {
       		throw new TypeError("are you high?");
@@ -21,7 +24,7 @@ const appDir = environment['user.dir'],
       		return bytes;
       	} else return false;
       },
-      addr = new java.net.InetSocketAddress(config.address || "localhost", config.port || 8000),
+      addr = new java.net.InetSocketAddress(config[appMode].address || "localhost", config.port || 8000),
       server = HttpServer.create(addr, 10),
       mvc = require("mvc.js").init(),
       routeEnv = {

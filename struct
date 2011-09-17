@@ -1,0 +1,3 @@
+#!/bin/sh
+structpath=$(dirname $0)
+rhino -version 180 -modules $structpath -main $structpath/struct.js $structpath/struct.js $@
