@@ -51,12 +51,14 @@ exports.init = function(base) {
 		model: function(spec) {
 			return {
 				create: function(params) {
-					var id = (new File("data/base")).listFiles().length(),
+					var id = new File("data/"+base).listFiles().length,
 					    out = {
 						save: function() {
-							print(id);
-							print("save")
-							print(JSON.stringify(this))
+							
+							var file = FileWriter("data/"+base+"/"+id+".json"),
+							    buf = new BufferedWriter(file);
+							buf.write(JSON.stringify(this));
+							buf.close();
 						}
 					};
 					for each(let [k,v] in Iterator(spec)) {
