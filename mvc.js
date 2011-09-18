@@ -27,7 +27,6 @@ exports.init = function(base) {
 		setBuffer: function(b) buffer = b,
 		getBuffer: function() buffer,
 		controller: function(actions) {
-			//print(controller)
 			var spec = {
 				"renderJSON": function(action,args) {
 					buffer.append(JSON.stringify(args));
