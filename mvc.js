@@ -34,8 +34,26 @@ exports.init = function(base) {
 				"render": function(action,args,other) {
 					[action,args] = Object.isString(args) ? [args,other] : [action,args];
 					args = Object.isUndefined(args) ? {} : args;
-					var template = require("app/views/"+base+"/"+action+".ejs").template;
-					buffer.append(template.call(args,templateEnv).toXMLString());
+					function inner(path,output,extraArgs) {
+						extraArgs = Object.isUndefined(extraArgs) ? {} : extraArgs;
+						try {
+							var template = require("app/views/"+path+".ejs").template,
+							    extras = {},
+							    output = template.call(Object.extend(args,extraArgs),Object.extend(templateEnv,{
+								    layout:function() output,
+								    set: function(k,v){extras[k]=v;return ""},
+								    get: function(k) extras[k]
+							    }));
+							if(Object.isArray(output)) {
+								[extend,output] = output;
+								output = inner(extend,output,extras);
+							}
+						} catch(e) {
+							output = <div class="error">{e}</div>;
+						}
+						return output;
+					}
+					buffer.append(inner((base ? base+"/" : "")+action,args).toXMLString());
 				}
 			};
 			for each(let [name,action] in Iterator(actions)) {
