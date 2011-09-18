@@ -43,7 +43,7 @@ exports.init = function(base) {
 								    layout:function() output,
 								    set: function(k,v){extras[k]=v;return ""},
 								    get: function(k) extras[k]
-							    }));
+							    }),this.controllers());
 							if(Object.isArray(output)) {
 								[extend,output] = output;
 								output = inner(extend,output,extras);
