@@ -4,11 +4,11 @@ importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
 exports.init = function(appDir,appMode) {
 	require.paths.push(appDir);
-	const config = Object.extend(JSON.parse(readFile(appDir+"/conf/app.conf")),{appDir: appDir}),
+	const config = JSON.parse(readFile(appDir+"/conf/app.conf")),
 	      mvc = require("mvc.js").init(),
 	      router = require("router.js"),
 	      routes = require(appDir+"/conf/routes.js").routes.call(router,mvc.controllers());
-	      addr = new java.net.InetSocketAddress(config[appMode].address || "localhost", config.port || 8000),
+	      addr = new java.net.InetSocketAddress(config[appMode].address || "localhost", config[appMode].port || 8000),
 	      server = HttpServer.create(addr, 10);
 
 	server.createContext("/", function(htex) {
