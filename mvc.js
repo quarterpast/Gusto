@@ -1,6 +1,5 @@
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
-const templateEnv = require("template.js");
 XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
 var buffer;
@@ -39,11 +38,11 @@ exports.init = function(base) {
 						try {
 							var template = require("app/views/"+path+".ejs").template,
 							    extras = {},
-							    output = template.call(Object.extend(args,extraArgs),Object.extend(templateEnv,{
+							    output = template.call(Object.extend(args,extraArgs),Object.extend(require("template.js"),{
 								    layout:function() output,
 								    set: function(k,v){extras[k]=v;return ""},
 								    get: function(k) extras[k]
-							    }),this.controllers());
+							    }),exports.fromFiles("app/controllers"));
 							if(Object.isArray(output)) {
 								[extend,output] = output;
 								output = inner(extend,output,extras);
