@@ -31,6 +31,8 @@ exports.init = function(appDir,appMode) {
 						params[keys[k]] = v;
 					})
 				});
+				if(route[2] === router.staticFile || route[2] === router.staticDir)
+					route[2] = route[2](route[3]);
 				if(!Object.isFunction(route[2](params)))
 					continue;
 				out = route[2](params)(Object.extend(params,query.parseQuery()));
