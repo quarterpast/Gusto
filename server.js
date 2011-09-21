@@ -39,6 +39,7 @@ exports.init = function(appDir,appMode) {
 				out = Object.isglobal(out) ? {} : out;
 				type = "type" in out ? out.type : type;
 				status = "status" in out ? out.status : 200;
+				print(mvc.getBuffer())
 				break;
 			}
 		} catch(e) {

@@ -1,4 +1,5 @@
-const readBytes = require("file.js").readBytes;
+const readBytes = require("file.js").readBytes,
+      mvc = require("mvc.js").init();
 exports.staticDir = function(dir) {return function(vars) {return function() {
 	var file = new File(dir+"/"+vars.file), bytes;
 	if(bytes = readBytes(file)) {
