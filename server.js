@@ -13,7 +13,7 @@ exports.init = function(appDir,appMode) {
 
 	server.createContext("/", function(htex) {
 		try {
-			var status = 404, type = "text/html";
+			var status = 404, type = "text/html",binary=false;
 			mvc.setBuffer(new java.lang.StringBuilder());
 			for each(let route in routes) {
 				let params = {}, keys = [], [uri,query] = new String(htex.getRequestURI()).split("?");
@@ -41,15 +41,21 @@ exports.init = function(appDir,appMode) {
 				out = Object.isglobal(out) ? {} : out;
 				type = "type" in out ? out.type : type;
 				status = "status" in out ? out.status : 200;
+				binary = "status" in out ? out.binary : false;
 				print(htex.getRequestMethod(),uri,status,type)
 				break;
 			}
 		} catch(e) {
-			mvc.getBuffer().append(new java.lang.String(e));
+			mvc.getBuffer().append(e);
 		} finally {
 			htex.getResponseHeaders().add("Content-type",type);
-			htex.sendResponseHeaders(status,mvc.getBuffer().length());
-			htex.getResponseBody().write(mvc.getBuffer().toString().getBytes());
+			if(binary) {
+				htex.sendResponseHeaders(status,mvc.getBytes().length);
+				htex.getResponseBody().write(mvc.getBytes());
+			} else {
+				htex.sendResponseHeaders(status,mvc.getBuffer().length());
+				htex.getResponseBody().write(mvc.getBuffer().toString().getBytes());
+			}
 			htex.close();
 		}
 	});

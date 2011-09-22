@@ -2,7 +2,7 @@ importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
 XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
-var buffer;
+var buffer,bytes;
 exports.fromFiles = function(folder,skip) {
 	var files = new File(folder).listFiles()
 	                .filter(function(f) f.getName().substr(-3) == ".js"),
@@ -25,6 +25,8 @@ exports.init = function(base) {
 		controllers: function(id) exports.fromFiles("app/controllers",id),
 		setBuffer: function(b) buffer = b,
 		getBuffer: function() buffer,
+		setBytes: function(b) bytes = b,
+		getBytes: function() bytes,
 		controller: function(actions) {
 			var spec = {
 				"renderJSON": function(action,args) {
