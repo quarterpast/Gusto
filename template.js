@@ -21,12 +21,15 @@ exports.route = function(action) {
 	    router = require("router.js"),
 	    routes = require(environment['user.dir']+"/conf/routes.js").routes.call(router,mvc.controllers()),
 	    id = Object.isFunction(action) ? action.id : action
-	    $continue = ["continue, motherfucker"];
+	    $continue = "£$%continue, motherfucker";
 	for each(let route in routes) {
 		if(router.staticFile === route[2]) {
-			//print("file",route.toSource())
+			if(route[3] !== id) continue;
+			if(!(new java.io.File(id)).exists()) continue;
+			return route[1];
 		} else if(router.staticDir === route[2]) {
-		//	print("dir",route)
+			if(new java.io.File(id).getParent() != route[3]) continue;
+			return route[1].replace('{file}',new java.io.File(id).getName())
 		} else {
 			let keys = [],
 			    out = route[2].toSource().replace(/\(function \((_?)\) \$\.?([\s\S]+);\)/,function(m,under,body) {
