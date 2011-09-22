@@ -80,14 +80,14 @@ exports.init = function(base) {
 							buf.close();
 						}
 					};
-					for each(let [k,v] in Iterator(spec)) {
-						var type = v;
-						if(!Object.isFunction(type)) {
-							if(Object.isArray(type) && Object.isFunction(type[0])) {//TODO: arrays
-								type = type[0];
-							} else throw new TypeError("Must be a constructor or array constructor");
+					for each(let [k,desc] in Iterator(spec)) {
+						if(desc.type === Array) {
+							for each(let [i,v] in params[k]) {
+								out[k][i] = new desc.elements(v);
+							}
+						} else {
+							out[k] = new desc.type(params[k]);
 						}
-						out[k] = new type(params[k]);
 					}
 					return out;
 				}
