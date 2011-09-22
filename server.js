@@ -54,6 +54,7 @@ exports.init = function(appDir,appMode) {
 				break;
 			}
 		} catch(e) {
+			print(e);
 			mvc.getBuffer().append(e);
 		} finally {
 			htex.getResponseHeaders().add("Content-type",type);
