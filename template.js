@@ -19,22 +19,40 @@ exports.node = function(name,attr,cont) {// in Rhino 1.7R3, you can't embed XML 
 exports.route = function(action) {
 	var mvc = require("mvc.js").init(),
 	    router = require("router.js"),
-	    routes = require(environment['user.dir']+"/conf/routes.js").routes.call(router,mvc.controllers());
+	    routes = require(environment['user.dir']+"/conf/routes.js").routes.call(router,mvc.controllers()),
+	    id = Object.isFunction(action) ? action.id : action
+	    $continue = ["continue, motherfucker"];
 	for each(let route in routes) {
 		if(router.staticFile === route[2]) {
 			//print("file",route.toSource())
 		} else if(router.staticDir === route[2]) {
 		//	print("dir",route)
 		} else {
-			return route[2].toSource().replace(/\(function \((_?)\) \$\.?([\s\S]+);\)/,function(m,under,body) {
-				if(under == '_') {
-				} else {
-					return route[1]
+			let keys = [],
+			    out = route[2].toSource().replace(/\(function \((_?)\) \$\.?([\s\S]+);\)/,function(m,under,body) {
+				if(under === '_') {
+					let uri = route[1],
+					    reg = new RegExp("^"+body.replace(/\]\[/g,'£').replace(/^\[|\]$/g,'').replace(/_\.([\w]+)(£?)/g,function(m,key,dot){
+						keys.push(key)
+						return "([\\w0-9\.]+)"+(dot === '£' ? '\\.' : '');
+					})+"$");
+					if(!reg.test(id))
+						return $continue;
+					id.replace(reg,function(m){
+						Array.slice(arguments,1,keys.length+1).forEach(function(v,k){
+							uri = uri.replace('{'+keys[k]+'}',v);
+						})
+					});
+					return uri;
+				} else if(body === id) {
+					return route[1];
 				}
 			});
+			if(out === $continue || out === "undefined") continue;// no, those quotes *are* meant to be there
+			return out;
 		}
 	}
-	return action.id
+	throw "routing error"
 };
 exports.include = function(template,args) {
 	var template = require("app/views/"+template+".ejs").template;
