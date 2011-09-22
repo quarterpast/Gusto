@@ -1,3 +1,4 @@
+importPackage(java.io);
 const router = require("router.js");
 exports.if = function _if (cond, h, _else) {// cheers, MDC
 	if (cond && cond != undefined) { // We need undefined condition for E4X
@@ -25,11 +26,11 @@ exports.route = function(action) {
 	for each(let route in routes) {
 		if(router.staticFile === route[2]) {
 			if(route[3] !== id) continue;
-			if(!(new java.io.File(id)).exists()) continue;
+			if(!(new File(id)).exists()) continue;
 			return route[1];
 		} else if(router.staticDir === route[2]) {
-			if(new java.io.File(id).getParent() != route[3]) continue;
-			return route[1].replace('{file}',new java.io.File(id).getName())
+			if(new File(id).getParent() != route[3]) continue;
+			return route[1].replace('{file}',new File(id).getName())
 		} else {
 			let keys = [],
 			    out = route[2].toSource().replace(/\(function \((_?)\) \$\.?([\s\S]+);\)/,function(m,under,body) {
