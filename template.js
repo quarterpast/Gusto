@@ -23,13 +23,17 @@ exports.route = function(action) {
 	for each(let route in routes) {
 		if(router.staticFile === route[2]) {
 			//print("file",route.toSource())
-		}
-		if(router.staticDir === route[2]) {
+		} else if(router.staticDir === route[2]) {
 		//	print("dir",route)
+		} else {
+			return route[2].toSource().replace(/\(function \((_?)\) \$\.?([\s\S]+);\)/,function(m,under,body) {
+				if(under == '_') {
+				} else {
+					return route[1]
+				}
+			});
 		}
-		//print(route[2].toSource());
 	}
-	print(mvc.controllers().posts.index)
 	return action.id
 };
 exports.include = function(template,args) {
