@@ -21,13 +21,13 @@ exports.route = function(action) {
 	    router = require("router.js"),
 	    routes = require(environment['user.dir']+"/conf/routes.js").routes.call(router,mvc.controllers());
 	for each(let route in routes) {
-		if(router.staticFile("").toSource() === route[2].toSource()) {
-			print("file",route.toSource())
+		if(router.staticFile === route[2]) {
+			//print("file",route.toSource())
 		}
-		if(router.staticDir("").toSource() === route[2].toSource()) {
-			print("dir",route)
+		if(router.staticDir === route[2]) {
+		//	print("dir",route)
 		}
-		print(route[2].toSource());
+		//print(route[2].toSource());
 	}
 	return "";
 };

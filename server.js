@@ -20,6 +20,8 @@ exports.init = function(appDir,appMode) {
 				if(Object.isglobal(query)) query = "";
 				if(!route[0] === "*" && !route[0] === htex.getRequestMethod())
 					continue;
+				if(htex.getRequestMethod() == "POST")
+					print(htex.getRequestBody())
 				let reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
 					keys.push(key)
 					return "([\\w0-9\.]+)";
@@ -39,11 +41,11 @@ exports.init = function(appDir,appMode) {
 				out = Object.isglobal(out) ? {} : out;
 				type = "type" in out ? out.type : type;
 				status = "status" in out ? out.status : 200;
-				print(mvc.getBuffer())
+				print(htex.getRequestMethod(),uri,status,type)
 				break;
 			}
 		} catch(e) {
-			mvc.getBuffer().append(e);
+			mvc.getBuffer().append(new java.lang.String(e));
 		} finally {
 			htex.getResponseHeaders().add("Content-type",type);
 			htex.sendResponseHeaders(status,mvc.getBuffer().length());
