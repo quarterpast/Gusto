@@ -29,7 +29,8 @@ exports.route = function(action) {
 		}
 		//print(route[2].toSource());
 	}
-	return "";
+	print(mvc.controllers().posts.index)
+	return action.id
 };
 exports.include = function(template,args) {
 	var template = require("app/views/"+template+".ejs").template;

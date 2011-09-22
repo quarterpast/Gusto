@@ -60,8 +60,8 @@ exports.init = function(base) {
 				for each(let [k,v] in Iterator(spec)) {
 					context[k] = v.bind(context,name);
 				}
-				action.id = base+"."+name;
 				spec[name] = action.bind(context);
+				spec[name].id = base+"."+name;
 			}
 			return spec;
 		},
