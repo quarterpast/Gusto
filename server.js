@@ -20,8 +20,6 @@ exports.init = function(appDir,appMode) {
 				if(Object.isglobal(query)) query = "";
 				if(!route[0] === "*" && !route[0] === htex.getRequestMethod())
 					continue;
-				if(htex.getRequestMethod() == "POST")
-					print(htex.getRequestBody())
 				let reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
 					keys.push(key)
 					return "([\\w0-9\.]+)";
@@ -37,11 +35,21 @@ exports.init = function(appDir,appMode) {
 					route[2] = route[2](route[3]);
 				if(!Object.isFunction(route[2](params)))
 					continue;
+
+				
+				if(htex.getRequestMethod() == "POST") {
+					let stream = htex.getRequestBody(),
+					    bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, stream.available());
+					stream.read(bytes)
+					stream.close();
+					query += "&"+new java.lang.String(bytes);
+				}
 				out = route[2](params)(Object.extend(params,query.parseQuery()));
 				out = Object.isglobal(out) ? {} : out;
 				type = "type" in out ? out.type : type;
 				status = "status" in out ? out.status : 200;
 				binary = "binary" in out ? out.binary : false;
+				
 				print(htex.getRequestMethod(),uri,status,type,binary?"binary":"text")
 				break;
 			}

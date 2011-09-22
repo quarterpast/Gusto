@@ -28,6 +28,7 @@ exports.extend = function(object,string,array) {
 		if(this == "") return {};
 		var parts = this.split("&"), out = {};
 		for each(let part in parts) {
+			if(part == "") continue;
 			let comp = part.split("="),
 			    k = comp.shift().replace(/\[\]$/,""),
 			    v = decodeURIComponent(comp.join("=").replace("+"," "));
