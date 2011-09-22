@@ -41,8 +41,8 @@ exports.init = function(appDir,appMode) {
 				out = Object.isglobal(out) ? {} : out;
 				type = "type" in out ? out.type : type;
 				status = "status" in out ? out.status : 200;
-				binary = "status" in out ? out.binary : false;
-				print(htex.getRequestMethod(),uri,status,type)
+				binary = "binary" in out ? out.binary : false;
+				print(htex.getRequestMethod(),uri,status,type,binary?"binary":"text")
 				break;
 			}
 		} catch(e) {
