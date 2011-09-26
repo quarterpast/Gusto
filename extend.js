@@ -46,7 +46,7 @@ exports.extend = function(object,string,array) {
 		return out;
 	}});
 	Object.defineProperty(array.prototype,"_", {value:function() this.reduce(function(a,n) a += n,<></>),writable:true});
-	object.extend = function(d,s,m) {
+	object.extend = function(d,s) {
 		for(let p in s) {
 			if(s.hasOwnProperty(p)) {
 				d[p] = s[p];

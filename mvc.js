@@ -23,6 +23,7 @@ exports.init = function(base) {
 		fromFiles: exports.fromFiles,
 		models: function(id) exports.fromFiles("app/models",id),
 		controllers: function(id) exports.fromFiles("app/controllers",id),
+		isModel: function(m) exports.fromFiles("app/models").indexOf(m) !== -1,
 		setBuffer: function(b) buffer = b,
 		getBuffer: function() buffer,
 		setBytes: function(b) bytes = b,
@@ -68,18 +69,24 @@ exports.init = function(base) {
 			return spec;
 		},
 		model: function(spec) {
+			var dir = (function(f)[f.mkdirs(),f][1])(new File("data/"+base)),
+			methods = {
+				save: function() {
+					var file = FileWriter("data/"+base+"/"+this.id+".json"),
+					    buf = new BufferedWriter(file);
+					list[this.id] = this;
+					buf.write(JSON.stringify(this));
+					buf.close();
+				}
+			},
+			list = (dir.listFiles() || []).map(function(file) {
+				return JSON.parse(readFile(file));
+			});
+			print(JSON.stringify(list),list.length)
 			return {
+				fetch: list.map,
 				create: function(params) {
-					var id = new File("data/"+base).listFiles().length,
-					    out = {
-						save: function() {
-							
-							var file = FileWriter("data/"+base+"/"+id+".json"),
-							    buf = new BufferedWriter(file);
-							buf.write(JSON.stringify(this));
-							buf.close();
-						}
-					};
+					var out = Object.extend({id: list.length},methods);
 					for each(let [k,desc] in Iterator(spec)) {
 						if(desc.type === Array) {
 							for each(let [i,v] in params[k]) {
@@ -89,6 +96,7 @@ exports.init = function(base) {
 							out[k] = new desc.type(params[k]);
 						}
 					}
+					list.push(out)
 					return out;
 				}
 			}
