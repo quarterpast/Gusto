@@ -29,6 +29,9 @@ exports.init = function(base) {
 		setBytes: function(b) bytes = b,
 		getBytes: function() bytes,
 		controller: function(actions) {
+			if(Object.isFunction(actions)) {
+				actions = actions(exports.fromFiles("app/models")[base.substr(0,base.length-1)]);
+			}
 			var spec = {
 				"renderJSON": function(action,args) {
 					buffer.append(JSON.stringify(args));
@@ -82,7 +85,6 @@ exports.init = function(base) {
 			list = (dir.listFiles() || []).map(function(file) {
 				return JSON.parse(readFile(file));
 			});
-			print(JSON.stringify(list),list.length)
 			return {
 				fetch: list.map,
 				create: function(params) {
