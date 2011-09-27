@@ -72,25 +72,7 @@ exports.init = function(base) {
 			return spec;
 		},
 		model: function(spec) {
-			var dir = (function(f)[f.mkdirs(),f][1])(new File("data/"+base)),
-			out = {
-				fetch: function(f) list.filter(f),
-				create: function(params) {
-					var out = Object.extend({id: list.length},methods);
-					for each(let [k,desc] in Iterator(spec)) {
-						if(desc.type === Array) {
-							for each(let [i,v] in params[k]) {
-								out[k][i] = new desc.elements(v);
-							}
-						} else {
-							out[k] = new desc.type(params[k]);
-						}
-					}
-					list.push(out)
-					return out;
-				}
-			},
-			methods = {
+			var methods = {
 				save: function() {
 					var file = FileWriter("data/"+base+"/"+this.id+".json"),
 					    buf = new BufferedWriter(file);
@@ -98,10 +80,30 @@ exports.init = function(base) {
 					buf.write(JSON.stringify(this));
 					buf.close();
 				}
+			}, make = function(params) {
+				var out = Object.extend({},methods);
+				for each(let [k,desc] in Iterator(spec)) {
+					if(desc.type === Array) {
+						for each(let [i,v] in params[k]) {
+							out[k][i] = new desc.elements(v);
+						}
+					} else {
+						out[k] = new desc.type(params[k]);
+					}
+				}
 			},
-			list = (dir.listFiles() || []).map(function(file) {
-				return out.create(JSON.parse(readFile(file)));
-			});
+			dir = (function(f)[f.mkdirs(),f][1])(new File("data/"+base)),
+			list = (dir.listFiles() || []).map(function(file,i,list) {
+				return make(JSON.parse(readFile(file)));
+			}),
+			out = {
+				fetch: function(f) list.filter(f),
+				create: function(params) {
+					var out = Object.extend({id: list.length},make(params));
+					list.push(out)
+					return out;
+				}
+			};
 			print(base,JSON.stringify(list))
 			return out;
 		}
