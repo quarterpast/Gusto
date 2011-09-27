@@ -29,6 +29,9 @@ exports.init = function(base) {
 		setBytes: function(b) bytes = b,
 		getBytes: function() bytes,
 		controller: function(actions) {
+			if(Object.isFunction(actions)) {
+				actions = actions(exports.fromFiles("app/models")[base.substr(0,base.length-1)]);
+			}
 			var spec = {
 				"renderJSON": function(action,args) {
 					buffer.append(JSON.stringify(args));
@@ -70,21 +73,8 @@ exports.init = function(base) {
 		},
 		model: function(spec) {
 			var dir = (function(f)[f.mkdirs(),f][1])(new File("data/"+base)),
-			methods = {
-				save: function() {
-					var file = FileWriter("data/"+base+"/"+this.id+".json"),
-					    buf = new BufferedWriter(file);
-					list[this.id] = this;
-					buf.write(JSON.stringify(this));
-					buf.close();
-				}
-			},
-			list = (dir.listFiles() || []).map(function(file) {
-				return JSON.parse(readFile(file));
-			});
-			print(JSON.stringify(list),list.length)
-			return {
-				fetch: list.map,
+			out = {
+				fetch: function(f) list.filter(f),
 				create: function(params) {
 					var out = Object.extend({id: list.length},methods);
 					for each(let [k,desc] in Iterator(spec)) {
@@ -99,7 +89,21 @@ exports.init = function(base) {
 					list.push(out)
 					return out;
 				}
-			}
+			},
+			methods = {
+				save: function() {
+					var file = FileWriter("data/"+base+"/"+this.id+".json"),
+					    buf = new BufferedWriter(file);
+					list[this.id] = this;
+					buf.write(JSON.stringify(this));
+					buf.close();
+				}
+			},
+			list = (dir.listFiles() || []).map(function(file) {
+				return out.create(JSON.parse(readFile(file)));
+			});
+			print(base,JSON.stringify(list))
+			return out;
 		}
 	};
 };
