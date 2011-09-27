@@ -100,7 +100,7 @@ exports.init = function(base) {
 				}
 			},
 			list = (dir.listFiles() || []).map(function(file) {
-				return out.create(JSON.parse(readFile(file)));
+				return JSON.parse(readFile(file));
 			});
 			print(base,JSON.stringify(list))
 			return out;
