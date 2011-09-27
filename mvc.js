@@ -91,6 +91,7 @@ exports.init = function(base) {
 						out[k] = new desc.type(params[k]);
 					}
 				}
+				return out;
 			},
 			dir = (function(f)[f.mkdirs(),f][1])(new File("data/"+base)),
 			list = (dir.listFiles() || []).map(function(file,i,list) {
@@ -99,7 +100,7 @@ exports.init = function(base) {
 			out = {
 				fetch: function(f) list.filter(f),
 				create: function(params) {
-					var out = Object.extend({id: list.length},make(params));
+					var out = Object.extend(make(params),{id: list.length});
 					list.push(out)
 					return out;
 				}
