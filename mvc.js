@@ -72,7 +72,9 @@ exports.init = function(base) {
 			return spec;
 		},
 		model: function(spec) {
-			var methods = {
+			Object.extend(spec,{id:{type:Number}});
+			var dir = (function(f)[f.mkdirs(),f][1])(new File("data/"+base)),
+			methods = {
 				save: function() {
 					var file = FileWriter("data/"+base+"/"+this.id+".json"),
 					    buf = new BufferedWriter(file);
@@ -93,7 +95,6 @@ exports.init = function(base) {
 				}
 				return out;
 			},
-			dir = (function(f)[f.mkdirs(),f][1])(new File("data/"+base)),
 			list = (dir.listFiles() || []).map(function(file,i,list) {
 				return make(JSON.parse(readFile(file)));
 			}),
@@ -105,7 +106,6 @@ exports.init = function(base) {
 					return out;
 				}
 			};
-			print(base,JSON.stringify(list))
 			return out;
 		}
 	};
