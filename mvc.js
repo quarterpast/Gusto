@@ -2,6 +2,7 @@ importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
 XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
+XML.ignoreComments = false;
 var buffer,bytes;
 exports.fromFiles = function(folder,skip) {
 	var files = new File(folder).listFiles()
