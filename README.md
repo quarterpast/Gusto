@@ -3,6 +3,7 @@ Struct
 ...is a tiny little MVC framework, inspired rather loosely by Play!, aimed at Rhino 1.7R3. It uses the mostly-undocumented, probably-a-bad-choice com.sun.net.httpserver to cut down on dependencies.
 
 Let's make a model!
+
 ```javascript
 const mvc = require("mvc.js").init(module.id),
       models = mvc.models(module.id)
@@ -13,6 +14,7 @@ exports.post = mvc.model({
 });
 ```
 And a controller!
+
 ```javascript
 const mvc = require("mvc.js").init(module.id),
       models = mvc.models(module.id)
@@ -24,6 +26,7 @@ exports.posts = mvc.controller({
 ```
 
 How about a view‽
+
 ```javascript
 exports.template
 
