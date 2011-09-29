@@ -22,7 +22,7 @@ exports.init = function(appDir,appMode) {
 					continue;
 				let reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
 					keys.push(key)
-					return "([\\w0-9\.]+)";
+					return "([\\w0-9\.\-]+)";
 				})+"$");
 				if(!reg.test(uri))
 					continue;
@@ -49,7 +49,6 @@ exports.init = function(appDir,appMode) {
 				type = "type" in out ? out.type : type;
 				status = "status" in out ? out.status : 200;
 				binary = "binary" in out ? out.binary : false;
-				
 				print(htex.getRequestMethod(),uri,status,type,binary?"binary":"text")
 				break;
 			}
@@ -62,7 +61,7 @@ exports.init = function(appDir,appMode) {
 				htex.sendResponseHeaders(status,mvc.getBytes().length);
 				htex.getResponseBody().write(mvc.getBytes());
 			} else {
-				htex.sendResponseHeaders(status,mvc.getBuffer().length());
+				htex.sendResponseHeaders(status,0);
 				htex.getResponseBody().write(mvc.getBuffer().toString().getBytes());
 			}
 			htex.close();
