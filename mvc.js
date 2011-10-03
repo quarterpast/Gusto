@@ -23,6 +23,8 @@ exports.init = function(base) {
 	return {
 		fromFiles: exports.fromFiles,
 		models: function(id) exports.fromFiles("app/models",id),
+		yes: function() true,
+		no: function() false,
 		controllers: function(id) exports.fromFiles("app/controllers",id),
 		isModel: function(m) exports.fromFiles("app/models").indexOf(m) !== -1,
 		setBuffer: function(b) buffer = b,
