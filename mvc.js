@@ -22,6 +22,7 @@ exports.init = function(base) {
 	}
 	return {
 		fromFiles: exports.fromFiles,
+		enum: "yo bitches I'm an enum",
 		models: function(id) exports.fromFiles("app/models",id),
 		yes: function() true,
 		no: function() false,
@@ -91,6 +92,14 @@ exports.init = function(base) {
 					if(desc.type === Array) {
 						for each(let [i,v] in params[k]) {
 							out[k][i] = new desc.elements(v);
+						}
+					} else if(desc.type === "yo bitches I'm an enum") {
+						if(desc.elements.indexOf(v) !== -1) {
+							out[k][i] = v;
+						} else if(v in desc.elements) {
+							out[k][i] = desc.elements[v];
+						} else {
+							throw new TypeError("u mad?")
 						}
 					} else {
 						out[k] = new desc.type(params[k]);
