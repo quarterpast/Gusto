@@ -42,18 +42,16 @@ exports.init = function(base) {
 				},
 				"render": function(action,args,other) {
 					[action,args] = Object.isString(args) ? [args,other] : [action,args];
-					args = Object.isUndefined(args) ? {} : args;
+					args = Object.isglobal(args) ? {} : args;
 
 					var path = (base ? base+"/" : "")+action,
-					    extras = {},
-					    output;
-					    extras["test"]="test"
+					    output,
+					    extras = {test:"hello"};
 					do {
-						if(!Object.isglobal(output)) {
+						if(Object.isArray(output)) {
 							[path,output] = output;
 						}
 						try {
-							print(JSON.stringify(extras))
 							let template = require("app/views/"+path+".ejs").template;
 							output = template.call(Object.extend(args,extras),Object.extend(
 								require("template.js"),
@@ -64,11 +62,10 @@ exports.init = function(base) {
 								}
 							),exports.fromFiles("app/controllers"));
 						} catch(e) {
-							print(e.name)
-							output = <div class="error">{e}</div>;
+							//print(e.name)
+							//output = <div class="error">{e}</div>;
 						}
 					} while(Object.isArray(output));
-
 					buffer.append(output.toXMLString());
 				}
 			};
