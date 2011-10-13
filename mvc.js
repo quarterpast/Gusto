@@ -43,26 +43,33 @@ exports.init = function(base) {
 				"render": function(action,args,other) {
 					[action,args] = Object.isString(args) ? [args,other] : [action,args];
 					args = Object.isUndefined(args) ? {} : args;
-					function inner(path,output,extraArgs) {
-						extraArgs = Object.isUndefined(extraArgs) ? {} : extraArgs;
+
+					var path = (base ? base+"/" : "")+action,
+					    extras = {},
+					    output;
+					    extras["test"]="test"
+					do {
+						if(!Object.isglobal(output)) {
+							[path,output] = output;
+						}
 						try {
-							var template = require("app/views/"+path+".ejs").template,
-							    extras = {},
-							    output = template.call(Object.extend(args,extraArgs),Object.extend(require("template.js"),{
-								    layout:function() output,
-								    set: function(k,v){extras[k]=v;return ""},
-								    get: function(k) extras[k]
-							    }),exports.fromFiles("app/controllers"));
-							if(Object.isArray(output)) {
-								[extend,output] = output;
-								output = inner(extend,output,extras);
-							}
+							print(JSON.stringify(extras))
+							let template = require("app/views/"+path+".ejs").template;
+							output = template.call(Object.extend(args,extras),Object.extend(
+								require("template.js"),
+								{
+									layout:function() output,
+									set: function(k,v){extras[k]=v;return ""},
+									get: function(k) extras[k]
+								}
+							),exports.fromFiles("app/controllers"));
 						} catch(e) {
+							print(e.name)
 							output = <div class="error">{e}</div>;
 						}
-						return output;
-					}
-					buffer.append(inner((base ? base+"/" : "")+action,args).toXMLString());
+					} while(Object.isArray(output));
+
+					buffer.append(output.toXMLString());
 				}
 			};
 			for each(let [name,action] in Iterator(actions)) {
