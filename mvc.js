@@ -15,6 +15,7 @@ exports.fromFiles = function(folder,skip) {
 	}
 	return objects;
 };
+exports.isModel = function(m) exports.fromFiles("app/models").indexOf(m) !== -1;
 exports.init = function(base) {
 	if(typeof base != "undefined") {
 		var name = new File(base).getName(),
@@ -27,7 +28,6 @@ exports.init = function(base) {
 		yes: function() true,
 		no: function() false,
 		controllers: function(id) exports.fromFiles("app/controllers",id),
-		isModel: function(m) exports.fromFiles("app/models").indexOf(m) !== -1,
 		setBuffer: function(b) buffer = b,
 		getBuffer: function() buffer,
 		setBytes: function(b) bytes = b,
@@ -62,8 +62,7 @@ exports.init = function(base) {
 								}
 							),exports.fromFiles("app/controllers"));
 						} catch(e) {
-							//print(e.name)
-							//output = <div class="error">{e}</div>;
+							output = <div class="error">{e}</div>;
 						}
 					} while(Object.isArray(output));
 					buffer.append(output.toXMLString());
@@ -105,6 +104,8 @@ exports.init = function(base) {
 						} else {
 							throw new TypeError("u mad?")
 						}
+					} else if(exports.isModel(desc.type)) {
+						out[k] = desc.type.byId[params[k]];
 					} else {
 						out[k] = new desc.type(params[k]);
 					}
@@ -115,6 +116,7 @@ exports.init = function(base) {
 				return make(JSON.parse(readFile(file)));
 			}),
 			out = {
+				byId: function(id) list[id],
 				fetch: function(f) list.filter(f),
 				create: function(params) {
 					var out = Object.extend(make(params),{id: list.length});
