@@ -23,12 +23,14 @@ const JQOTE2_TMPL_UNDEF_ERROR = 'UndefinedTemplateError',
       FUNC = '[object Function]',
 
       qreg = /^[^<]*(<[\w\W]+>)[^>]*$/;
-
-exports.Tmpl = function(tmpl) {
+exports.UNDEF_ERROR='UndefinedTemplateError';
+exports.COMP_ERROR='TemplateCompilationError';
+exports.EXEC_ERROR='TemplateExecutionError';
+exports.compile = function(tmpl) {
 	var cache, tmpl, str = '', arr = [];
-	
+
 	if (cache = jqotecache[tmpl]) return cache;
-	
+
 	arr = tmpl.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\n\r\t]/g, '')
 	.split('{{').join('}}\x1b')
 	.split('}}');
@@ -51,12 +53,12 @@ exports.Tmpl = function(tmpl) {
 		('var out="";'+str+';return out;')
 			.split("out+='';").join('')
 				.split('var out="";out+=').join('var out=') +
-		'}catch(e){e.type="'+JQOTE2_TMPL_EXEC_ERROR+'";e.args=arguments;e.template=arguments.callee.toString();throw e;}';
+		'}catch(e){e.type="'+JQOTE2_TMPL_EXEC_ERROR+'";e.args=[].slice.call(arguments);e.template='+tmpl.toSource()+';throw e;}';
 
 	try {
 		var fn = new Function('$,_', str);
 	} catch (e) {
-		raise(e,{name: JQOTE2_TMPL_COMP_ERROR,template:str});
+		raise(e,{type: JQOTE2_TMPL_COMP_ERROR,template:tmpl});
 	}
 
 	return jqotecache[tmpl] = fn;
