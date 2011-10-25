@@ -47,26 +47,25 @@ exports.init = function(base) {
 
 					var path = (base ? base+"/" : "")+action,
 					    output,
-					    extras = {test:"hello"};
+					    recurse = false,
+					    extras = {};
 					do {
-						if(Object.isArray(output)) {
-							[path,output] = output;
-						}
 						try {
 							let str = readFile("app/views/"+path+".ejs"),
 							    template = Tmpl(str);
 							output = template.call(Object.extend(args,extras),Object.extend(
 								require("template.js"),
 								{
+									extend: function(daddy) {recurse = true;path = daddy;},
 									layout:function() output,
-									set: function(k,v){extras[k]=v;return ""},
+									set: function(k,v){extras[k]=v;},
 									get: function(k) extras[k]
 								}
 							),exports.fromFiles("app/controllers"));
 						} catch(e) {
 							output = <div class="error">{e}</div>;
 						}
-					} while(Object.isArray(output));
+					} while(recurse);
 					buffer.append(output.toXMLString());
 				}
 			};
