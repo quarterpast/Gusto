@@ -1,11 +1,10 @@
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
-const Tmpl = require("tmpl.js").Tmpl;
+const Tmpl = require("tmpl.js");
 XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
 XML.ignoreComments = false;
 var buffer,bytes;
-
 exports.fromFiles = function(folder,skip) {
 	var files = new File(folder).listFiles()
 	                .filter(function(f) f.getName().substr(-3) == ".js"),
@@ -47,33 +46,38 @@ exports.init = function(base) {
 					args = Object.isglobal(args) ? {} : args;
 
 					var path = (base ? base+"/" : "")+action,
+					    oldpath = '',
 					    output,
 					    recurse,
 					    extras = {};
 					do {
-						recurse = false;
+						oldpath = path;
 						try {
 							var str = readFile("app/views/"+path+".ejs"),
-							    template = Tmpl(str);
+							    template = Tmpl.compile(str);
 							output = template.call(Object.extend(args,extras),Object.extend(
 								require("template.js"),
 								{
-									extend: function(daddy) {
-										recurse = true;
-										path = daddy;
-									},
+									extend: function(daddy) {path = daddy},
 									layout:function() output,
 									set: function(k,v){extras[k]=v;},
 									get: function(k) extras[k]
 								}
 							),exports.fromFiles("app/controllers"));
 						} catch(e) {
-							output = <pre></pre>;
-							for(var p in e) {
-								output += <><b>{p}</b>: {e[p]}{"\n"}</>;
+							if(e.type == Tmpl.COMP_ERROR || e.type == Tmpl.EXEC_ERROR) {
+								output = <>
+									<header class="error">
+										<h1>{e.type}</h1><h2>{e.name}: {e.message}</h2>
+									</header>
+									<pre>{e.template}</pre>
+								</>;
+								path = "error";
+							} else {
+								throw e;
 							}
 						}
-					} while(recurse);
+					} while(path !== oldpath);
 					buffer.append(output.toXMLString ? output.toXMLString() : output.toString());
 				}
 			};
