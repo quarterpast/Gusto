@@ -29,9 +29,9 @@ exports.Tmpl = function(tmpl) {
 	
 	if (cache = jqotecache[tmpl]) return cache;
 	
-	arr = tmpl.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\r\n\t]/g, '')
-	.split('<[').join(']>\x1b')
-	.split(']>');
+	arr = tmpl.replace(/\s*<!\[CDATA\[\s*|\s*\]\]>\s*|[\n\r\t]/g, '')
+	.split('{{').join('}}\x1b')
+	.split('}}');
 
 	for(let m=0,l=arr.length; m < l; m++) {
 			if(arr[m].charAt(0) === '\x1b') {
@@ -56,7 +56,7 @@ exports.Tmpl = function(tmpl) {
 	try {
 		var fn = new Function('$,_', str);
 	} catch (e) {
-		raise(e,{type: JQOTE2_TMPL_COMP_ERROR});
+		raise(e,{name: JQOTE2_TMPL_COMP_ERROR,template:str});
 	}
 
 	return jqotecache[tmpl] = fn;
