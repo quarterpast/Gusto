@@ -1,5 +1,6 @@
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array);
+const Tmpl = require("tmpl.js").Tmpl;
 XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
 XML.ignoreComments = false;
