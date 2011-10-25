@@ -66,7 +66,7 @@ exports.compile = function(tmpl) {
 	return jqotecache[tmpl] = fn;
 };
 exports.handle = function(e) {
-	if(e.type == Tmpl.COMP_ERROR || e.type == Tmpl.EXEC_ERROR) {
+	if(e.type == JQOTE2_TMPL_COMP_ERROR || e.type == JQOTE2_TMPL_EXEC_ERROR) {
 		let last = -1,c,errorline = -1,lines = e.template.split("\n");
 		for each(let line in e.lines) {
 			last == line ? c++ : c=0;
@@ -84,7 +84,6 @@ exports.handle = function(e) {
 					fn = new Function('$,_',str);
 					fn.call(Object.extend(args,extras),$,exports.fromFiles("app/controllers"));
 				} catch(e2) {
-					print(line)
 					errorline = line+1;
 				}
 			})
@@ -93,16 +92,14 @@ exports.handle = function(e) {
 			line = (i == errorline-1 ? <b><pre>{line}</pre></b> : <pre>{line}</pre>);
 			return <tr><th>{i+1}</th><td>{line}</td></tr>;
 		});
-		output = <>
+		return <>
 			<header class="error">
-				<h1>{e.type}</h1><h2>{e.name}: {e.message.replace(/\.$/,'')} on line {errorline}</h2>
+				<h1>{e.type.replace(/([a-z])([A-Z])/,"$1 $2")}</h1><h2>{e.name}: {e.message.replace(/\.$/,'')} on line {errorline}</h2>
 			</header>
 			<table>
 			{lines.slice(errorline-10,errorline+9)._()}
 			</table>
 		</>;
-		path = "error";
-	} else {
-		throw e;
 	}
+	return false;
 }

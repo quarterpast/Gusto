@@ -49,8 +49,13 @@ exports.init = function(base) {
 					    oldpath = '',
 					    output,
 					    recurse,
-					    extras = {},
-					    $ = Object.extend(
+					    extras = {};
+					do {
+						oldpath = path;
+						try {
+							var str = readFile("app/views/"+path+".ejs"),
+							    template = Tmpl.compile(str);
+							output = template.call(Object.extend(args,extras),Object.extend(
 								require("template.js"),
 								{
 									extend: function(daddy) {path = daddy},
@@ -58,15 +63,13 @@ exports.init = function(base) {
 									set: function(k,v){extras[k]=v;},
 									get: function(k) extras[k]
 								}
-							);
-					do {
-						oldpath = path;
-						try {
-							var str = readFile("app/views/"+path+".ejs"),
-							    template = Tmpl.compile(str);
-							output = template.call(Object.extend(args,extras),$,exports.fromFiles("app/controllers"));
+							),exports.fromFiles("app/controllers"));
 						} catch(e) {
-							Tmpl.handle(e);
+							if(output = Tmpl.handle(e)) {
+								path = "error";
+							} else {
+								throw e;
+							}
 						}
 					} while(path !== oldpath);
 					buffer.append(output.toXMLString ? output.toXMLString() : output.toString());
