@@ -58,7 +58,8 @@ exports.init = function(base) {
 								{
 									layout:function() output,
 									set: function(k,v){extras[k]=v;return ""},
-									get: function(k) extras[k]
+									get: function(k) extras[k],
+									exists: function(k) k in extras,
 								}
 							),exports.fromFiles("app/controllers"));
 						} catch(e) {
