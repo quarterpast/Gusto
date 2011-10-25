@@ -54,7 +54,7 @@ exports.Tmpl = function(tmpl) {
 		'}catch(e){e.type="'+JQOTE2_TMPL_EXEC_ERROR+'";e.args=arguments;e.template=arguments.callee.toString();throw e;}';
 
 	try {
-		var fn = new Function('i, j, data, fn', str);
+		var fn = new Function('$,_', str);
 	} catch (e) {
 		raise(e,{type: JQOTE2_TMPL_COMP_ERROR});
 	}
