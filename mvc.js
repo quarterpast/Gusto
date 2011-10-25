@@ -53,7 +53,8 @@ exports.init = function(base) {
 							[path,output] = output;
 						}
 						try {
-							let template = require("app/views/"+path+".ejs").template;
+							let str = readFile("app/views/"+path+".ejs"),
+							    template = Tmpl(str);
 							output = template.call(Object.extend(args,extras),Object.extend(
 								require("template.js"),
 								{
