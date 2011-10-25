@@ -5,6 +5,7 @@ XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
 XML.ignoreComments = false;
 var buffer,bytes;
+
 exports.fromFiles = function(folder,skip) {
 	var files = new File(folder).listFiles()
 	                .filter(function(f) f.getName().substr(-3) == ".js"),
@@ -47,26 +48,33 @@ exports.init = function(base) {
 
 					var path = (base ? base+"/" : "")+action,
 					    output,
-					    recurse = false,
+					    recurse,
 					    extras = {};
 					do {
+						recurse = false;
 						try {
-							let str = readFile("app/views/"+path+".ejs"),
+							var str = readFile("app/views/"+path+".ejs"),
 							    template = Tmpl(str);
 							output = template.call(Object.extend(args,extras),Object.extend(
 								require("template.js"),
 								{
-									extend: function(daddy) {recurse = true;path = daddy;},
+									extend: function(daddy) {
+										recurse = true;
+										path = daddy;
+									},
 									layout:function() output,
 									set: function(k,v){extras[k]=v;},
 									get: function(k) extras[k]
 								}
 							),exports.fromFiles("app/controllers"));
 						} catch(e) {
-							output = <div class="error">{e}</div>;
+							output = <pre></pre>;
+							for(var p in e) {
+								output += <><b>{p}</b>: {e[p]}{"\n"}</>;
+							}
 						}
 					} while(recurse);
-					buffer.append(output.toXMLString());
+					buffer.append(output.toXMLString ? output.toXMLString() : output.toString());
 				}
 			};
 			for each(let [name,action] in Iterator(actions)) {
