@@ -1,4 +1,4 @@
-exports.extend = function(object,string,array) {
+exports.extend = function(object,string,array,bool) {
 	[
 		'String',
 		'Number',
@@ -15,6 +15,12 @@ exports.extend = function(object,string,array) {
 	Object.defineProperty(string.prototype,"__iterator__", {writable: true, value:function(){
 		yield this;
 		throw StopIteration;
+	}});
+	Object.defineProperty(bool.prototype,"and", {writable: true, value:function(a){
+		if(this === new Boolean(true)) {
+			return a;
+		}
+		return "";
 	}});
 	Object.defineProperty(string.prototype,"chars", {writable: true, value:function(){
 		for(let i=0,l=this.length; i<l; ++i) {
@@ -45,7 +51,24 @@ exports.extend = function(object,string,array) {
 		}
 		return out;
 	}});
+	object.values = function(s) {
+		var r = [];
+		for(let p in s) {
+			if(s.hasOwnProperty(p)) {
+				print(Object.keys(s[p]))
+				r.push(s[p]);
+			}
+		}
+		return r;
+	};
 	Object.defineProperty(array.prototype,"_", {value:function() this.reduce(function(a,n) a += n,<></>),writable:true});
+	Object.defineProperty(object.prototype,"indexOf", {value:function(v) {
+		print(v)
+		if(i = Object.values(this).indexOf(v) >= 0) {
+			return Object.keys(this)[i];
+		}
+		return -1;
+	} ,writable:true});
 	object.extend = function(d,s) {
 		for(let p in s) {
 			if(s.hasOwnProperty(p)) {
