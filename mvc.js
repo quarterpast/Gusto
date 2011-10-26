@@ -1,5 +1,5 @@
 importPackage(java.io);
-require("extend.js").extend(Object,String,Array);
+require("extend.js").extend(Object,String,Array,Boolean);
 const Tmpl = require("tmpl.js");
 XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
@@ -17,6 +17,8 @@ exports.fromFiles = function(folder,skip) {
 	return objects;
 };
 exports.isModel = function(m) exports.fromFiles("app/models").indexOf(m) !== -1;
+exports.isController = function(m) exports.fromFiles("app/controllers").indexOf(m) !== -1;
+exports.isAction = function(m) Object.isFunction(m) && "id" in m;
 exports.init = function(base) {
 	if(typeof base != "undefined") {
 		var name = new File(base).getName(),
@@ -61,7 +63,8 @@ exports.init = function(base) {
 									extend: function(daddy) {path = daddy},
 									layout:function() output,
 									set: function(k,v){extras[k]=v;},
-									get: function(k) extras[k]
+									get: function(k) extras[k],
+									exists: function(k) k in extras
 								}
 							),exports.fromFiles("app/controllers"));
 						} catch(e) {
@@ -72,7 +75,10 @@ exports.init = function(base) {
 							}
 						}
 					} while(path !== oldpath);
-					buffer.append(output.toXMLString ? output.toXMLString() : output.toString());
+					buffer.append(output.toXMLString ?
+						output.toXMLString():
+						output.toString()
+					);
 				}
 			};
 			for each(let [name,action] in Iterator(actions)) {

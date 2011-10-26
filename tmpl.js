@@ -82,7 +82,15 @@ exports.handle = function(e) {
 				}
 				try {
 					fn = new Function('$,_',str);
-					fn.call(Object.extend(args,extras),$,exports.fromFiles("app/controllers"));
+					fn.call(Object.extend(args,extras),Object.extend(
+								require("template.js"),
+								{
+									extend: function(daddy) {path = daddy},
+									layout:function() output,
+									set: function(k,v){extras[k]=v;},
+									get: function(k) extras[k]
+								}
+							),exports.fromFiles("app/controllers"));
 				} catch(e2) {
 					errorline = line+1;
 				}
