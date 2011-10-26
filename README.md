@@ -38,10 +38,11 @@ Note: I couldn't be bothered implementing some kind of SQL, so ```mvc.model#fetc
 How about a view‽
 
 ```javascript
-exports.template = function($) <article>
-	<h1>{this.title}</h1>
-	<time pubdate="pubdate" datetime={this.date.toJSON()}>{this.date.getDate()}/{this.date.getMonth()+1}/{this.date.getFullYear()}</time>
-	<p>{this.content}</p>
+{{$.extends("base")}}
+<article>
+	<h1>{{=this.title}}</h1>
+	<time pubdate="pubdate" datetime="{{=this.date.toJSON()}}">{{=this.date.format("dd/mm/yyyy")}}</time>
+	<p>{{=this.content}}</p>
 </article>
 ```
 The object passed to ```mvc.controller#render``` in the action becomes ```this``` in the template. The parameter ```$``` is an object containing utility methods for templates, such as reverse routing and template inclusion. It doesn't have to be called ```$```; you could call it ```utility``` or ```antidisestablishmentarianism``` if you really wanted.
