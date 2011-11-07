@@ -37,9 +37,10 @@ exports.extend = function(object,string,array,bool) {
 		for each(let part in parts) {
 			if(part == "") continue;
 			let comp = part.split("="),
-			    k = comp.shift().replace(/\[\]$/,""),
+			    k = decodeURIComponent(comp.shift()).replace(/\[\]$/,""),
 			    v = decodeURIComponent(comp.join("=").replace("+"," "));
-			if(v == '') v = true;
+			if(!comp.length) v = true;
+			if(v == parseFloat(v)) v = parseFloat(v);
 			if(k in out) {
 				if(object.isArray(out[k])) {
 					out[k].push(v);
@@ -56,7 +57,6 @@ exports.extend = function(object,string,array,bool) {
 		var r = [];
 		for(let p in s) {
 			if(s.hasOwnProperty(p)) {
-				print("Object#values",Object.keys(s[p]))
 				r.push(s[p]);
 			}
 		}
@@ -64,7 +64,6 @@ exports.extend = function(object,string,array,bool) {
 	};
 	Object.defineProperty(array.prototype,"_", {value:function() this.reduce(function(a,n) a += n,<></>),writable:true});
 	Object.defineProperty(object.prototype,"indexOf", {value:function(v) {
-		print("Object#indexOf",v)
 		if(i = Object.values(this).indexOf(v) >= 0) {
 			return Object.keys(this)[i];
 		}
