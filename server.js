@@ -19,7 +19,7 @@ exports.init = function(appDir,appMode) {
 			for each(let route in routes) {
 				let params = {}, keys = [], [uri,query] = new String(htex.getRequestURI()).split("?"), action;
 				if(Object.isglobal(query)) query = "";
-				if(route[0] === "*" || route[0] === htex.getRequestMethod()) {
+				if(route[0] === "*" || route[0] == htex.getRequestMethod()) {
 					let reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
 						keys.push(key)
 						return "([\\w0-9\.\-]+)";
@@ -36,7 +36,6 @@ exports.init = function(appDir,appMode) {
 							action = route[2];
 						else
 							action = route[2](params);
-						
 						if(htex.getRequestMethod() == "POST") {
 							let stream = htex.getRequestBody(),
 							    bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, stream.available());
