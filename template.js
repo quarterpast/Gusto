@@ -17,14 +17,14 @@ exports.node = function(name,attr,cont) {// in Rhino 1.7R3, you can't embed XML 
 	out[name][0] = cont;
 	return out[name];
 };
-exports.route = function(action) {
+exports.route = function(action,method) {
 	var mvc = require("mvc.js"),
 	    router = require("router.js"),
 	    routes = require(environment['user.dir']+"/conf/routes.js").routes.call(router,mvc.init().controllers()),
 	    id = Object.isFunction(action) ? action.id : action,
 	    $continue = "£$%continue, motherfucker";
-
 	for each(let route in routes) {
+		if(!Object.isglobal(method) && route[0] != "*" && method != route[0]) continue;
 		if(router.staticFile === route[2]) {
 			if(route[3] !== id) continue;
 			if(!(new File(id)).exists()) continue;
