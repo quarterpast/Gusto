@@ -30,18 +30,26 @@ exports.init = function(appDir,appMode) {
 								params[keys[k]] = v;
 							})
 						});
+
 						if([router.staticFile,router.staticDir].contains(route[2]))
 							action = route[2](route[3]);
 						else if(meta.isAction(route[2]))
 							action = route[2];
 						else
 							action = route[2](params);
+
 						if(htex.getRequestMethod() == "POST") {
 							let stream = htex.getRequestBody(),
-							    bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, stream.available());
-							stream.read(bytes)
+							    buf = new java.lang.StringBuilder(),
+							    read = -1,
+							    bytes;
+							do {
+								bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, stream.available());
+								read = stream.read(bytes);
+								buf.append(new java.lang.String(bytes));
+							} while(read != -1);
 							stream.close();
-							query += "&"+new java.lang.String(bytes);
+							query += "&"+buf.toString();
 						}
 						out = action(Object.extend(params,query.parseQuery()));
 						out = Object.isglobal(out) ? {} : out;
