@@ -28,6 +28,7 @@ exports.extend = function(object,string,array,bool) {
 		}
 		throw StopIteration;
 	}});
+	Object.defineProperty(array.prototype,"contains", {writable: true, value:function(v) (this.indexOf(v) !== -1)});
 	Object.defineProperty(string.prototype,"size",{configurable:true,get:function() 1,set:function(){}});
 	Object.defineProperty(array.prototype,"size",{configurable:true,get:function() this.length,set:function(){}});
 	Object.defineProperty(string.prototype,"parseQuery", {writable:true,value:function() {
@@ -55,7 +56,7 @@ exports.extend = function(object,string,array,bool) {
 		var r = [];
 		for(let p in s) {
 			if(s.hasOwnProperty(p)) {
-				print(Object.keys(s[p]))
+				print("Object#values",Object.keys(s[p]))
 				r.push(s[p]);
 			}
 		}
@@ -63,7 +64,7 @@ exports.extend = function(object,string,array,bool) {
 	};
 	Object.defineProperty(array.prototype,"_", {value:function() this.reduce(function(a,n) a += n,<></>),writable:true});
 	Object.defineProperty(object.prototype,"indexOf", {value:function(v) {
-		print(v)
+		print("Object#indexOf",v)
 		if(i = Object.values(this).indexOf(v) >= 0) {
 			return Object.keys(this)[i];
 		}
