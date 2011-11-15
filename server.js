@@ -63,7 +63,7 @@ exports.init = function(appDir,appMode) {
 				}
 			}
 		} catch(e) {
-			print(e);
+			print(e.fileName);
 			mvc.getBuffer().append(e);
 		} finally {
 			htex.getResponseHeaders().add("Content-type",type);

@@ -102,26 +102,31 @@ exports.init = function(base) {
 					buf.write(JSON.stringify(this));
 					buf.close();
 				}
+			}, type = function type(desc,value) {
+				var out;
+				if(desc.type === Array) {
+					out = [];
+					for each(let [i,v] in value) {
+						out[i] = type({type:desc.elements},v);
+					}
+				} else if(desc.type === "yo bitches I'm an enum") {
+					if(desc.elements.indexOf(value) !== -1) {
+						out = value;
+					} else if(value in desc.elements) {
+						out = desc.elements[value];
+					} else {
+						throw new TypeError("u mad?")
+					}
+				} else if(exports.isModel(desc.type)) {
+					out = desc.type.byId(value);
+				} else {
+					out = new desc.type(value);
+				}
+				return out;
 			}, make = function(params) {
 				var out = Object.extend({},methods);
 				for each(let [k,desc] in Iterator(spec)) {
-					if(desc.type === Array) {
-						for each(let [i,v] in params[k]) {
-							out[k][i] = new desc.elements(v);
-						}
-					} else if(desc.type === "yo bitches I'm an enum") {
-						if(desc.elements.indexOf(v) !== -1) {
-							out[k][i] = v;
-						} else if(v in desc.elements) {
-							out[k][i] = desc.elements[v];
-						} else {
-							throw new TypeError("u mad?")
-						}
-					} else if(exports.isModel(desc.type)) {
-						out[k] = desc.type.byId[params[k]];
-					} else {
-						out[k] = new desc.type(params[k]);
-					}
+					out[k] = type(desc,params[k]);
 				}
 				return out;
 			},
@@ -132,8 +137,8 @@ exports.init = function(base) {
 				byId: function(id) list[id],
 				fetch: function(f) list.filter(f),
 				create: function(params) {
-					var out = Object.extend(make(params),{id: list.length});
-					list.push(out)
+					var out = make(Object.extend(params,{id: list.length}));
+					list.push(out);
 					return out;
 				}
 			};
