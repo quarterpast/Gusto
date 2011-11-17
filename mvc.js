@@ -91,7 +91,6 @@ exports.init = function(base) {
 				actions[name].inner = action;
 				actions[name].id = base+"."+name;
 			}
-		
 			for each(let [name,action] in Iterator(actions)) {
 				actions[name].inner.context = Object.extend(action.inner.context,actions);
 			}
