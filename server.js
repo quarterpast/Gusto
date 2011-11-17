@@ -1,7 +1,7 @@
 importPackage(Packages.com.sun.net.httpserver);
 importPackage(java.io);
 
-require("extend.js").extend(Object,String,Array,Boolean);
+require("extend.js").extend(Object,String,Array,Boolean,JSON);
 exports.init = function(appDir,appMode) {
 	require.paths.push(appDir);
 	const config = JSON.parse(readFile(appDir+"/conf/app.conf")),

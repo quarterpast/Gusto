@@ -1,4 +1,4 @@
-exports.extend = function(object,string,array,bool) {
+exports.extend = function(object,string,array,bool,json) {
 	[
 		'String',
 		'Number',
@@ -12,6 +12,18 @@ exports.extend = function(object,string,array,bool) {
 			return object.prototype.toString.call(test) === '[object '+type+']';
 		};
 	});
+	var oldstringify = json.stringify;
+	json.stringify = function(a,b,c) {
+		return oldstringify(a,function(k,v){
+			if(v instanceof java.lang.Boolean) {
+				return !!v;
+			}
+			if(!object.isglobal(b)) {
+				return b(k,v);
+			}
+			return v;
+		},c);
+	};
 	Object.defineProperty(string.prototype,"__iterator__", {writable: true, value:function(){
 		yield this;
 		throw StopIteration;

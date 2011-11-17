@@ -1,4 +1,4 @@
-require("extend.js").extend(Object,String,Array,Boolean);
+require("extend.js").extend(Object,String,Array,Boolean,JSON);
 
 const appDir = environment['user.dir'],
       config = Object.extend(JSON.parse(readFile(appDir+"/conf/app.conf")),{appDir: appDir});

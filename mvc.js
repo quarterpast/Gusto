@@ -1,5 +1,5 @@
 importPackage(java.io);
-require("extend.js").extend(Object,String,Array,Boolean);
+require("extend.js").extend(Object,String,Array,Boolean,JSON);
 const Tmpl = require("tmpl.js");
 XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
@@ -86,10 +86,18 @@ exports.init = function(base) {
 				for each(let [k,v] in Iterator(spec)) {
 					context[k] = v.bind(context,name);
 				}
-				spec[name] = action.bind(context);
-				spec[name].id = base+"."+name;
+				action.context = context;
+				actions[name] = action.bind(action.context);
+				actions[name].inner = action;
+				actions[name].id = base+"."+name;
 			}
-			return spec;
+		
+			for each(let [name,action] in Iterator(actions)) {
+				actions[name].inner.context = Object.extend(action.inner.context,actions);
+			}
+
+
+			return Object.extend(spec,actions);
 		},
 		model: function(spec) {
 			Object.extend(spec,{id:{type:Number}});
@@ -139,6 +147,9 @@ exports.init = function(base) {
 				create: function(params) {
 					var out = make(Object.extend(params,{id: list.length}));
 					list.push(out);
+					for(let [m,func] in Iterator(methods)) {
+						Object.defineProperty(out,m,{value:func.bind(out)});
+					}
 					return out;
 				}
 			};
