@@ -40,6 +40,9 @@ exports.init = function(base) {
 				actions = actions(exports.fromFiles("app/models")[base.substr(0,base.length-1)]);
 			}
 			var spec = {
+				"redirect": function(path) {
+					return {status:302,headers:{"Location":path}}
+				},
 				"renderJSON": function(action,args) {
 					buffer.append(JSON.stringify(args));
 				},
