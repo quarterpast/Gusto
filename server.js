@@ -14,7 +14,7 @@ exports.init = function(appDir,appMode) {
 
 	server.createContext("/", function(htex) {
 		try {
-			var status = 404, type = "text/html",binary=false;
+			var status = 404, type = "text/html",binary=false,headers={};
 			mvc.setBuffer(new java.lang.StringBuilder());
 			for each(let route in routes) {
 				let params = {}, keys = [], [uri,query] = new String(htex.getRequestURI()).split("?"), action;
@@ -56,6 +56,7 @@ exports.init = function(appDir,appMode) {
 						type = "type" in out ? out.type : type;
 						status = "status" in out ? out.status : 200;
 						binary = "binary" in out ? out.binary : false;
+						headers = "headers" in out ? out.headers : {};
 
 						print(htex.getRequestMethod(),uri,status,type,binary?"binary":"text")
 						break;
@@ -67,6 +68,15 @@ exports.init = function(appDir,appMode) {
 			mvc.getBuffer().append(e);
 		} finally {
 			htex.getResponseHeaders().add("Content-type",type);
+			for each(let [k,v] in Iterator(headers)) {
+				if(Object.isArray(v)) {
+					for each(let a in v) {
+						htex.getResponseHeaders().add(k,a);
+					}
+				} else {
+					htex.getResponseHeaders().set(k,v);
+				}
+			}
 			if(binary) {
 				htex.sendResponseHeaders(status,mvc.getBytes().length);
 				htex.getResponseBody().write(mvc.getBytes());
