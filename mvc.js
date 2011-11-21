@@ -132,10 +132,7 @@ exports.init = function(base) {
 				}
 				return out;
 			}, make = function(params) {
-				var out = {};
-				for(let [m,func] in Iterator(methods)) {
-					out[m] = func.bind(out);
-				}
+				var out = Object.extend({},methods);
 				for each(let [k,desc] in Iterator(spec)) {
 					out[k] = type(desc,params[k]);
 				}
@@ -150,6 +147,9 @@ exports.init = function(base) {
 				create: function(params) {
 					var out = make(Object.extend(params,{id: list.length}));
 					list.push(out);
+					for(let [m,func] in Iterator(methods)) {
+						Object.defineProperty(out,m,{value:func.bind(out)});
+					}
 					return out;
 				}
 			};
