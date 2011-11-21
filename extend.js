@@ -34,6 +34,11 @@ exports.extend = function(object,string,array,bool,json) {
 		}
 		return "";
 	}});
+	Object.defineProperty(string.prototype,"times", {writable: true, value:function(n){
+		var o = "";
+		while(n-- > 0) o += this;
+		return o;
+	}});
 	Object.defineProperty(string.prototype,"chars", {writable: true, value:function(){
 		for(let i=0,l=this.length; i<l; ++i) {
 			yield this.charAt(i);
