@@ -1,7 +1,6 @@
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array,Boolean,JSON);
-const Tmpl = require("tmpl.js"),
-templatethings = require("template.js");
+const Tmpl = require("tmpl.js");
 XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
 XML.ignoreComments = false;
@@ -61,13 +60,16 @@ exports.init = function(base) {
 						try {
 							var str = readFile("app/views/"+path+".ejs"),
 							    template = Tmpl.compile(str);
-							output = template.call(Object.extend(args,extras),Object.extend(templateactions,{
-								extend: function(daddy) {path = daddy},
-								layout:function() output,
-								set: function(k,v){extras[k]=v;},
-								get: function(k) extras[k],
-								exists: function(k) k in extras
-							}),exports.fromFiles("app/controllers"));
+							output = template.call(Object.extend(args,extras),Object.extend(
+								require("template.js"),
+								{
+									extend: function(daddy) {path = daddy},
+									layout:function() output,
+									set: function(k,v){extras[k]=v;},
+									get: function(k) extras[k],
+									exists: function(k) k in extras
+								}
+							),exports.fromFiles("app/controllers"));
 						} catch(e) {
 							if(output = Tmpl.handle(e)) {
 								path = "error";
