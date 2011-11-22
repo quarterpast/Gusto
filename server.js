@@ -7,7 +7,7 @@ exports.init = function(router) {
 	const config = JSON.parse(readFile(this.appDir+"/conf/app.conf")),
 	      routes = require(appDir+"/conf/routes.js").routes.call(router,mvc.controllers()),
 	      addr = new java.net.InetSocketAddress(this[this.appMode].address || "localhost", this[this.appMode].port || 8000),
-	      server = HttpServer.create(addr, 10);
+	      server = HttpServer.create(addr, "backlog" in this[this.appMode] ? this[this.appMode].backlog : 10);
 
 	server.createContext("/", router);
 	server.start();
