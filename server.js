@@ -3,11 +3,12 @@ importPackage(java.io);
 
 require("extend.js").extend(Object,String,Array,Boolean,JSON);
 exports.init = function(staticroutes) {
-	require.paths.push(this.appDir);
-	const config = JSON.parse(readFile(this.appDir+"/conf/app.conf")),
-	      routes = require(appDir+"/conf/routes.js").routes.call(staticroutes,mvc.controllers()),
-	      addr = new java.net.InetSocketAddress(this[this.appMode].address || "localhost", this[this.appMode].port || 8000),
-	      server = HttpServer.create(addr, this[this.appMode].backlog || 10);
+	if("appDir" in this and "appMode" in this) var config = this;
+	else throw "piss off";
+	require.paths.push(config.appDir);
+	const routes = require(appDir+"/conf/routes.js").routes.call(staticroutes,mvc.controllers()),
+	      addr = new java.net.InetSocketAddress(config[config.appMode].address || "localhost", config[config.appMode].port || 8000),
+	      server = HttpServer.create(addr, config[config.appMode].backlog || 10);
 
 	server.createContext("/", router);
 	server.start();
