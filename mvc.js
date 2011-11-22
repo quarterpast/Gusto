@@ -1,6 +1,6 @@
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array,Boolean,JSON);
-exports.init = function(template) {
+exports.init = function(tmpl,template) {
 	var buffer,bytes;
 	if(Object.isString(this)) {
 		var name = new File(this).getName(),
@@ -53,7 +53,7 @@ exports.init = function(template) {
 						oldpath = path;
 						try {
 							var str = readFile("app/views/"+path+".ejs"),
-							    template = Tmpl.compile(str);
+							    template = tmpl.compile(str);
 							output = template.call(Object.extend(args,extras),Object.extend(template, {
 									extend: function(daddy) {path = daddy},
 									layout:function() output,
@@ -63,7 +63,7 @@ exports.init = function(template) {
 								}
 							),this.fromFiles("app/controllers"));
 						} catch(e) {
-							if(output = Tmpl.handle(e)) {
+							if(output = tmpl.handle(e)) {
 								path = "error";
 							} else {
 								throw e;

@@ -1,13 +1,9 @@
 require("extend.js").extend(Object,String,Array,Boolean,JSON);
 
-const appDir = environment['user.dir'],
-      config = Object.extend(JSON.parse(readFile(appDir+"/conf/app.conf")),{appDir: appDir});
-exports.config= config;
-switch(arguments[0]) {
-case "run":
-	appMode = "testing";
-	require("server.js").init(appDir,appMode);
-	break;
-default:
-	print("Struct help coming soon");
-}
+const actions = {
+	
+},
+      appMode = arguments[0] in actions ? actions[arguments[0]]() : actions.help(),
+      appDir = environment['user.dir'],
+      base = JSON.parse(readFile(appDir+"/conf/app.conf")),
+      config = Object.extend(base,{appDir: appDir, appMode:appMode});
