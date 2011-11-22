@@ -53,7 +53,6 @@ exports.init = function(base) {
 					var path = (base ? base+"/" : "")+action,
 					    oldpath = '',
 					    output,
-					    recurse,
 					    extras = {};
 					do {
 						oldpath = path;
