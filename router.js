@@ -1,4 +1,4 @@
-exports.init = function(mvc,static) {
+exports.init = function(mvc,staticroute) {
 	return function(htex) {
 		try {
 			var status = 404, type = "text/html",binary=false;
