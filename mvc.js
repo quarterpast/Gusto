@@ -1,5 +1,6 @@
 importPackage(java.io);
-require("extend.js").extend(Object,String,Array);
+require("extend.js").extend(Object,String,Array,Boolean,JSON);
+const Tmpl = require("tmpl.js");
 XML.ignoreWhitespace = false;
 XML.prettyPrinting = false;
 XML.ignoreComments = false;
@@ -16,6 +17,8 @@ exports.fromFiles = function(folder,skip) {
 	return objects;
 };
 exports.isModel = function(m) exports.fromFiles("app/models").indexOf(m) !== -1;
+exports.isController = function(m) exports.fromFiles("app/controllers").indexOf(m) !== -1;
+exports.isAction = function(m) Object.isFunction(m) && "id" in m;
 exports.init = function(base) {
 	if(typeof base != "undefined") {
 		var name = new File(base).getName(),
@@ -37,6 +40,9 @@ exports.init = function(base) {
 				actions = actions(exports.fromFiles("app/models")[base.substr(0,base.length-1)]);
 			}
 			var spec = {
+				"redirect": function(path) {
+					return {status:302,headers:{"Location":path}}
+				},
 				"renderJSON": function(action,args) {
 					buffer.append(JSON.stringify(args));
 				},
@@ -45,28 +51,36 @@ exports.init = function(base) {
 					args = Object.isglobal(args) ? {} : args;
 
 					var path = (base ? base+"/" : "")+action,
+					    oldpath = '',
 					    output,
-					    extras = {test:"hello"};
+					    extras = {};
 					do {
-						if(Object.isArray(output)) {
-							[path,output] = output;
-						}
+						oldpath = path;
 						try {
-							let template = require("app/views/"+path+".ejs").template;
+							var str = readFile("app/views/"+path+".ejs"),
+							    template = Tmpl.compile(str);
 							output = template.call(Object.extend(args,extras),Object.extend(
 								require("template.js"),
 								{
+									extend: function(daddy) {path = daddy},
 									layout:function() output,
-									set: function(k,v){extras[k]=v;return ""},
+									set: function(k,v){extras[k]=v;},
 									get: function(k) extras[k],
-									exists: function(k) k in extras,
+									exists: function(k) k in extras
 								}
 							),exports.fromFiles("app/controllers"));
 						} catch(e) {
-							output = <div class="error">{e}</div>;
+							if(output = Tmpl.handle(e)) {
+								path = "error";
+							} else {
+								throw e;
+							}
 						}
-					} while(Object.isArray(output));
-					buffer.append(output.toXMLString());
+					} while(path !== oldpath);
+					buffer.append(output.toXMLString ?
+						output.toXMLString():
+						output.toString()
+					);
 				}
 			};
 			for each(let [name,action] in Iterator(actions)) {
@@ -74,10 +88,17 @@ exports.init = function(base) {
 				for each(let [k,v] in Iterator(spec)) {
 					context[k] = v.bind(context,name);
 				}
-				spec[name] = action.bind(context);
-				spec[name].id = base+"."+name;
+				action.context = context;
+				actions[name] = action.bind(action.context);
+				actions[name].inner = action;
+				actions[name].id = base+"."+name;
 			}
-			return spec;
+			for each(let [name,action] in Iterator(actions)) {
+				actions[name].inner.context = Object.extend(action.inner.context,actions);
+			}
+
+
+			return Object.extend(spec,actions);
 		},
 		model: function(spec) {
 			Object.extend(spec,{id:{type:Number}});
@@ -90,26 +111,31 @@ exports.init = function(base) {
 					buf.write(JSON.stringify(this));
 					buf.close();
 				}
+			}, type = function type(desc,value) {
+				var out;
+				if(desc.type === Array) {
+					out = [];
+					for each(let [i,v] in value) {
+						out[i] = type({type:desc.elements},v);
+					}
+				} else if(desc.type === "yo bitches I'm an enum") {
+					if(desc.elements.indexOf(value) !== -1) {
+						out = value;
+					} else if(value in desc.elements) {
+						out = desc.elements[value];
+					} else {
+						throw new TypeError("u mad?")
+					}
+				} else if(exports.isModel(desc.type)) {
+					out = desc.type.byId(value);
+				} else {
+					out = new desc.type(value);
+				}
+				return out;
 			}, make = function(params) {
 				var out = Object.extend({},methods);
 				for each(let [k,desc] in Iterator(spec)) {
-					if(desc.type === Array) {
-						for each(let [i,v] in params[k]) {
-							out[k][i] = new desc.elements(v);
-						}
-					} else if(desc.type === "yo bitches I'm an enum") {
-						if(desc.elements.indexOf(v) !== -1) {
-							out[k][i] = v;
-						} else if(v in desc.elements) {
-							out[k][i] = desc.elements[v];
-						} else {
-							throw new TypeError("u mad?")
-						}
-					} else if(exports.isModel(desc.type)) {
-						out[k] = desc.type.byId[params[k]];
-					} else {
-						out[k] = new desc.type(params[k]);
-					}
+					out[k] = type(desc,params[k]);
 				}
 				return out;
 			},
@@ -120,8 +146,11 @@ exports.init = function(base) {
 				byId: function(id) list[id],
 				fetch: function(f) list.filter(f),
 				create: function(params) {
-					var out = Object.extend(make(params),{id: list.length});
-					list.push(out)
+					var out = make(Object.extend(params,{id: list.length}));
+					list.push(out);
+					for(let [m,func] in Iterator(methods)) {
+						Object.defineProperty(out,m,{value:func.bind(out)});
+					}
 					return out;
 				}
 			};
