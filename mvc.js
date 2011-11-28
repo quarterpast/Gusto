@@ -1,7 +1,21 @@
 importPackage(java.io);
 require("extend.js").extend(Object,String,Array,Boolean,JSON);
+exports.buffer = (function() {
+	var buffer;
+	return {
+		get: function() buffer,
+		set: function(b) buffer = b
+	}
+}());
+exports.stream = (function() {
+	var stream;
+	return {
+		get: function() stream,
+		set: function(b) stream = b
+	}
+}());
+
 exports.init = function(tmpl,template) {
-	var buffer,bytes;
 	if(Object.isString(this)) {
 		var name = new File(this).getName(),
 		    base = name.substr(0,name.length()-3);
@@ -26,10 +40,6 @@ exports.init = function(tmpl,template) {
 		yes: function() true,
 		no: function() false,
 		controllers: function(id) this.fromFiles("app/controllers",id),
-		setBuffer: function(b) buffer = b,
-		getBuffer: function() buffer,
-		setBytes: function(b) bytes = b,
-		getBytes: function() bytes,
 		controller: function(actions) {
 			if(Object.isFunction(actions)) {
 				actions = actions(this.fromFiles("app/models")[base.substr(0,base.length-1)]);
@@ -39,7 +49,7 @@ exports.init = function(tmpl,template) {
 					return {status:302,headers:{"Location":path}}
 				},
 				"renderJSON": function(action,args) {
-					buffer.append(JSON.stringify(args));
+					exports.buffer.get().append(JSON.stringify(args));
 				},
 				"render": function(action,args,other) {
 					[action,args] = Object.isString(args) ? [args,other] : [action,args];
@@ -70,7 +80,7 @@ exports.init = function(tmpl,template) {
 							}
 						}
 					} while(path !== oldpath);
-					buffer.append(output.toXMLString ?
+					exports.buffer.get().append(output.toXMLString ?
 						output.toXMLString():
 						output.toString()
 					);
