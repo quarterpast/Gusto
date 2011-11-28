@@ -1,4 +1,4 @@
-exports.init = function(mvc) {
+exports = (function(mvc) {
 	function readBytes(file) {
 		if(!file instanceof File) {
 			throw new TypeError("are you high?");
@@ -23,7 +23,7 @@ exports.init = function(mvc) {
 		staticDir: function(dir) function(vars) function() {
 			var file = new File(dir+"/"+vars.file), bytes;
 			if(bytes = readBytes(file)) {
-				mvc.setBytes(bytes);
+				mvc.stream.set(bytes);
 				return {status:200,binary:true,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
 			}
 			return {status:404}
@@ -31,10 +31,10 @@ exports.init = function(mvc) {
 		staticFile: function(path) function() function() {
 			var file = new File(path);
 			if(bytes = readBytes(file)) {
-				mvc.setBytes(bytes);
+				mvc.stream.set(bytes);
 				return {status:200,binary:true,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
 			}
 			return {status:404}
 		}
 	}
-};
+}(require("mvc.js")));
