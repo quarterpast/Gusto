@@ -34,6 +34,17 @@ exports.extend = function(object,string,array,bool,json) {
 		}
 		return "";
 	}});
+	Object.defineProperty(string.prototype,"times", {writable: true, value:function(n){
+		var o = '';
+		while(n-- > 0) o += this;
+		return o;
+	}});
+	Object.defineProperty(string.prototype,"pad", {writable: true, value:function(n,w,l){
+		if(object.isglobal(w)) w = ' ';
+		if(object.isglobal(l)) l = true;
+		var p = w.times(n-this.length);
+		return l ? this+p : p+this;
+	}});
 	Object.defineProperty(string.prototype,"chars", {writable: true, value:function(){
 		for(let i=0,l=this.length; i<l; ++i) {
 			yield this.charAt(i);
@@ -74,7 +85,11 @@ exports.extend = function(object,string,array,bool,json) {
 		}
 		return r;
 	};
-	Object.defineProperty(array.prototype,"_", {value:function() this.reduce(function(a,n) a += n,<></>),writable:true});
+	Object.defineProperty(array.prototype,"_$", {value:function() this.reduce(function(a,n) a += n,<></>),writable:true});
+	Object.defineProperty(object.prototype,"_", {value:function(v) {
+		object.extend(this,v);
+		return this;
+	} ,writable:true});
 	Object.defineProperty(object.prototype,"indexOf", {value:function(v) {
 		if(i = Object.values(this).indexOf(v) >= 0) {
 			return Object.keys(this)[i];
