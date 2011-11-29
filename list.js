@@ -1,3 +1,4 @@
+importPackage(java.io);
 function fromFiles(folder,skip) {
 	var files = new File(folder).listFiles()
 	                .filter(function(f) f.getName().substr(-3) == ".js"),

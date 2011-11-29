@@ -1,3 +1,4 @@
+importPackage(java.io);
 const list = require("list.js");
 exports.create = function(spec) {
 	if(Object.isString(this)) {
