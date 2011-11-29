@@ -1,4 +1,3 @@
-require("extend.js").extend(Object,String,Array,Boolean,JSON);
 require("sugar.js");
 Object.sugar();
 const server = require("server.js");

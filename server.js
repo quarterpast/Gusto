@@ -1,7 +1,6 @@
 importPackage(Packages.com.sun.net.httpserver);
 importPackage(java.io);
 
-require("extend.js").extend(Object,String,Array,Boolean,JSON);
 const router = require("router.js"),
 staticroute = require("staticroute.js"),
 list = require("list.js");
