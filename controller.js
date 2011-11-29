@@ -1,5 +1,5 @@
 const list = require("list.js");
-exports.controller = function(actions) {
+exports.create = function(actions) {
 	if(Object.isString(this)) {
 		var name = new File(this).getName(),
 		    base = name.substr(0,name.length()-3);
