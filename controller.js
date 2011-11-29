@@ -25,7 +25,7 @@ exports.create = function(actions) {
 				try {
 					var str = readFile("app/views/"+path+".ejs"),
 					    template = tmpl.compile(str);
-					output = template.call(Object.extend(args,extras),Object.extend(template, {
+					output = template.call(args.merge(extras),template.merge({
 							extend: function(daddy) {path = daddy},
 							layout:function() output,
 							set: function(k,v){extras[k]=v;},
@@ -58,9 +58,9 @@ exports.create = function(actions) {
 		actions[name].id = base+"."+name;
 	}
 	for each(let [name,action] in Iterator(actions)) {
-		actions[name].inner.context = Object.extend(action.inner.context,actions);
+		actions[name].inner.context = action.inner.context.merge(actions);
 	}
 
 
-	return Object.extend(spec,actions);
+	return spec.merge(actions);
 }
