@@ -1,14 +1,13 @@
 require("extend.js").extend(Object,String,Array,Boolean,JSON);
 require("sugar.js");
 Object.sugar();
-const staticroute = require("staticroute.js"),
-server = require("server.js").init(router,staticroute);
+const server = require("server.js");
 var appDir = environment['user.dir'],
 base = JSON.parse(readFile(appDir+"/conf/app.conf")),
-config = Object.extend(base,{appDir: appDir}),
+config = base.merge({appDir: appDir}),
 actions = {
 	"run": function(args) {
-
+		server.init(config.merge({appMode:"testing"}))
 	}.merge({desc:"Run the app in testing mode"}),
 	"help": function(){
 		print("Struct framework\n");
