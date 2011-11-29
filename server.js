@@ -3,8 +3,7 @@ importPackage(java.io);
 
 const router = require("router.js").router,
 staticroute = require("staticroute.js"),
-list = require("mvc/list.js"),
-config = require("struct.js").config;
+list = require("mvc/list.js");
 
 exports.init = function(config) {
 	require.paths.push(config.appDir);
