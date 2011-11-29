@@ -9,13 +9,13 @@ config = Object.extend(base,{appDir: appDir}),
 actions = {
 	"run": function(args) {
 
-	}._({desc:"Run the app in testing mode"}),
+	}.merge({desc:"Run the app in testing mode"}),
 	"help": function(){
 		print("Struct framework\n");
 		for(let [k,v] in this) {
 			print(k.pad(8," ",false),v.desc);
 		}
-	}._({desc:"Show this help"})
+	}.merge({desc:"Show this help"})
 };
 if(arguments[0] in actions)
 	actions[Array.shift(arguments)](arguments);

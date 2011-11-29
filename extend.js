@@ -47,10 +47,6 @@ exports.extend = function(object,string,array,bool,json) {
 		return r;
 	};
 	Object.defineProperty(array.prototype,"_$", {value:function() this.reduce(function(a,n) a += n,<></>),writable:true});
-	Object.defineProperty(object.prototype,"_", {value:function(v) {
-		object.extend(this,v);
-		return this;
-	} ,writable:true});
 	Object.defineProperty(object.prototype,"indexOf", {value:function(v) {
 		if(i = Object.values(this).indexOf(v) >= 0) {
 			return Object.keys(this)[i];
