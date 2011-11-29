@@ -1,17 +1,4 @@
 exports.extend = function(object,string,array,bool,json) {
-	[
-		'String',
-		'Number',
-		'Undefined',
-		'Function',
-		'Array',
-		'Object',
-		"global"
-	].forEach(function(type) {
-		object['is'+type] = function(test) {
-			return object.prototype.toString.call(test) === '[object '+type+']';
-		};
-	});
 	var oldstringify = json.stringify;
 	json.stringify = function(a,b,c) {
 		return oldstringify(a,function(k,v){
@@ -34,18 +21,8 @@ exports.extend = function(object,string,array,bool,json) {
 		}
 		return "";
 	}});
-	Object.defineProperty(array.prototype,"contains", {writable: true, value:function(v) (this.indexOf(v) !== -1)});
 	Object.defineProperty(string.prototype,"size",{configurable:true,get:function() 1,set:function(){}});
 	Object.defineProperty(array.prototype,"size",{configurable:true,get:function() this.length,set:function(){}});
-	object.values = function(s) {
-		var r = [];
-		for(let p in s) {
-			if(s.hasOwnProperty(p)) {
-				r.push(s[p]);
-			}
-		}
-		return r;
-	};
 	Object.defineProperty(array.prototype,"_$", {value:function() this.reduce(function(a,n) a += n,<></>),writable:true});
 	Object.defineProperty(object.prototype,"indexOf", {value:function(v) {
 		if(i = Object.values(this).indexOf(v) >= 0) {
