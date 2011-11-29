@@ -1,19 +1,20 @@
 importPackage(java.io);
-exports.init = function(mvc,router,routes) {
+const list = require("mvc/list.js"),
+staticroute = require("staticroute.js");
 	return {
 		route: function(action,method) {
 			var id = Object.isFunction(action) ? action.id : action,
 			    $continue = "£$%continue, motherfucker";
 			for each(let route in routes) {
 				if(!Object.isglobal(method) && route[0] != "*" && method != route[0]) continue;
-				if(router.staticFile === route[2]) {
+				if(staticroute.staticFile === route[2]) {
 					if(route[3] !== id) continue;
 					if(!(new File(id)).exists()) continue;
 					return route[1];
-				} else if(router.staticDir === route[2]) {
+				} else if(staticroute.staticDir === route[2]) {
 					if(new File(id).getParent() != route[3]) continue;
 					return route[1].replace('{file}',new File(id).getName())
-				} else if(mvc.isAction(route[2])) {
+				} else if(list.isAction(route[2])) {
 					if(route[2].id !== id) continue;
 					return route[1];
 					

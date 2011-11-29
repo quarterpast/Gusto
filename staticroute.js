@@ -1,4 +1,4 @@
-const mvc = require("mvc.js");
+const out = require("mvc/buffer.js");
 function readBytes(file) {
 	if(!file instanceof File) {
 		throw new TypeError("are you high?");
@@ -22,7 +22,7 @@ function readBytes(file) {
 exports.staticDir = function(dir) function(vars) function() {
 	var file = new File(dir+"/"+vars.file), bytes;
 	if(bytes = readBytes(file)) {
-		mvc.stream.set(bytes);
+		out.stream.set(bytes);
 		return {status:200,binary:true,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
 	}
 	return {status:404}
@@ -30,7 +30,7 @@ exports.staticDir = function(dir) function(vars) function() {
 exports.staticFile = function(path) function() function() {
 	var file = new File(path);
 	if(bytes = readBytes(file)) {
-		mvc.stream.set(bytes);
+		out.stream.set(bytes);
 		return {status:200,binary:true,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
 	}
 	return {status:404}
