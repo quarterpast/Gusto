@@ -1,5 +1,5 @@
 require("extend.js").extend(Object,String,Array,Boolean,JSON);
-
+load("sugar.js");
 const staticroute = require("staticroute.js"),
 server = require("server.js").init(router,staticroute);
 var appDir = environment['user.dir'],
