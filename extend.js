@@ -37,28 +37,6 @@ exports.extend = function(object,string,array,bool,json) {
 	Object.defineProperty(array.prototype,"contains", {writable: true, value:function(v) (this.indexOf(v) !== -1)});
 	Object.defineProperty(string.prototype,"size",{configurable:true,get:function() 1,set:function(){}});
 	Object.defineProperty(array.prototype,"size",{configurable:true,get:function() this.length,set:function(){}});
-	Object.defineProperty(string.prototype,"parseQuery", {writable:true,value:function() {
-		if(this == "") return {};
-		var parts = this.split("&"), out = {};
-		for each(let part in parts) {
-			if(part == "") continue;
-			let comp = part.split("="),
-			    k = decodeURIComponent(comp.shift()).replace(/\[\]$/,""),
-			    v = decodeURIComponent(comp.join("=").replace("+"," "));
-			if(!comp.length) v = true;
-			if(v == parseFloat(v)) v = parseFloat(v);
-			if(k in out) {
-				if(object.isArray(out[k])) {
-					out[k].push(v);
-				} else {
-					out[k] = [out[k],v];
-				}
-			} else {
-				out[k] = v;
-			}
-		}
-		return out;
-	}});
 	object.values = function(s) {
 		var r = [];
 		for(let p in s) {

@@ -38,7 +38,7 @@ exports.init = function(mvc,staticroute) {
 							stream.close();
 							query += "&"+buf.toString();
 						}
-						out = action(Object.extend(params,query.parseQuery()));
+						out = action(params.merge(Object.fromQueryString(query)));
 						out = Object.isglobal(out) ? {} : out;
 						type = "type" in out ? out.type : type;
 						status = "status" in out ? out.status : 200;
