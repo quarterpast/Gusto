@@ -9,7 +9,7 @@ actions = {
 	"help": function(){
 		print("Struct framework\n");
 		for(let [k,v] in this) {
-			print(k.pad(8," ",false),v.desc);
+			print(k.padRight(" ",8-k.length),v.desc);
 		}
 	}.merge({desc:"Show this help"})
 };
