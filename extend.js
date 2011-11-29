@@ -53,15 +53,7 @@ exports.extend = function(object,string,array,bool,json) {
 		}
 		return -1;
 	} ,writable:true});
-	object.extend = function(d,s) {
-		for(let p in s) {
-			if(s.hasOwnProperty(p)) {
-				d[p] = s[p];
-			}
-		}
-		return d;
-	};
 	object.unbox = function(obj) {
-		object.extend((function() this).call(null),obj,true);
+		(function() this).call(null).merge(obj,false);
 	};
 }
