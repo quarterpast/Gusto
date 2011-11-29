@@ -1,7 +1,7 @@
 importPackage(java.io);
 const list = require("mvc/list.js"),
 staticroute = require("staticroute.js"),
-config = require("struct.js").config,
+config = require("config.js").config,
 routes = require(config.appDir+"/conf/routes.js").routes.call(staticroute,list.controllers());
 exports.route = function(action,method) {
 	var id = Object.isFunction(action) ? action.id : action,
