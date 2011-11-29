@@ -1,5 +1,5 @@
 importPackage(java.io);
-const list = require("list.js");
+const list = require("mvc/list.js");
 exports.create = function(spec) {
 	if(Object.isString(this)) {
 		var name = new File(this).getName(),

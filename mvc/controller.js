@@ -1,4 +1,4 @@
-const list = require("list.js"),
+const list = require("mvc/list.js"),
 tmpl = require("tmpl.js");
 exports.create = function(actions) {
 	if(Object.isString(this)) {
