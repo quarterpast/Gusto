@@ -34,23 +34,6 @@ exports.extend = function(object,string,array,bool,json) {
 		}
 		return "";
 	}});
-	Object.defineProperty(string.prototype,"times", {writable: true, value:function(n){
-		var o = '';
-		while(n-- > 0) o += this;
-		return o;
-	}});
-	Object.defineProperty(string.prototype,"pad", {writable: true, value:function(n,w,l){
-		if(object.isglobal(w)) w = ' ';
-		if(object.isglobal(l)) l = true;
-		var p = w.times(n-this.length);
-		return l ? this+p : p+this;
-	}});
-	Object.defineProperty(string.prototype,"chars", {writable: true, value:function(){
-		for(let i=0,l=this.length; i<l; ++i) {
-			yield this.charAt(i);
-		}
-		throw StopIteration;
-	}});
 	Object.defineProperty(array.prototype,"contains", {writable: true, value:function(v) (this.indexOf(v) !== -1)});
 	Object.defineProperty(string.prototype,"size",{configurable:true,get:function() 1,set:function(){}});
 	Object.defineProperty(array.prototype,"size",{configurable:true,get:function() this.length,set:function(){}});
