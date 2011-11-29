@@ -1,9 +1,9 @@
-const mvc = require("mvc.js"),
+const buffer = require("mvc/buffer.js"),
 staticroute = require("staticroute.js");
 exports.router = function(htex) {
 	try {
 		var status = 404, type = "text/html",binary=false;
-		mvc.setBuffer(new java.lang.StringBuilder());
+		buffer.buffer.set(new java.lang.StringBuilder());
 		for each(let route in routes) {
 			let params = {}, keys = [], [uri,query] = new String(htex.getRequestURI()).split("?"), action;
 			if(Object.isglobal(query)) query = "";
@@ -52,15 +52,15 @@ exports.router = function(htex) {
 		}
 	} catch(e) {
 		print(e.fileName);
-		mvc.getBuffer().append(e);
+		buffer.buffer.get().append(e);
 	} finally {
 		htex.getResponseHeaders().add("Content-type",type);
 		if(binary) {
-			htex.sendResponseHeaders(status,mvc.getBytes().length);
-			htex.getResponseBody().write(mvc.getBytes());
+			htex.sendResponseHeaders(status,buffer.bytes.get().length);
+			htex.getResponseBody().write(buffer.bytes.get());
 		} else {
 			htex.sendResponseHeaders(status,0);
-			htex.getResponseBody().write(mvc.getBuffer().toString().getBytes());
+			htex.getResponseBody().write(buffer.buffer.get().toString().bytes.get());
 		}
 		htex.close();
 	}
