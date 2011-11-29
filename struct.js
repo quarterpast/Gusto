@@ -1,10 +1,12 @@
 require("sugar.js");
 Object.sugar();
-const config = require("config.js"),
+
+var config = require("config.js"),
 server = require("server.js"),
 actions = {
 	"run": function(args) {
-		server.init(config.merge({appMode:"testing"}))
+		config.merge({appMode:"testing"});
+		server.init(config);
 	}.merge({desc:"Run the app in testing mode"}),
 	"help": function(){
 		print("Struct framework\n");
