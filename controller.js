@@ -1,4 +1,5 @@
-const list = require("list.js");
+const list = require("list.js"),
+tmpl = require("tmpl.js");
 exports.create = function(actions) {
 	if(Object.isString(this)) {
 		var name = new File(this).getName(),
