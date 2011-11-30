@@ -1,6 +1,6 @@
 importPackage(Packages.com.sun.net.httpserver);
 importPackage(java.io);
-
+print(JSON.stringify(config));
 const router = require("router.js").router,
 staticroute = require("staticroute.js"),
 list = require("mvc/list.js");

@@ -1,11 +1,10 @@
 require("sugar.js");
 Object.sugar();
 
-const appDir = environment['user.dir'],
+var appDir = environment['user.dir'],
 base = JSON.parse(readFile(appDir+"/conf/app.conf"));
-
-var config = base.merge({appDir: appDir}),
-server = require("server.js"),
+config = base.merge({appDir: appDir});
+var server = require("server.js"),
 actions = {
 	"run": function(args) {
 		config.merge({appMode:"testing"});
