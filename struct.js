@@ -1,12 +1,15 @@
 require("sugar.js");
 Object.sugar();
 
-var config = require("config.js"),
+const appDir = environment['user.dir'],
+base = JSON.parse(readFile(appDir+"/conf/app.conf"));
+
+var config = base.merge({appDir: appDir}),
 server = require("server.js"),
 actions = {
 	"run": function(args) {
 		config.merge({appMode:"testing"});
-		server.init(config);
+		server.init();
 	}.merge({desc:"Run the app in testing mode"}),
 	"help": function(){
 		print("Struct framework\n");
