@@ -1,16 +1,30 @@
 const config = require.main.exports.config,
 http = require("http"),
-router = require("router.js").router,
+router = require("router.js"),
 staticroute = require("staticroute.js"),
 list = require("mvc/list.js");
 
 modules.exports = function() {
-	require.paths.push(config.appDir);
-	const routes = require(config.appDir+"/conf/routes.js").routes.call(staticroute,list.controllers()),
-	      addr = new java.net.InetSocketAddress(config[config.appMode].address || "localhost", config[config.appMode].port || 8000),
-	      server = HttpServer.create(addr, config[config.appMode].backlog || 10);
-
-	server.createContext("/", router);
-	server.start();
-	print("Listening on "+addr);
+	const routes = require(config.appDir+"/conf/routes.js").call(staticroute,list.controllers()),
+	      server = http.createServer(router),
+	      port = config[config.appDir].port || 8000;
+	if("address" in config[config.appDir]) {
+		server.listen(
+			port,
+			config[config.appDir].address,
+			console.log.bind(null,
+				"Listening on %s:%d",
+				config[config.appDir].address,
+				port
+			)
+		);
+	} else {
+		server.listen(
+			port,
+			console.log.bind(null,
+				"Listening on *:%d",
+				port
+			)
+		);
+	}
 }

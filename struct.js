@@ -1,7 +1,8 @@
 require("sugar.js");
 Object.sugar();
-const fs = require("fs");
-var appDir = process.cwd();
+const fs = require("fs"),
+      appDir = process.cwd();
+require.paths.push(config.appDir);
 fs.readFile(appDir+"/conf/app.conf","utf8", function(err,data) {
 	if(err) throw err;
 	var base = JSON.parse(data);
