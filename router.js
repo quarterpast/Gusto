@@ -1,14 +1,14 @@
 const buffer = require("mvc/buffer.js"),
 staticroute = require("staticroute.js");
-exports.router = function(htex) {
+module.exports = function(htex) {
 	try {
 		var status = 404, type = "text/html",binary=false;
 		buffer.buffer.set(new java.lang.StringBuilder());
-		for each(let route in routes) {
-			let params = {}, keys = [], [uri,query] = new String(htex.getRequestURI()).split("?"), action;
+		routes.each(function(route) {
+			var params = {}, keys = [], [uri,query] = new String(htex.getRequestURI()).split("?"), action;
 			if(Object.isglobal(query)) query = "";
 			if(route[0] === "*" || route[0] == htex.getRequestMethod()) {
-				let reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
+				var reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
 					keys.push(key)
 					return "([\\w0-9\.\-]+)";
 				})+"$");
