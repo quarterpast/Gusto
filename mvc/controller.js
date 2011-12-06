@@ -1,6 +1,6 @@
 const list = require("mvc/list.js"),
 tmpl = require("tmpl.js");
-exports.create = function(actions) {
+module.exports = function(actions) {
 	if(Object.isString(this)) {
 		var name = new File(this).getName(),
 		    base = name.substr(0,name.length()-3);

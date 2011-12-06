@@ -1,6 +1,6 @@
 importPackage(java.io);
 const list = require("mvc/list.js");
-exports.create = function(spec) {
+module.exports = function(spec) {
 	if(Object.isString(this)) {
 		var name = new File(this).getName(),
 		    base = name.substr(0,name.length()-3);
