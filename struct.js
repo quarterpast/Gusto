@@ -8,7 +8,7 @@ const fs = require("fs"),
       actions = {
       	"run": function() {
       		config.merge({appMode:"testing"});
-      		server();
+      		server.go();
       	}.merge({desc:"Run the app in testing mode"}),
       	"help": function(){
       		print("Struct framework\n");
