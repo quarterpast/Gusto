@@ -13,16 +13,16 @@ server = http.createServer(function(req,res) {
 	routes.filter(require("router.js").bind(null,req));
 	//@TODO: write out the content
 }),
-port = config[config.appDir].port || 8000;
+port = config[config.appMode].port || 8000;
 
 exports.go = function() {
-	if("address" in config[config.appDir]) {
+	if("address" in config[config.appMode]) {
 		server.listen(
 			port,
-			config[config.appDir].address,
+			config[config.appMode].address,
 			console.log.bind(null,
 				"Listening on %s:%d",
-				config[config.appDir].address,
+				config[config.appMode].address,
 				port
 			)
 		);
