@@ -1,10 +1,13 @@
+exports.write = function() {
+
+};
 const config = require.main.exports.config,
 http = require("http"),
 router = require("router.js"),
 staticroute = require("staticroute.js"),
 list = require("mvc/list.js");
 
-modules.exports = function() {
+exports.go = function() {
 	const routes = require(config.appDir+"/conf/routes.js").call(staticroute,list.controllers()),
 	      server = http.createServer(router),
 	      port = config[config.appDir].port || 8000;
@@ -27,4 +30,4 @@ modules.exports = function() {
 			)
 		);
 	}
-}
+};
