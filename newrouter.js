@@ -1,6 +1,7 @@
-module.exports = function(route) {
+const url = require("url");
+module.exports = function(req,route) {
 	var params = {}, keys = [], uri = url.parse(req.url,true), action;
-	if(route[0] === "*" || route[0] == htex.getRequestMethod()) {
+	if(route[0] === "*" || route[0] == req.method) {
 		var reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
 			keys.push(key)
 			return "([\\w0-9\.\-]+)";
@@ -19,20 +20,8 @@ module.exports = function(route) {
 			else
 				action = route[2](params);
 
-			if(req.method == "POST") {
-				var 
-				req.on("data",function(chunk) {
-					
-				});
-			}
-			out = action(params.merge(Object.fromQueryString(query)));
-			out = Object.isglobal(out) ? {} : out;
-			type = "type" in out ? out.type : type;
-			status = "status" in out ? out.status : 200;
-			binary = "binary" in out ? out.binary : false;
-
-			print(htex.getRequestMethod(),uri,status,type,binary?"binary":"text")
-			break;
+			return true;
 		}
 	}
+	return false;
 }
