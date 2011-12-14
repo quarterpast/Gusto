@@ -8,10 +8,16 @@ staticroute = require("staticroute.js"),
 list = require("mvc/list.js"),
 routes = require(config.appDir+"/conf/routes.js").call(staticroute,list.controllers()),
 server = http.createServer(function(req,res) {
-	
-	//@TODO: parse headers, request body
+	var body = new Buffer(req.headers['content-length']);
+	if(req.method = "POST") {
+		req.on("data",function(chunk) {
+			body.write(chunk);
+		})
+	}
 	routes.filter(require("router.js").bind(null,req));
-	//@TODO: write out the content
+	req.on("end", function() {
+		//@TODO: write out the content
+	});
 }),
 port = config[config.appMode].port || 8000;
 
