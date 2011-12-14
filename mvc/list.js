@@ -1,7 +1,7 @@
 const fs = require("fs"),
       path = require("path");
 
-require.cache
+
 function fromFiles(folder,skip) {
 	var objects = {},
 	files = fs.readDirSync(folder).filter(function(f) {
