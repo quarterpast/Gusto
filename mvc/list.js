@@ -1,7 +1,7 @@
 const fs = require("fs"),
       path = require("path");
 
-
+//@TODO: rewrite with hot.js
 function fromFiles(folder,skip) {
 	var objects = {},
 	files = fs.readDirSync(folder).filter(function(f) {
@@ -14,7 +14,7 @@ function fromFiles(folder,skip) {
 	});
 	return objects;
 }
-
+//@TODO: method for grabbing from controllers augmented with controllers themselves
 exports.controllers = function(id) {
 	return fromFiles("app/controllers",id);
 }

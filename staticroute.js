@@ -1,4 +1,5 @@
 const out = require("mvc/buffer.js");
+//@TODO: rewrite with node async fs, buffers
 function readBytes(file) {
 	if(!file instanceof File) {
 		throw new TypeError("are you high?");
@@ -18,7 +19,7 @@ function readBytes(file) {
 	} else return false;
 }
 
-
+//@TODO: rename
 exports.staticDir = function(dir) function(vars) function() {
 	var file = new File(dir+"/"+vars.file), bytes;
 	if(bytes = readBytes(file)) {
