@@ -6,6 +6,8 @@ http = require("http"),
 router = require("router.js"),
 staticroute = require("staticroute.js"),
 list = require("mvc/list.js"),
+url = require("url"),
+querystring = require("querystring"),
 routes = require(config.appDir+"/conf/routes.js").call(staticroute,list.controllers()),
 server = http.createServer(function(req,res) {
 	var body = new Buffer(req.headers['content-length']);
@@ -16,6 +18,10 @@ server = http.createServer(function(req,res) {
 	}
 	routes.filter(require("router.js").bind(null,req));
 	req.on("end", function() {
+		var post = {}, get = url.parse(req.url,true).query;
+		if(body.length) {
+			post = querystring.parse(body.toString());
+		}
 		//@TODO: write out the content
 	});
 }),
