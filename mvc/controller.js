@@ -13,7 +13,7 @@ module.exports = function(actions) {
 			exports.buffer.get().append(JSON.stringify(args));
 		},
 		"render": function(action,args,other) {
-			if(Object.isString(args) {
+			if(Object.isString(args)) {
 				action = args;
 				args = other;
 			}
