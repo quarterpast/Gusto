@@ -6,27 +6,17 @@ function encode(str) {
 	.split('"').join('&#34;').split("'").join('&#39;');
 }
 function raise(error, ext) {
-	for(var p in ext) {
-		if(ext.hasOwnProperty(p))
-			error[p] = ext[p];
-	}
-	throw error;
+	throw error.merge(ext);
 }
 
 var jqotecache = {};
 
-const JQOTE2_TMPL_UNDEF_ERROR = 'UndefinedTemplateError',
-      JQOTE2_TMPL_COMP_ERROR  = 'TemplateCompilationError',
-      JQOTE2_TMPL_EXEC_ERROR  = 'TemplateExecutionError',
+const qreg = /^[^<]*(<[\w\W]+>)[^>]*$/;
 
-      ARR  = '[object Array]',
-      STR  = '[object String]',
-      FUNC = '[object Function]',
-
-      qreg = /^[^<]*(<[\w\W]+>)[^>]*$/;
 exports.UNDEF_ERROR='UndefinedTemplateError';
 exports.COMP_ERROR='TemplateCompilationError';
 exports.EXEC_ERROR='TemplateExecutionError';
+
 exports.compile = function(tmpl,file) {
 	var cache, tmpl, str = '', arr = [], lines=0, pos = [];
 
@@ -56,12 +46,12 @@ exports.compile = function(tmpl,file) {
 		('var out="";'+str+';return out;')
 			.split("out+='';").join('')
 				.split('var out="";out+=').join('var out=') +
-		'}catch(e){e.type="'+JQOTE2_TMPL_EXEC_ERROR+'";e.lines='+pos.toSource()+';e.args=[].slice.call(arguments);e.template='+tmpl.toSource()+';throw e;}';
+		'}catch(e){e.type="'+exports.EXEC_ERROR+'";e.lines='+pos.toSource()+';e.args=[].slice.call(arguments);e.template='+tmpl.toSource()+';throw e;}';
 
 	try {
 		var fn = vm.createScript(str,file);
 	} catch (e) {
-		raise(e,{type: JQOTE2_TMPL_COMP_ERROR,template:tmpl,lines:pos});
+		raise(e,{type: exports.COMP_ERROR,template:tmpl,lines:pos});
 	}
 
 	return jqotecache[tmpl] = fn;
