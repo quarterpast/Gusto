@@ -27,7 +27,8 @@ module.exports = function(actions) {
 			do {
 				oldpath = path;
 				try {
-					var str = readFile("app/views/"+path+".ejs"),
+					//@TODO: async file reading
+					var str = readFile(path.join("app/views/",path+".ejs")),
 					    template = tmpl.compile(str);
 					output = template.call(args.merge(extras),template.merge({
 							extend: function(daddy) {path = daddy},
