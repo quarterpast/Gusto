@@ -13,7 +13,10 @@ module.exports = function(actions) {
 			exports.buffer.get().append(JSON.stringify(args));
 		},
 		"render": function(action,args,other) {
-			[action,args] = Object.isString(args) ? [args,other] : [action,args];
+			if(Object.isString(args) {
+				action = args;
+				args = other;
+			}
 			args = Object.isglobal(args) ? {} : args;
 
 			var path = (base ? base+"/" : "")+action,
