@@ -1,7 +1,7 @@
 const fs = require("fs"),
 pathutil = require("path"),
 list = require("mvc/list.js"),
-renderer = require("mvc/renderer.js"),
+Renderer = require("mvc/renderer.js"),
 tmpl = require("tmpl.js");
 
 module.exports = function(actions) {
@@ -13,41 +13,26 @@ module.exports = function(actions) {
 		"redirect": function(path) {
 			return {status:302,headers:{"Location":path}}
 		},
-		"renderJSON": function(writer,action,args) {
-			if(!Object.isFunction(writer)) {
-				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(writer));
+		"renderJSON": function(action,args) {
+			if(!("write" in this)) {
+				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(this));
 			}
-			writer(JSON.stringify(args));
+			this.write(JSON.stringify(args));
 		},
-		"render": function(writer,action,args,other) {
-			if(!Object.isFunction(writer)) {
-				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(write));
+		"render": function(action,args,other) {
+			if(!("write" in this)) {
+				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(this));
 			}
 			if(Object.isString(args)) {
 				action = args;
 				args = other;
 			}
 			args = args || {};
-
-			var path = (base ? base+"/" : "")+action,
-			    oldpath = '',
-			    output,
-			    extras = {};
-			do {
-				oldpath = path;
-				//@TODO: async file reading
-				var str = readFile(),
-				    template = tmpl.compile(str);
-				output = template.call(args.merge(extras),template.merge({
-						extend: function(daddy) {path = daddy},
-						layout: output,
-						set: function(k,v){extras[k]=v;},
-						get: function(k) {return extras[k]},
-						exists: function(k) {return k in extras}
-					}
-				),list.controllers);
-			} while(path !== oldpath);
-			writer(output);
+			var path = base ? pathutil.join(base,action) : action,
+			    that = this;
+			new Renderer(path,args).on("render",function(output) {
+				that.write(output);
+			})
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
