@@ -17,7 +17,7 @@ module.exports = function(actions) {
 				action = args;
 				args = other;
 			}
-			args = Object.isglobal(args) ? {} : args;
+			args = args || {};
 
 			var path = (base ? base+"/" : "")+action,
 			    oldpath = '',
