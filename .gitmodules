@@ -1,0 +1,6 @@
+[submodule "node_modules/hot"]
+	path = node_modules/hot
+	url = git://github.com/quarterto/HotLoad.git
+[submodule "node_modules/tmpl"]
+	path = node_modules/tmpl
+	url = git://github.com/quarterto/jQote2.git
