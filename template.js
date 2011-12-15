@@ -2,11 +2,11 @@ importPackage(java.io);
 const list = require("mvc/list.js"),
 static = require("static.js"),
 config = require("config.js").config,
-routes = require(config.appDir+"/conf/routes.js").routes.call(static,list.controllers());
+routes = require(config.appDir+"/conf/routes.js");
 exports.route = function(action,method) {
 	var id = Object.isFunction(action) ? action.id : action,
 	    $continue = "£$%continue, motherfucker";
-	for each(let route in routes) {
+	routes.filter(function(route) {
 		if(!Object.isglobal(method) && route[0] != "*" && method != route[0]) continue;
 		if(static.file === route[2]) {
 			if(route[3] !== id) continue;
@@ -43,7 +43,7 @@ exports.route = function(action,method) {
 			if(out === $continue || out === "undefined") continue;// no, those quotes *are* meant to be there
 			return out;
 		}
-	}
+	});
 	throw "routing error"
 };
 exports.include = function(template,args) {

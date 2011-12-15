@@ -5,7 +5,7 @@ static = require("static.js"),
 list = require("mvc/list.js"),
 url = require("url"),
 querystring = require("querystring"),
-routes = require(config.appDir+"/conf/routes.js").call(static,list.controllers()),
+routes = require(config.appDir+"/conf/routes.js"),
 server = http.createServer(function(req,res) {
 	var body = new Buffer(req.headers['content-length']), off = 0;
 	if(req.method = "POST") {
