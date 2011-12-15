@@ -1,6 +1,6 @@
 const fs = require("fs"),
       path = require("path"),
-      hot = require("hot.js");
+      hot = require("hot");
 
 function fromFiles(thing) {
 	fs.readdir(path.join("app",thing),function(err,files) {
