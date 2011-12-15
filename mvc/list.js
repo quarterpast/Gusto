@@ -1,32 +1,26 @@
 const fs = require("fs"),
-      path = require("path");
+      path = require("path"),
+      hot = require("hot.js");
 
-//@TODO: rewrite with hot.js
-function fromFiles(folder,skip) {
-	var objects = {},
-	files = fs.readDirSync(folder).filter(function(f) {
-		return f.endsWith(".js");
+function fromFiles(thing) {
+	fs.readDir(path.join("app",thing),function(err,files) {
+		if(err) throw err;
+		files.each(function(file) {
+			function save(module) {
+				exports[thing][base] = module;
+			}
+			if(path.extName(file) == '.js') {
+				var base = path.baseName(file,".js"),
+				new hot.load(path,save).on("reload",save);
+			}
+		});
 	});
-	files.each(function(file) {
-		if(file === skip) continue;
-		var basename = file.remove(/\.js$/);
-		objects[basename] = require(path.join(folder,file));
-	});
-	return objects;
 }
-//@TODO: method for grabbing from controllers augmented with controllers themselves
-exports.controllers = function(id) {
-	return fromFiles("app/controllers",id);
-}
-exports.models = function(id) {
-	return fromFiles("app/models",id);
-}
-exports.isModel = function(m) {
-	return fromFiles("app/models").indexOf(m) !== -1;
-}
-exports.isController = function(m) {
-	return this.fromFiles("app/controllers").indexOf(m) !== -1;
-}
-exports.isAction = function(m) {
-	return Object.isFunction(m) && "id" in m;
-}
+
+exports.models = {};
+exports.controllers = {};
+
+fromFiles("models");
+fromFiles("controllers");
+
+//@TODO:  checkers
