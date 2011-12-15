@@ -13,13 +13,13 @@ server = http.createServer(function(req,res) {
 			off = body.write(chunk,off);
 		})
 	}
-	routes.filter(require("router.js").bind(null,req));
+	var match = routes.filter(require("router.js").bind(null,req));
 	req.on("end", function() {
 		var post = {}, get = url.parse(req.url,true).query;
 		if(off) {
 			post = querystring.parse(body.toString());
 		}
-		//@TODO: write out the content
+		console.log(match)
 	});
 }),
 port = config[config.appMode].port || 8000;

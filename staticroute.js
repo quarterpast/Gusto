@@ -1,38 +1,19 @@
-const out = require("mvc/buffer.js");
-//@TODO: rewrite with node async fs, buffers
-function readBytes(file) {
-	if(!file instanceof File) {
-		throw new TypeError("are you high?");
-	}
-	if(file.exists()) {
-		let stream = new FileInputStream(file),
-		    length = file.length(),
-		    bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, length),
-		    offset = 0,
-		    numRead = 0;
-		while (offset < bytes.length
-			&& (numRead=stream.read(bytes, offset, bytes.length-offset)) >= 0) {
-			offset += numRead;
-		}
-		stream.close();
-		return bytes;
-	} else return false;
-}
+const util = require("util"),
+fs = require("fs"),
+pathutil = require("path");
 
-//@TODO: rename
-exports.staticDir = function(dir) function(vars) function() {
-	var file = new File(dir+"/"+vars.file), bytes;
-	if(bytes = readBytes(file)) {
-		out.stream.set(bytes);
-		return {status:200,binary:true,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
+exports.file = function(path) {
+	try {
+		var read = fs.createReadStream(path);
+		util.pump(read,this,function(error) {
+			if(error) throw error;
+		});
+
+	} catch(e) {
+		return {status:404};
 	}
-	return {status:404}
 };
-exports.staticFile = function(path) function() function() {
-	var file = new File(path);
-	if(bytes = readBytes(file)) {
-		out.stream.set(bytes);
-		return {status:200,binary:true,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
-	}
-	return {status:404}
+
+exports.dir = function(dir,vars) {
+	return exports.file(pathutil.join(dir,vars.file))
 };
