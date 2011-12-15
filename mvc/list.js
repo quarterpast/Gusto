@@ -11,7 +11,7 @@ function fromFiles(thing) {
 			}
 			if(path.extname(file) == '.js') {
 				var base = path.basename(file,".js");
-				new hot.load(path,save).on("reload",save);
+				new hot.load(file,save).on("reload",save);
 			}
 		});
 	});
