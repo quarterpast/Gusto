@@ -15,13 +15,13 @@ module.exports = function(actions) {
 		},
 		"renderJSON": function(action,args) {
 			if(!("write" in this)) {
-				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(this));
+				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(this)));
 			}
 			this.write(JSON.stringify(args));
 		},
 		"render": function(action,args,other) {
 			if(!("write" in this)) {
-				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(this));
+				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(this)));
 			}
 			if(Object.isString(args)) {
 				action = args;
