@@ -34,19 +34,18 @@ module.exports = function(actions) {
 			})
 		}
 	};
-	for each(let [name,action] in Iterator(actions)) {
-		let context = {};
-		for each(let [k,v] in Iterator(spec)) {
+	actions.each(function(name,action) {
+		var context = {};
+		spec.each(function(k,v) {
 			context[k] = v.bind(context,name);
-		}
+		});
 		action.context = context;
 		actions[name] = action.bind(action.context);
 		actions[name].inner = action;
 		actions[name].id = base+"."+name;
-	}
-	for each(let [name,action] in Iterator(actions)) {
+	}).each(function(name,action) {
 		actions[name].inner.context = action.inner.context.merge(actions);
-	}
+	});
 
 
 	return spec.merge(actions);

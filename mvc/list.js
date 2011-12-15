@@ -20,7 +20,7 @@ function fromFiles(thing) {
 exports.models = {};
 exports.controllers = {};
 
-fromFiles("models");
+//fromFiles("models");
 fromFiles("controllers");
 
 //@TODO:  checkers
