@@ -14,7 +14,7 @@ module.exports = function Renderer(path,args,layout) {
 				get: function(k) {return args[k]},
 				exists: function(k) {return k in args}
 			})
-		});
+		}));
 		if(old != path) {
 			new Renderer(path,args,output).on("render",function(output) {
 				that.emit("render",output);
