@@ -3,7 +3,7 @@ const fs = require("fs"),
       hot = require("hot.js");
 
 function fromFiles(thing) {
-	fs.readDir(path.join("app",thing),function(err,files) {
+	fs.readdir(path.join("app",thing),function(err,files) {
 		if(err) throw err;
 		files.each(function(file) {
 			function save(module) {
