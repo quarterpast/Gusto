@@ -2,27 +2,21 @@ const fs = require("fs"),
       path = require("path"),
       hot = require("hot");
 
-function fromFiles(thing) {
+module.exports = function fromFiles(thing) {
+	var that = new process.EventEmitter();
 	fs.readdir(path.join("app",thing),function(err,files) {
+		var out = {}
 		if(err) throw err;
 		files.each(function(file) {
 			function save(module) {
-				exports[thing][base] = module;
+				out[base] = module;
 			}
 			if(path.extname(file) == '.js') {
 				var base = path.basename(file,".js");
 				new hot.load(path.join("app",thing,file),save).on("reload",save);
 			}
 		});
-		module.exports.emit("done",thing);
+		that.emit("done",out);
 	});
+	return that;
 }
-module.exports = new process.EventEmitter();
-
-module.exports.models = {};
-module.exports.controllers = {};
-
-//fromFiles("models");
-fromFiles("controllers");
-
-//@TODO:  checkers
