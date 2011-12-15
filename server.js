@@ -22,16 +22,16 @@ server = http.createServer(function(req,res) {
 		console.log(match)
 	});
 }),
-port = config[config.appMode].port || 8000;
+port = config[require.main.exports.mode].port || 8000;
 
 exports.go = function() {
-	if("address" in config[config.appMode]) {
+	if("address" in config[require.main.exports.mode]) {
 		server.listen(
 			port,
-			config[config.appMode].address,
+			config[require.main.exports.mode].address,
 			console.log.bind(null,
 				"Listening on %s:%d",
-				config[config.appMode].address,
+				config[require.main.exports.mode].address,
 				port
 			)
 		);
