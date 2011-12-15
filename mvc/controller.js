@@ -12,7 +12,8 @@ module.exports = function(actions) {
 		"renderJSON": function(action,args) {
 			exports.buffer.get().append(JSON.stringify(args));
 		},
-		"render": function(action,args,other) {
+		"render": function(write,action,args,other) {
+			if(!Object.isFunction(writer)) throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(write))
 			if(Object.isString(args)) {
 				action = args;
 				args = other;
@@ -44,10 +45,7 @@ module.exports = function(actions) {
 					}
 				}
 			} while(path !== oldpath);
-			exports.buffer.get().append(output.toXMLString ?
-				output.toXMLString():
-				output.toString()
-			);
+			write(output);
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
