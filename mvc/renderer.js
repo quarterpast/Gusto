@@ -1,4 +1,4 @@
-module.exports = function Renderer(path,data) {
+module.exports = function Renderer(path,args) {
 	var resolved = pathutil.join("app/views/",path+".ejs"),
 	that = this;
 	fs.readFile(resolved,function(err,data) {
@@ -8,9 +8,9 @@ module.exports = function Renderer(path,data) {
 			$: {
 				extend: function(daddy) {path = daddy},
 				layout: output,
-				set: function(k,v){extras[k]=v;},
-				get: function(k) {return extras[k]},
-				exists: function(k) {return k in extras}
+				set: function(k,v){args[k]=v;},
+				get: function(k) {return args[k]},
+				exists: function(k) {return k in args}
 			}
 		});
 
