@@ -1,4 +1,6 @@
-const list = require("mvc/list.js"),
+const fs = require("fs"),
+pathutil = require("path"),
+list = require("mvc/list.js"),
 tmpl = require("tmpl.js");
 module.exports = function(actions) {
 	if(Object.isString(this)) {
@@ -13,7 +15,19 @@ module.exports = function(actions) {
 			exports.buffer.get().append(JSON.stringify(args));
 		},
 		"render": function(write,action,args,other) {
-			if(!Object.isFunction(writer)) throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(write))
+			function Renderer(path,data) {
+				var resolved = pathutil.join("app/views/",path+".ejs"),
+				that = this;
+				fs.readFile(resolved,function(err,data) {
+					if(err) throw err;
+
+					that.emit("render",output)
+				});
+			}
+			renderer.prototype = new process.EventEmitter();
+			if(!Object.isFunction(writer)) {
+				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(write));
+			}
 			if(Object.isString(args)) {
 				action = args;
 				args = other;
@@ -26,25 +40,17 @@ module.exports = function(actions) {
 			    extras = {};
 			do {
 				oldpath = path;
-				try {
-					//@TODO: async file reading
-					var str = readFile(path.join("app/views/",path+".ejs")),
-					    template = tmpl.compile(str);
-					output = template.call(args.merge(extras),template.merge({
-							extend: function(daddy) {path = daddy},
-							layout:function() output,
-							set: function(k,v){extras[k]=v;},
-							get: function(k) extras[k],
-							exists: function(k) k in extras
-						}
-					),list.controllers);
-				} catch(e) {
-					if(output = tmpl.handle(e)) {
-						path = "error";
-					} else {
-						throw e;
+				//@TODO: async file reading
+				var str = readFile(),
+				    template = tmpl.compile(str);
+				output = template.call(args.merge(extras),template.merge({
+						extend: function(daddy) {path = daddy},
+						layout: output,
+						set: function(k,v){extras[k]=v;},
+						get: function(k) {return extras[k]},
+						exists: function(k) {return k in extras}
 					}
-				}
+				),list.controllers);
 			} while(path !== oldpath);
 			write(output);
 		}

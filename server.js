@@ -1,6 +1,3 @@
-exports.write = function() {
-
-};
 const config = require.main.exports.config,
 http = require("http"),
 router = require("router.js"),
