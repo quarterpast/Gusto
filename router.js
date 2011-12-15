@@ -1,4 +1,5 @@
-const url = require("url");
+const url = require("url"),
+static = require("static.js");
 module.exports = function(req,route) {
 	var params = {}, keys = [], uri = url.parse(req.url,true), action;
 	if(route[0] === "*" || route[0] == req.method) {
@@ -13,8 +14,8 @@ module.exports = function(req,route) {
 				})
 			});
 
-			if([staticroute.staticFile,staticroute.staticDir].some(route[2]))
-				action = route[2](route[3]);
+			if([static.file,static.dir].some(route[2]))
+				action = route[2].bind(null,route[3]);
 			else if(meta.isAction(route[2]))
 				action = route[2];
 			else
