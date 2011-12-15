@@ -1,9 +1,10 @@
-importPackage(java.io);
-const list = require("mvc/list.js");
+const fs = require("fs"),
+pathutil = require("path"),
+list = require("mvc/list.js");
+
 module.exports = function(spec) {
 	if(Object.isString(this)) {
-		var name = new File(this).getName(),
-		    base = name.substr(0,name.length()-3);
+		var base = pathutil.basename(this,".js");
 	}
 	spec.merge({id:{type:Number}});
 	var dir = (function(f)[f.mkdirs(),f][1])(new File("data/"+base)),

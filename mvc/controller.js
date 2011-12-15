@@ -6,8 +6,7 @@ tmpl = require("tmpl.js");
 
 module.exports = function(actions) {
 	if(Object.isString(this)) {
-		var name = new File(this).getName(),
-		    base = name.substr(0,name.length()-3);
+		var base = pathutil.basename(this,".js");
 	}
 	var spec = {
 		"redirect": function(path) {
