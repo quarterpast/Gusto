@@ -10,16 +10,16 @@ url = require("url"),
 querystring = require("querystring"),
 routes = require(config.appDir+"/conf/routes.js").call(staticroute,list.controllers()),
 server = http.createServer(function(req,res) {
-	var body = new Buffer(req.headers['content-length']);
+	var body = new Buffer(req.headers['content-length']), off = 0;
 	if(req.method = "POST") {
 		req.on("data",function(chunk) {
-			body.write(chunk);
+			off = body.write(chunk,off);
 		})
 	}
 	routes.filter(require("router.js").bind(null,req));
 	req.on("end", function() {
 		var post = {}, get = url.parse(req.url,true).query;
-		if(body.length) {
+		if(off) {
 			post = querystring.parse(body.toString());
 		}
 		//@TODO: write out the content
