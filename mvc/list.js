@@ -10,7 +10,7 @@ function fromFiles(thing) {
 				exports[thing][base] = module;
 			}
 			if(path.extName(file) == '.js') {
-				var base = path.baseName(file,".js"),
+				var base = path.baseName(file,".js");
 				new hot.load(path,save).on("reload",save);
 			}
 		});
