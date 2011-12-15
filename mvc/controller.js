@@ -1,7 +1,9 @@
 const fs = require("fs"),
 pathutil = require("path"),
 list = require("mvc/list.js"),
+renderer = require("mvc/renderer.js"),
 tmpl = require("tmpl.js");
+
 module.exports = function(actions) {
 	if(Object.isString(this)) {
 		var name = new File(this).getName(),
@@ -11,20 +13,13 @@ module.exports = function(actions) {
 		"redirect": function(path) {
 			return {status:302,headers:{"Location":path}}
 		},
-		"renderJSON": function(action,args) {
-			exports.buffer.get().append(JSON.stringify(args));
-		},
-		"render": function(write,action,args,other) {
-			function Renderer(path,data) {
-				var resolved = pathutil.join("app/views/",path+".ejs"),
-				that = this;
-				fs.readFile(resolved,function(err,data) {
-					if(err) throw err;
-
-					that.emit("render",output)
-				});
+		"renderJSON": function(writer,action,args) {
+			if(!Object.isFunction(writer)) {
+				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(writer));
 			}
-			renderer.prototype = new process.EventEmitter();
+			writer(JSON.stringify(args));
+		},
+		"render": function(writer,action,args,other) {
 			if(!Object.isFunction(writer)) {
 				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(write));
 			}
@@ -52,7 +47,7 @@ module.exports = function(actions) {
 					}
 				),list.controllers);
 			} while(path !== oldpath);
-			write(output);
+			writer(output);
 		}
 	};
 	for each(let [name,action] in Iterator(actions)) {
