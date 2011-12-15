@@ -26,8 +26,8 @@ exports.compile = function(tmpl,file) {
 	.split('{{').join('}}\x1b')
 	.split('}}');
 
-	for(let m=0,l=arr.length; m < l; m++) {
-		let chunk = arr[m].split("\n").join("");
+	for(var m=0,l=arr.length; m < l; ++m) {
+		var chunk = arr[m].split("\n").join("");
 		if(chunk.charAt(0) === '\x1b') {
 			pos.push(lines);
 			if(chunk.charAt(1) === '=') {
