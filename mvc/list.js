@@ -2,8 +2,12 @@ const fs = require("fs"),
       path = require("path"),
       hot = require("hot");
 
-module.exports = function fromFiles(thing) {
-	var that = new process.EventEmitter();
+var cache = {}
+
+module.exports = function fromFiles(thing,cb) {
+	if(thing in cache) {
+		return cb("done",cache[thing]);
+	}
 	fs.readdir(path.join("app",thing),function(err,files) {
 		var out = {}
 		if(err) throw err;
@@ -16,7 +20,7 @@ module.exports = function fromFiles(thing) {
 				new hot.load(path.join("app",thing,file),save).on("reload",save);
 			}
 		});
-		that.emit("done",out);
+		cache[thing] = out;
+		cb(out);
 	});
-	return that;
 }
