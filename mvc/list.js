@@ -14,11 +14,13 @@ function fromFiles(thing) {
 				new hot.load(path.join("app",thing,file),save).on("reload",save);
 			}
 		});
+		module.exports.emit("done",thing);
 	});
 }
+module.exports = new process.EventEmitter();
 
-exports.models = {};
-exports.controllers = {};
+module.exports.models = {};
+module.exports.controllers = {};
 
 //fromFiles("models");
 fromFiles("controllers");
