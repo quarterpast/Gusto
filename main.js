@@ -7,7 +7,7 @@ config = exports.config = base.merge({appDir: appDir}),
 server = require("server.js"),
 actions = {
 	"run": function() {
-		config.merge({appMode:"testing"});
+		config.appMode = "testing";
 		server.go();
 	}.merge({desc:"Run the app in testing mode"}),
 	"help": function(){

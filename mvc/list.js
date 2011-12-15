@@ -9,7 +9,8 @@ module.exports = function fromFiles(thing,cb) {
 		return cb("done",cache[thing]);
 	}
 	fs.readdir(path.join("app",thing),function(err,files) {
-		var out = {}
+		var out = {};
+		cache[thing] = out;
 		if(err) throw err;
 		files.each(function(file) {
 			function save(module) {
@@ -20,7 +21,6 @@ module.exports = function fromFiles(thing,cb) {
 				new hot.load(path.join("app",thing,file),save).on("reload",save);
 			}
 		});
-		cache[thing] = out;
 		cb(out);
 	});
 }

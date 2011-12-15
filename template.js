@@ -1,7 +1,7 @@
 const list = require("mvc/list.js"),
 static = require("static.js"),
 config = require.main.exports.config,
-routes = require(config.appDir+"/conf/routes.js"),
+routes = require(config.appDir+"/conf/routes.js").routes,
 path = require("path.js");
 exports.route = function(action,method) {
 	var id = Object.isFunction(action) ? action.id : action,
