@@ -2,7 +2,7 @@ const fs = require("fs"),
       path = require("path"),
       hot = require("hot");
 
-var cache = {}
+var cache = {};
 
 module.exports = function fromFiles(thing,cb) {
 	if(thing in cache) {

@@ -10,7 +10,7 @@ module.exports = function(actions) {
 	}
 	var spec = {
 		"redirect": function(path) {
-			return {status:302,headers:{"Location":path}}
+			return {status:302,headers:{"Location":path}};
 		},
 		"renderJSON": function(action,args) {
 			if(!("write" in this)) {
@@ -31,7 +31,7 @@ module.exports = function(actions) {
 			    that = this;
 			new Renderer(path,args).on("render",function(output) {
 				that.write(output);
-			})
+			});
 		}
 	};
 	actions.each(function(name,action) {

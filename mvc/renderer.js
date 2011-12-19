@@ -8,11 +8,11 @@ module.exports = function Renderer(path,args,layout) {
 		var comp = tmpl.compile(data,resolved),
 		output = comp.runInNewContext(args.merge({
 			$: extensions.merge({
-				extend: function(daddy) {path = daddy},
+				extend: function(daddy) {path = daddy;},
 				layout: layout,
 				set: function(k,v){args[k]=v;},
-				get: function(k) {return args[k]},
-				exists: function(k) {return k in args}
+				get: function(k) {return args[k];},
+				exists: function(k) {return k in args;}
 			})
 		}));
 		if(old != path) {
@@ -23,5 +23,5 @@ module.exports = function Renderer(path,args,layout) {
 			that.emit("render",output);
 		}
 	});
-}
+};
 module.exports.prototype = new process.EventEmitter();
