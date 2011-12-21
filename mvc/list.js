@@ -6,7 +6,7 @@ var cache = {};
 
 module.exports = function fromFiles(thing,cb) {
 	if(thing in cache) {
-		return cb("done",cache[thing]);
+		return cb(cache[thing]);
 	}
 	fs.readdir(path.join("app",thing),function(err,files) {
 		var out = {};
@@ -24,3 +24,4 @@ module.exports = function fromFiles(thing,cb) {
 		cb(out);
 	});
 }
+module.
