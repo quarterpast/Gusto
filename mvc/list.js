@@ -19,3 +19,8 @@ function fromFiles(thing) {
 }
 exports.controllers = fromFiles("controllers");
 exports.models = fromFiles("models");
+exports.isAction = function(func) {
+	return "id" in func && exports.controllers.values().some(function(cont) {
+		cont.values().map("id").some(func.id);
+	})
+};

@@ -1,6 +1,5 @@
 const fs = require("fs"),
 pathutil = require("path"),
-list = require("mvc/list.js"),
 Renderer = require("mvc/renderer.js"),
 tmpl = require("tmpl");
 
