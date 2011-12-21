@@ -1,26 +1,34 @@
 const list = require("mvc/list.js"),
+fs = require("fs"),
+path = require("path"),
 static = require("static.js"),
 config = require.main.exports.config,
-routes = require(config.appDir+"/conf/routes.js").routes,
+data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")).toString(),
+routes = data.split(/[\n\r]/).each(function(line) {
+	var parts = line.split(/\s+/);
+	if(!["*","HEAD","GET","POST","PUT","TRACE","DELETE","OPTIONS","PATCH"].some(parts[0]))
+		throw new SyntaxError("Invalid HTTP method "+parts[0]);
+	return parts;
+});
 path = require("path");
 exports.route = function(action,method) {
 	var id = Object.isFunction(action) ? action.id : action,
 	    $continue = "£$%continue, motherfucker",
 	filter = routes.map(function(route) {
 		if(!Object.isglobal(method) && route[0] != "*" && method != route[0]) return null;
-		if(static.file === route[2]) {
+		if("static.file" === route[2]) {
 			if(route[3] !== id) return null;
 			if(!path.existsSync(id)) return null;
 			return route[1];
-		} else if(static.dir === route[2]) {
+		} else if("static.dir" === route[2]) {
 			if(path.dirname(id) != route[3]) return null;
 			return route[1].replace('{file}',path.basename(id));
 		} else if(list.isAction(route[2])) {
-			if(route[2].id !== id) return null;
+			if(route[2] !== id) return null;
 			return route[1];
 			
 		} else {
-			var keys = [],
+			var keys = [],//@TODO: for new routes fmt
 			    out = route[2].toSource().replace(/\(function \((_?)\) \$\.?([\s\S]+);\)/,function(m,under,body) {
 				if(under === '_') {
 					var uri = route[1],
