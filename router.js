@@ -14,13 +14,15 @@ module.exports = function(req,route) {
 				})
 			});
 
-			if([static.file,static.dir].some(route[2]))
+			if([static.file,static.dir].some(route[2])) {
 				action = route[2].bind(null,route[3]);
-			else if(meta.isAction(route[2]))
+			} else if(meta.isAction(route[2])) {
 				action = route[2];
-			else
-				action = route[2](params);
+			} else if(typeof route[2] === "string") {
 
+			} else {
+				action = route[2](params);
+			}
 			return true;
 		}
 	}

@@ -4,10 +4,29 @@ router = require("router.js"),
 static = require("static.js"),
 list = require("mvc/list.js"),
 url = require("url"),
+path = require("path"),
 querystring = require("querystring"),
-routes = require(config.appDir+"/conf/routes.js").routes,
-server = http.createServer(function(req,res) {
-	var body = new Buffer(req.headers['content-length']), off = 0;
+fs = require("fs"),
+vm = require("vm"),
+routes = [];
+
+fs.readFile(
+	path.join(config.appDir,"conf","routes.conf"),
+	function(err,data) {
+		if(err) throw err;
+
+		routes = data.split(/[\n\r]/).each(function(line) {
+			var parts = line.split(/\s+/);
+			if(!["*","HEAD","GET","POST","PUT","TRACE","DELETE","OPTIONS","PATCH"].some(parts[0]))
+				throw new SyntaxError("Invalid HTTP method "+parts[0]);
+			parts[2] = vm.createScript(parts[2],parts[1]);
+			return parts
+		});
+	}
+)
+const server = http.createServer(function(req,res) {
+	var body = new Buffer(req.headers['content-length']),
+	off = 0;
 	if(req.method = "POST") {
 		req.on("data",function(chunk) {
 			off = body.write(chunk,off);
