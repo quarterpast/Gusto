@@ -8,7 +8,7 @@ path = require("path"),
 querystring = require("querystring"),
 fs = require("fs"),
 vm = require("vm"),
-data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")),
+data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")).toString(),
 routes = data.split(/[\n\r]/).each(function(line) {
 	var parts = line.split(/\s+/);
 	if(!["*","HEAD","GET","POST","PUT","TRACE","DELETE","OPTIONS","PATCH"].some(parts[0]))
