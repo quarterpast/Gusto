@@ -24,4 +24,3 @@ module.exports = function fromFiles(thing,cb) {
 		cb(out);
 	});
 }
-module.
