@@ -5,20 +5,22 @@ const fs = require("fs"),
 var cache = {};
 function fromFiles(thing) {
 	var out = {};
+	exports[thing] = {};
+	cache[thing] = out;
+
 	fs.readdirSync(path.join("app",thing)).each(function(file) {
 		var base = path.basename(file,".js");
 		function save(module) {
-			out[base] = module;
+			out[base] = exports[thing][base] = module;
 		}
 		if(path.extname(file) == '.js') {
 			new hot.load(path.join("app",thing,file),save)
 			       .on("reload",save);
 			exports[thing].__defineGetter__(base,function() {
 				return require(path.join("app",thing,file));
-			})
+			});
 		}
 	});
-	cache[thing] = out;
 }
 
 fromFiles("controllers");
