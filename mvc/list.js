@@ -17,7 +17,6 @@ function fromFiles(thing) {
 		}
 		if(path.extname(file) == '.js') {
 			exports[thing].__defineGetter__(base,function() {
-				var loader;
 				if(!(base in loaders)) {
 					loaders[base] = new hot.load(
 						path.join("app",thing,file)
