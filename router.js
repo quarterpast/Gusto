@@ -14,14 +14,12 @@ module.exports = function(req,route) {
 					params[keys[i-1]] = arguments[i];
 				}
 			});
-			console.log(params)
 			var action = route[2].runInNewContext(
 				list.controllers.merge(params)
 				.merge({
 					static: static
 				})
 			)
-			console.log(list.controllers["tasks"]["tasks"])
 			if([static.file,static.dir].some(action)) {
 				route.action = action.bind(null,route[3]);
 			} else if(list.isAction(route[2])) {
