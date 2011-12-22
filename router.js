@@ -8,7 +8,7 @@ module.exports = function(req,route) {
 			return "([\\w0-9\.\-]+)";
 			})+"$");
 		if(reg.test(uri.pathname)) {
-			uri.replace(reg,function(m){
+			uri.pathname.replace(reg,function(m){
 				Array.slice(arguments,1,keys.length+1).forEach(function(v,k){
 					params[keys[k]] = v;
 				})
