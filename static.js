@@ -5,7 +5,7 @@ pathutil = require("path");
 exports.file = function(path) {
 	try {
 		var read = fs.createReadStream(path);
-		util.pump(read,this,function(error) {
+		util.pump(read,this.result,function(error) {
 			if(error) throw error;
 		});
 
