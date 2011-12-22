@@ -15,7 +15,7 @@ exports.route = function(action,method) {
 	var id = Object.isFunction(action) ? action.id : action,
 	    $continue = "£$%continue, motherfucker",
 	filter = routes.map(function(route) {
-		if(!Object.isglobal(method) && route[0] != "*" && method != route[0]) return null;
+		if(!!method && route[0] != "*" && method != route[0]) return null;
 		if("static.file" === route[2]) {
 			if(route[3] !== id) return null;
 			if(!path.existsSync(id)) return null;

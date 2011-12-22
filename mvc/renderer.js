@@ -1,7 +1,8 @@
 const extensions = require("template.js"),
 fs = require("fs"),
 pathutil = require("path"),
-tmpl = require("tmpl");
+tmpl = require("tmpl"),
+list = require("mvc/list.js");
 
 module.exports = function Renderer(path,args,layout) {
 	var resolved = pathutil.join("app/views/",path+".ejs"),
@@ -17,8 +18,10 @@ module.exports = function Renderer(path,args,layout) {
 				set: function(k,v){args[k]=v;},
 				get: function(k) {return args[k];},
 				exists: function(k) {return k in args;}
-			})
-		}));
+			}),
+			_: list.controllers
+		})
+		);
 		if(old != path) {
 			new Renderer(path,args,output).on("render",function(output) {
 				that.emit("render",output);
