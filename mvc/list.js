@@ -14,8 +14,7 @@ function fromFiles(thing) {
 			out[base] = exports[thing][base] = module;
 		}
 		if(path.extname(file) == '.js') {
-			new hot.load(path.join("app",thing,file),save)
-			       .on("reload",save);
+			new hot.load(path.join("app",thing,file)).on("reload",save);
 			exports[thing].__defineGetter__(base,function() {
 				return require(path.join("app",thing,file));
 			});
