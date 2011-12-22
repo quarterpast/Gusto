@@ -1,4 +1,5 @@
 const url = require("url"),
+list = require("mvc/list.js"),
 static = require("static.js");
 module.exports = function(req,route) {
 	var params = {}, keys = [], uri = url.parse(req.url,true), action;
@@ -9,21 +10,22 @@ module.exports = function(req,route) {
 			})+"$");
 		if(reg.test(uri.pathname)) {
 			uri.pathname.replace(reg,function(m){
-				Array.slice(arguments,1,keys.length+1).forEach(function(v,k){
-					params[keys[k]] = v;
-				})
+				for(var i = 1, l = keys.length; i < l; ++i) {
+					params[keys[i-1]] = arguments[i];
+				}
 			});
-			//var action = route[2].runInNewContext()
-			if([static.file,static.dir].some(route[2])) {
-				action = route[2].bind(null,route[3]);
-			} else if(meta.isAction(route[2])) {
-				action = route[2];
-			} else if(typeof route[2] === "string") {
-
+			var action = route[2].runInNewContext(list.constollers.merge({
+				_: params,
+				static: static
+			}))
+			if([static.file,static.dir].some(action)) {
+				route.action = action.bind(null,route[3]);
+			} else if(list.isAction(route[2])) {
+				route.action = action;
 			} else {
-				action = route[2](params);
+				route.action = action(params);
 			}
-			return true;
+			return route;
 		}
 	}
 	return false;
