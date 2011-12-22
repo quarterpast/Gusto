@@ -2,7 +2,9 @@ const fs = require("fs"),
       path = require("path"),
       hot = require("hot");
 
-var cache = {};
+var cache = {},
+loaders = {};
+
 function fromFiles(thing) {
 	var out = {};
 	exports[thing] = {};
@@ -14,9 +16,14 @@ function fromFiles(thing) {
 			out[base] = exports[thing][base] = module;
 		}
 		if(path.extname(file) == '.js') {
-			new hot.load(path.join("app",thing,file)).on("reload",save);
 			exports[thing].__defineGetter__(base,function() {
-				return require(path.join("app",thing,file));
+				var loader;
+				if(!(base in loaders)) {
+					loaders[base] = new hot.load(
+						path.join("app",thing,file)
+					).on("reload",save);
+				}
+				return loaders[base].module;
 			});
 		}
 	});
