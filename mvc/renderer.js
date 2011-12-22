@@ -9,7 +9,7 @@ module.exports = function Renderer(path,args,layout) {
 	that = this;
 	fs.readFile(resolved,function(err,data) {
 		if(err) throw err;
-		var comp = tmpl.compile(data,resolved),
+		var comp = tmpl.compile(data.toString(),resolved),
 		output = comp.runInNewContext(args.merge({
 			$: extensions.merge({
 				extend: function(daddy) {path = daddy;},
