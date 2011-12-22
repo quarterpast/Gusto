@@ -1,19 +1,24 @@
 const fs = require("fs"),
       path = require("path"),
-      hot = require("hot");
+      hot = require("hot"),
+      controller = require("mvc/controller.js");
 
-var cache = {},
+var initialisers = {
+	controllers: controller
+},
 loaders = {};
 
 function fromFiles(thing) {
 	var out = {};
 	exports[thing] = {};
-	cache[thing] = out;
 
 	fs.readdirSync(path.join("app",thing)).each(function(file) {
-		var base = path.basename(file,".js");
+		var base = path.basename(file,".js"),
+		init = thing in initialisers
+			? initialisers[thing]
+			: function(a){return a;};
 		function save(module) {
-			out[base] = exports[thing][base] = module;
+			out[base] = exports[thing][base] = init.call(base,module);
 		}
 		if(path.extname(file) == '.js') {
 			exports[thing].__defineGetter__(base,function() {
@@ -22,7 +27,7 @@ function fromFiles(thing) {
 						path.join("app",thing,file)
 					).on("reload",save);
 				}
-				return loaders[base].module;
+				return init.call(base,loaders[base].module);
 			});
 		}
 	});
