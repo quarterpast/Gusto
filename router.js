@@ -2,6 +2,7 @@ const url = require("url"),
 static = require("static.js");
 module.exports = function(req,route) {
 	var params = {}, keys = [], uri = url.parse(req.url,true), action;
+	console.log(route)
 	if(route[0] === "*" || route[0] == req.method) {
 		var reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
 			keys.push(key)
@@ -13,7 +14,7 @@ module.exports = function(req,route) {
 					params[keys[k]] = v;
 				})
 			});
-
+			//var action = route[2].runInNewContext()
 			if([static.file,static.dir].some(route[2])) {
 				action = route[2].bind(null,route[3]);
 			} else if(meta.isAction(route[2])) {

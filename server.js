@@ -9,14 +9,13 @@ querystring = require("querystring"),
 fs = require("fs"),
 vm = require("vm"),
 data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")).toString(),
-routes = data.split(/[\n\r]/).each(function(line) {
+routes = data.split(/[\n\r]/).map(function(line) {
 	var parts = line.split(/\s+/);
 	if(!["*","HEAD","GET","POST","PUT","TRACE","DELETE","OPTIONS","PATCH"].some(parts[0]))
 		throw new SyntaxError("Invalid HTTP method "+parts[0]);
 	parts[2] = vm.createScript(parts[2],parts[1]);
 	return parts;
 });
-
 const server = http.createServer(function(req,res) {
 	var body = new Buffer(req.headers['content-length'] || 0),
 	off = 0;
