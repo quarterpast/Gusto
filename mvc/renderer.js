@@ -1,4 +1,5 @@
-const extensions = require("template.js");
+const extensions = require("template.js"),
+pathutil = require("path");
 module.exports = function Renderer(path,args,layout) {
 	var resolved = pathutil.join("app/views/",path+".ejs"),
 	old = path,

@@ -9,14 +9,14 @@ module.exports = function(result,base,action) {
 			return {status:302,headers:{"Location":path}};
 		},
 		"renderJSON": function(args) {
-			if(!("write" in this)) {
-				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(this)));
+			if(!("write" in result)) {
+				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(result)));
 			}
 			result.write(JSON.stringify(args));
 		},
 		"render": function(args,other) {
-			if(!("write" in this)) {
-				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(this)));
+			if(!("write" in result)) {
+				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(result)));
 			}
 			if(Object.isString(args)) {
 				action = args;
