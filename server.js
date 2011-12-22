@@ -3,6 +3,7 @@ http = require("http"),
 router = require("router.js"),
 static = require("static.js"),
 list = require("mvc/list.js"),
+instance = require("mvc/instance.js"),
 url = require("url"),
 path = require("path"),
 querystring = require("querystring"),
@@ -24,13 +25,17 @@ const server = http.createServer(function(req,res) {
 			off = body.write(chunk,off);
 		})
 	}
-	var match = routes.map(require("router.js").bind(null,req)).compact();
-		console.log(match)
+	var match = routes.map(require("router.js")
+	                  .bind(null,req))
+	                  .compact(),
+	bits = match[0][2].id.split('.'),
+	methods = instance(res,bits[0],bits[1]);
 	req.on("end", function() {
 		var post = {}, get = url.parse(req.url,true).query;
 		if(off) {
 			post = querystring.parse(body.toString());
 		}
+		match[0][2].call(methods,get.merge(post));
 		res.end();
 	});
 }),
