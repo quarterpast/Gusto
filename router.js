@@ -21,9 +21,9 @@ module.exports = function(req,route) {
 				})
 			)
 			if(["static.file","static.dir"].some(action.id)) {
-				route.action = action.bind(null,route[3]);
+				route[2] = action.bind(null,route[3]);
 			} else {
-				route.action = action;
+				route[2] = action;
 			}
 			return route;
 		}
