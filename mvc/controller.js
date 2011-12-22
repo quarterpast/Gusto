@@ -1,4 +1,5 @@
 const fs = require("fs"),
+pathutil = require("path"),
 template = require("template.js");
 
 module.exports = function(actions) {
@@ -12,6 +13,8 @@ module.exports = function(actions) {
 
 		}
 	})
-
+	actions.keys(function(action) {
+		actions[action] = actions[action].bind(redirectors);
+	})
 	return actions;
 }
