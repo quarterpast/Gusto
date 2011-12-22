@@ -17,6 +17,6 @@ actions = {
 	}.merge({desc:"Show this help"})
 };
 if(process.argv[2] in actions)
-	actions[process.argv[2]].apply(actions,process.argv.slice(2));
+	actions[process.argv[2]].apply(actions,process.argv.slice(3));
 else
 	actions.help();

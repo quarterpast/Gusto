@@ -40,7 +40,6 @@ const server = http.createServer(function(req,res) {
 	});
 }),
 port = config[require.main.exports.mode].port || 8000;
-
 exports.go = function() {
 	if("address" in config[require.main.exports.mode]) {
 		server.listen(
