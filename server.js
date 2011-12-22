@@ -24,7 +24,7 @@ const server = http.createServer(function(req,res) {
 			off = body.write(chunk,off);
 		})
 	}
-	var match = routes.map(require("router.js").bind(null,req)).exclude(false);
+	var match = routes.map(require("router.js").bind(null,req)).compact();
 	req.on("end", function() {
 		var post = {}, get = url.parse(req.url,true).query;
 		if(off) {

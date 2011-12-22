@@ -21,7 +21,7 @@ module.exports = function(req,route) {
 					static: static
 				})
 			)
-			console.log(action)
+			console.log(list.controllers["tasks"]["tasks"])
 			if([static.file,static.dir].some(action)) {
 				route.action = action.bind(null,route[3]);
 			} else if(list.isAction(route[2])) {
@@ -32,5 +32,4 @@ module.exports = function(req,route) {
 			return route;
 		}
 	}
-	return false;
 };
