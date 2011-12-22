@@ -18,7 +18,7 @@ routes = data.split(/[\n\r]/).each(function(line) {
 });
 
 const server = http.createServer(function(req,res) {
-	var body = new Buffer(req.headers['content-length']),
+	var body = new Buffer(req.headers['content-length'] || 0),
 	off = 0;
 	if(req.method = "POST") {
 		req.on("data",function(chunk) {
@@ -32,6 +32,7 @@ const server = http.createServer(function(req,res) {
 			post = querystring.parse(body.toString());
 		}
 		console.log(match)
+		res.end();
 	});
 }),
 port = config[require.main.exports.mode].port || 8000;
