@@ -25,12 +25,12 @@ const server = http.createServer(function(req,res) {
 		})
 	}
 	var match = routes.map(require("router.js").bind(null,req)).compact();
+		console.log(match)
 	req.on("end", function() {
 		var post = {}, get = url.parse(req.url,true).query;
 		if(off) {
 			post = querystring.parse(body.toString());
 		}
-		console.log(match)
 		res.end();
 	});
 }),

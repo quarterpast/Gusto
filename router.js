@@ -20,12 +20,10 @@ module.exports = function(req,route) {
 					static: static
 				})
 			)
-			if([static.file,static.dir].some(action)) {
+			if(["static.file","static.dir"].some(action.id)) {
 				route.action = action.bind(null,route[3]);
-			} else if(list.isAction(route[2])) {
-				route.action = action;
 			} else {
-				route.action = action(params);
+				route.action = action;
 			}
 			return route;
 		}

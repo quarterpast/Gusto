@@ -12,8 +12,8 @@ exports.file = function(path) {
 	} catch(e) {
 		return {status:404};
 	}
-};
+}.merge({id:"static.file"});
 
 exports.dir = function(dir,vars) {
 	return exports.file(pathutil.join(dir,vars.file))
-};
+}.merge({id:"static.dir"});
