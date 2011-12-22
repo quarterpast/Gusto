@@ -1,3 +1,8 @@
+const util = require("util"),
+pathutil = require("path"),
+Renderer = require("mvc/renderer.js"),
+tmpl = require("tmpl");
+
 module.exports = function(result,base,action) {
 	return {
 		"redirect": function(path) {

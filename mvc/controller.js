@@ -1,9 +1,5 @@
 const fs = require("fs"),
-util = require("util"),
-pathutil = require("path"),
-Renderer = require("mvc/renderer.js"),
-template = require("template.js"),
-tmpl = require("tmpl");
+template = require("template.js");
 
 module.exports = function(actions) {
 	if(Object.isString(this)) {
