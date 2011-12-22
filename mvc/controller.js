@@ -14,8 +14,8 @@ module.exports = function(actions) {
 		}
 	})
 	actions.keys(function(action) {
+		actions[action].context = redirectors;
 		actions[action].id = base+"."+action;
-		actions[action] = actions[action].bind(redirectors);
 	})
 	return actions;
 }

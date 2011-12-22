@@ -35,7 +35,7 @@ const server = http.createServer(function(req,res) {
 		if(off) {
 			post = querystring.parse(body.toString());
 		}
-		match[0][2].call(methods,get.merge(post));
+		match[0][2].call(match[0][2].context.merge(methods),get.merge(post));
 		res.end();
 	});
 }),
