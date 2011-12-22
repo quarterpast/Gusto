@@ -47,5 +47,5 @@ module.exports = function(actions) {
 	});
 
 
-	return spec.merge(actions);
+	return actions;
 }
