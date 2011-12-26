@@ -4,7 +4,7 @@ path = require("path"),
 static = require("static.js"),
 config = require.main.exports.config,
 data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")).toString(),
-routes = data.split(/[\n\r]/).each(function(line) {
+routes = data.split(/[\n\r]/).map(function(line) {
 	var parts = line.split(/\s+/);
 	if(!["*","HEAD","GET","POST","PUT","TRACE","DELETE","OPTIONS","PATCH"].some(parts[0]))
 		throw new SyntaxError("Invalid HTTP method "+parts[0]);
@@ -26,10 +26,9 @@ exports.route = function(action,method) {
 		} else if(list.isAction(route[2])) {
 			if(route[2] !== id) return null;
 			return route[1];
-			
 		} else {
 			var keys = [],//@TODO: for new routes fmt
-			    out = route[2].toSource().replace(/\(function \((_?)\) \$\.?([\s\S]+);\)/,function(m,under,body) {
+			    out = route[2].replace(/\(function \((_?)\) \$\.?([\s\S]+);\)/,function(m,under,body) {
 				if(under === '_') {
 					var uri = route[1],
 					    reg = new RegExp("^"+body.replace(/\]\[/g,'£').replace(/^\[|\]$/g,'').replace(/_\.([\w]+)(£?)/g,function(m,key,dot){

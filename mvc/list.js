@@ -37,7 +37,8 @@ fromFiles("controllers");
 fromFiles("models");
 
 exports.isAction = function(func) {
-	return "id" in func && exports.controllers.values().some(function(cont) {
-		cont.values().map("id").some(func.id);
+	var id = Object.isString(func) ? func : func.id;
+	return exports.controllers.values().some(function(cont) {
+		cont.values().map("id").some(id);
 	})
 };
