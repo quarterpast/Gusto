@@ -11,7 +11,7 @@ module.exports = function(result,base,action) {
 			if(!("write" in result)) {
 				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(result)));
 			}
-			result.write(JSON.stringify(args));
+			result.end(JSON.stringify(args));
 		},
 		"render": function(args,other) {
 			if(!("write" in result)) {
@@ -24,8 +24,7 @@ module.exports = function(result,base,action) {
 			args = args || {};
 			var path = base ? pathutil.join(base,action) : action;
 			new Renderer(path,args).on("render",function(output) {
-				console.log(output)
-				result.write(output);
+				result.end(output);
 			});
 		}
 	};

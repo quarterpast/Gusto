@@ -32,8 +32,8 @@ const server = http.createServer(function(req,res) {
 		if(off) {
 			post = querystring.parse(body.toString());
 		}
+		res.writeHead(200, {'Content-Type': 'text/html'});
 		match[0](get.merge(post));
-		res.end();
 	});
 }),
 port = config[require.main.exports.mode].port || 8000;
