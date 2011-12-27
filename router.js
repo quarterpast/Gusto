@@ -1,7 +1,8 @@
 const url = require("url"),
 list = require("mvc/list.js"),
+instance = require("mvc/instance.js"),
 static = require("static.js");
-module.exports = function(req,route) {
+module.exports = function(req,res,route) {
 	var params = {}, keys = [], uri = url.parse(req.url,true), action;
 	if(route[0] === "*" || route[0] == req.method) {
 		var reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
@@ -21,11 +22,12 @@ module.exports = function(req,route) {
 				})
 			), id = action.id
 			if(["static.file","static.dir"].some(id)) {
-				route[2] = action.bind(null,route[3]);
-				route[2].id = id;
-				route[2].context = {};
+				route.run = action.bind({result:res},route[3]);
 			} else {
-				route[2] = action;
+				var bits = id.split('.'),
+				methods = instance(res,bits[0],bits[1]);
+				
+				route.run = action.bind(action.context.merge(methods));
 			}
 			return route;
 		}
