@@ -32,7 +32,21 @@ exports.route = function(action,method) {
 			return route[1];
 		}
 
-		
+		var keys = route[2].replace(/^this\[|\]$/g,'').split("]["),
+		reg = new RegExp("^"+keys.map(function() {
+			return "([\\$_a-zA-Z][\\$_0-9a-zA-Z]*)";
+		}).join("\\.")+"$"),
+		uri = route[1];
+
+		if(!reg.test(id)) return null;
+
+		id.replace(reg,function(m) {
+			var args = Array.create(arguments);
+			args.each(function(arg,i) {
+				uri = uri.replace('{'+keys[i-1]+'}',arg);
+			},1);
+		});
+		return uri;
 	}).compact();
 	if(filter.length) {
 		return filter[0];
