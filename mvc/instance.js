@@ -1,7 +1,6 @@
 const util = require("util"),
 pathutil = require("path"),
-Renderer = require("mvc/renderer.js"),
-tmpl = require("tmpl");
+Renderer = require("mvc/renderer.js");
 
 module.exports = function(result,base,action) {
 	return {
@@ -25,6 +24,7 @@ module.exports = function(result,base,action) {
 			args = args || {};
 			var path = base ? pathutil.join(base,action) : action;
 			new Renderer(path,args).on("render",function(output) {
+				console.log(output)
 				result.write(output);
 			});
 		}
