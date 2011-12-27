@@ -20,7 +20,7 @@ routes = data.split(/[\n\r]/).map(function(line) {
 const server = http.createServer(function(req,res) {
 	var body = new Buffer(req.headers['content-length'] || 0),
 	off = 0;
-	if(req.method = "POST") {
+	if(req.method == "POST") {
 		req.on("data",function(chunk) {
 			off = body.write(chunk,off);
 		})
