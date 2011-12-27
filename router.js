@@ -1,36 +1,35 @@
-const readBytes = readBytes = function(file) {
-	if(!file instanceof File) {
-		throw new TypeError("are you high?");
-	}
-	if(file.exists()) {
-		let stream = new FileInputStream(file),
-		    length = file.length(),
-		    bytes = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, length),
-		    offset = 0,
-		    numRead = 0;
-		while (offset < bytes.length
-			&& (numRead=stream.read(bytes, offset, bytes.length-offset)) >= 0) {
-			offset += numRead;
-		}
-		stream.close();
-		return bytes;
-	} else return false;
-},
-mvc = require("mvc.js").init();
+const url = require("url"),
+list = require("mvc/list.js"),
+instance = require("mvc/instance.js"),
+static = require("static.js");
+module.exports = function(req,res,route) {
+	var params = {}, keys = [], uri = url.parse(req.url,true), action;
+	if(route[0] === "*" || route[0] == req.method) {
+		var reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
+			keys.push(key)
+			return "([\\w0-9\.\-]+)";
+			})+"$");
+		if(reg.test(uri.pathname)) {
+			uri.pathname.replace(reg,function(m){
+				for(var i = 1, l = keys.length; i <= l; ++i) {
+					params[keys[i-1]] = arguments[i];
+				}
+			});
+			var action = route[2].runInNewContext(
+				list.controllers.merge(params)
+				.merge({
+					static: static
+				})
+			), id = action.id, run;
+			if(["static.file","static.dir"].some(id)) {
+				run = action.bind({result:res},route[3]);
+			} else {
+				var bits = id.split('.'),
+				methods = instance(res,bits[0],bits[1]);
+				run = action.bind(action.context.merge(methods));
+			}
 
-exports.staticDir = function(dir) function(vars) function() {
-	var file = new File(dir+"/"+vars.file), bytes;
-	if(bytes = readBytes(file)) {
-		mvc.setBytes(bytes);
-		return {status:200,binary:true,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
+			return run;
+		}
 	}
-	return {status:404}
-};
-exports.staticFile = function(path) function() function() {
-	var file = new File(path);
-	if(bytes = readBytes(file)) {
-		mvc.setBytes(bytes);
-		return {status:200,binary:true,type:(new javax.activation.MimetypesFileTypeMap).getContentType(file)};
-	}
-	return {status:404}
 };
