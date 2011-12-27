@@ -27,8 +27,8 @@ const server = http.createServer(function(req,res) {
 	}
 	var match = routes.map(require("router.js")
 	                  .bind(null,req))
-	                  .compact(),
-	bits = match[0][2].id.split('.'),
+	                  .compact();
+	var bits = match[0][2].id.split('.'),
 	methods = instance(res,bits[0],bits[1]);
 	req.on("end", function() {
 		var post = {}, get = url.parse(req.url,true).query;

@@ -3,6 +3,7 @@ fs = require("fs"),
 pathutil = require("path");
 
 exports.file = function(path) {
+	console.log(this.result)
 	try {
 		var read = fs.createReadStream(path);
 		util.pump(read,this.result,function(error) {
@@ -12,8 +13,10 @@ exports.file = function(path) {
 	} catch(e) {
 		return {status:404};
 	}
-}.merge({id:"static.file"});
-
+};
+exports.file.id = "static.file";
 exports.dir = function(dir,vars) {
 	return exports.file(pathutil.join(dir,vars.file))
-}.merge({id:"static.dir"});
+};
+
+exports.dir.id = "static.dir";

@@ -10,7 +10,6 @@ routes = data.split(/[\n\r]/).map(function(line) {
 		throw new SyntaxError("Invalid HTTP method "+parts[0]);
 	return parts;
 });
-path = require("path");
 exports.route = function(action,method) {
 	var id = Object.isFunction(action) ? action.id : action,
 	filter = routes.map(function(route) {

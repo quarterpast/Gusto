@@ -19,9 +19,11 @@ module.exports = function(req,route) {
 				.merge({
 					static: static
 				})
-			)
-			if(["static.file","static.dir"].some(action.id)) {
+			), id = action.id
+			if(["static.file","static.dir"].some(id)) {
 				route[2] = action.bind(null,route[3]);
+				route[2].id = id;
+				route[2].context = {};
 			} else {
 				route[2] = action;
 			}
