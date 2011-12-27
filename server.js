@@ -32,7 +32,7 @@ const server = http.createServer(function(req,res) {
 		if(off) {
 			post = querystring.parse(body.toString());
 		}
-		match.run(get.merge(post));
+		match[0](get.merge(post));
 		res.end();
 	});
 }),

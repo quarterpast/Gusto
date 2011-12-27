@@ -20,16 +20,16 @@ module.exports = function(req,res,route) {
 				.merge({
 					static: static
 				})
-			), id = action.id
+			), id = action.id, run;
 			if(["static.file","static.dir"].some(id)) {
-				route.run = action.bind({result:res},route[3]);
+				run = action.bind({result:res},route[3]);
 			} else {
 				var bits = id.split('.'),
 				methods = instance(res,bits[0],bits[1]);
-				
-				route.run = action.bind(action.context.merge(methods));
+				run = action.bind(action.context.merge(methods));
 			}
-			return route;
+
+			return run;
 		}
 	}
 };

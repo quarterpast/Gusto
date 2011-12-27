@@ -3,7 +3,6 @@ fs = require("fs"),
 pathutil = require("path");
 
 exports.file = function(path) {
-	console.log(this.result)
 	try {
 		var read = fs.createReadStream(path);
 		util.pump(read,this.result,function(error) {
