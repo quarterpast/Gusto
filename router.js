@@ -3,11 +3,11 @@ list = require("mvc/list.js"),
 instance = require("mvc/instance.js"),
 static = require("static.js");
 module.exports = function(req,res,route) {
-	var params = {}, keys = [], uri = url.parse(req.url,true), action;
+	var params = {}, keys = [], uri = url.parse(req.url,true);
 	if(route[0] === "*" || route[0] == req.method) {
 		var reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
-			keys.push(key)
-			return "([\\w0-9\.\-]+)";
+			keys.push(key);
+			return "([\\w0-9.-]+)";
 			})+"$");
 		if(reg.test(uri.pathname)) {
 			uri.pathname.replace(reg,function(m){

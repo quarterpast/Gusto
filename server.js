@@ -34,11 +34,12 @@ const server = http.createServer(function(req,res) {
 		if(off) {
 			post = querystring.parse(body.toString());
 		}
+		console.log(match);
 		if(match.length) {
 			res.writeHead(200, {'Content-Type': 'text/html'});
 			match[0](get.merge(post));
 		} else {
-			console.log(match);
+			console.log(req);
 		}
 	});
 }),
