@@ -24,7 +24,7 @@ const server = http.createServer(function(req,res) {
 	if(req.method == "POST") {
 		req.on("data",function(chunk) {
 			off = body.write(chunk,off);
-		})
+		});
 	}
 	var match = routes.map(require("router.js")
 	                  .bind(null,req,res))
@@ -34,8 +34,12 @@ const server = http.createServer(function(req,res) {
 		if(off) {
 			post = querystring.parse(body.toString());
 		}
-		res.writeHead(200, {'Content-Type': 'text/html'});
-		match[0](get.merge(post));
+		if(match.length) {
+			res.writeHead(200, {'Content-Type': 'text/html'});
+			match[0](get.merge(post));
+		} else {
+			console.log(match);
+		}
 	});
 }),
 port = config[require.main.exports.mode].port || 8000;
