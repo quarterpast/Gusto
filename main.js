@@ -1,4 +1,4 @@
-require("sugar.js");
+require("sugar");
 Object.sugar();
 const fs = require("fs"),
 appDir = process.cwd(),
