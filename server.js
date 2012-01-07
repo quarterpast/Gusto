@@ -20,26 +20,32 @@ routes = data.split(/[\n\r]/).map(function(line) {
 }).compact();
 const server = http.createServer(function(req,res) {
 	var body = new Buffer(req.headers['content-length'] || 0),
-	off = 0;
+	off = 0,
+	match = [];
 	if(req.method == "POST") {
 		req.on("data",function(chunk) {
 			off = body.write(chunk,off);
 		});
 	}
-	var match = routes.map(require("router.js")
-	                  .bind(null,req,res))
-	                  .compact();
+	try {
+		match = routes.map(require("router.js")
+		                  .bind(null,req,res))
+		                  .compact();
+	} catch(e) {
+		console.log(e);
+	}
 	req.on("end", function() {
 		var post = {}, get = url.parse(req.url,true).query;
 		if(off) {
 			post = querystring.parse(body.toString());
 		}
-		console.log(match);
 		if(match.length) {
-			res.writeHead(200, {'Content-Type': 'text/html'});
-			match[0](get.merge(post));
+			var opts = match[0](get.merge(post)) || {};
+			res.setHeader('Content-Type',opts.type || "text/html");
+			res.statusCode = opts.status || 200;
 		} else {
-			console.log(req);
+			console.log("NO ROUTE:",req.url);
+			//console.log(req);
 		}
 	});
 }),

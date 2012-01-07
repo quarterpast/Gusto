@@ -1,6 +1,7 @@
 const util = require("util"),
 fs = require("fs"),
-pathutil = require("path");
+pathutil = require("path"),
+mime = require("mime");
 
 exports.file = function(path) {
 	try {
@@ -12,10 +13,12 @@ exports.file = function(path) {
 	} catch(e) {
 		return {status:404};
 	}
+	return {type:mime.lookup("path")};
 };
 exports.file.id = "static.file";
 exports.dir = function(dir,vars) {
-	return exports.file(pathutil.join(dir,vars.file))
+	console.log(arguments)
+	return exports.file(pathutil.join(dir,vars.file));
 };
 
 exports.dir.id = "static.dir";
