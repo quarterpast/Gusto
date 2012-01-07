@@ -45,7 +45,7 @@ const server = http.createServer(function(req,res) {
 				opts = opts || {};
 				res.writeHead(
 					opts.status || 200,
-					'Content-Type',opts.type || "text/html"
+					{'Content-Type':opts.type || "text/html"}
 				);
 				res.end(data);
 			});
