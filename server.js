@@ -43,7 +43,7 @@ const server = http.createServer(function(req,res) {
 			match[0](get.merge(post));
 			res.on("finishRender",function(data,opts) {
 				opts = opts || {};
-				res.writeHeaders(
+				res.writeHead(
 					opts.status || 200,
 					'Content-Type',opts.type || "text/html"
 				);
