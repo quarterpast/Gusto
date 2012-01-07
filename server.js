@@ -43,6 +43,7 @@ const server = http.createServer(function(req,res) {
 		if(match.length) {
 			match[0](get.merge(post));
 			res.on("finishRender",function(data,opts) {
+				console.log(opts);
 				opts = opts || {};
 				res.writeHead(
 					opts.status || 200,

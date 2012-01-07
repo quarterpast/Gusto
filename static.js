@@ -9,7 +9,7 @@ exports.file = function(path) {
 		util.pump(read,this.result,function(error) {
 			if(error) throw error;
 		});
-		this.result.emit("finishRender",null,{type:mime.lookup("path")});
+		this.result.emit("finishRender",null,{type:mime.lookup(path)});
 	} catch(e) {
 		this.result.emit("finishRender",null,{status:404});
 	}
