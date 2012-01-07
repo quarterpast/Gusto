@@ -41,8 +41,11 @@ const server = http.createServer(function(req,res) {
 		}
 		if(match.length) {
 			var opts = match[0](get.merge(post)) || {};
-			res.setHeader('Content-Type',opts.type || "text/html");
-			res.statusCode = opts.status || 200;
+			res.on("finishRender",function() {
+				res.setHeader('Content-Type',opts.type || "text/html");
+				res.statusCode = opts.status || 200;
+				res.end();
+			});
 		} else {
 			console.log("NO ROUTE:",req.url);
 			//console.log(req);
