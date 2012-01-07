@@ -12,7 +12,7 @@ module.exports = function(result,base,action) {
 				throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(result)));
 			}
 			result.write(JSON.stringify(args));
-			result.emit("finishRender",{status:200,type:"text/html"});
+			result.emit("finishRender",output,{status:200,type:"text/html"});
 		},
 		"render": function(args,other) {
 			if(!("write" in result)) {
@@ -25,8 +25,7 @@ module.exports = function(result,base,action) {
 			args = args || {};
 			var path = base ? pathutil.join(base,action) : action;
 			new Renderer(path,args).on("render",function(output) {
-				result.write(output);
-				result.emit("finishRender",{status:200,type:"text/html"});
+				result.emit("finishRender",output,{status:200,type:"text/html"});
 			});
 		}
 	};

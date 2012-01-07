@@ -40,11 +40,14 @@ const server = http.createServer(function(req,res) {
 			post = querystring.parse(body.toString());
 		}
 		if(match.length) {
-			var opts = match[0](get.merge(post)) || {};
-			res.on("finishRender",function() {
-				res.setHeader('Content-Type',opts.type || "text/html");
-				res.statusCode = opts.status || 200;
-				res.end();
+			match[0](get.merge(post));
+			res.on("finishRender",function(data,opts) {
+				opts = opts || {};
+				res.writeHeaders(
+					opts.status || 200,
+					'Content-Type',opts.type || "text/html"
+				);
+				res.end(data);
 			});
 		} else {
 			console.log("NO ROUTE:",req.url);
