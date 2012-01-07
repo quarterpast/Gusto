@@ -32,7 +32,7 @@ const server = http.createServer(function(req,res) {
 		                  .bind(null,req,res))
 		                  .compact();
 	} catch(e) {
-		console.log(e);
+		console.log(e.stack);
 		res.end();
 	}
 	req.on("end", function() {
@@ -46,7 +46,9 @@ const server = http.createServer(function(req,res) {
 				opts = opts || {};
 				res.writeHead(
 					opts.status || 200,
-					{'Content-Type':opts.type || "text/html"}
+					({
+						'Content-Type':opts.type || "text/html"
+					}).merge(opts.headers || {})
 				);
 				res.end(data);
 			});

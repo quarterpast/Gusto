@@ -9,16 +9,14 @@ exports.file = function(path) {
 		util.pump(read,this.result,function(error) {
 			if(error) throw error;
 		});
-
+		this.result.emit("finishRender",null,{type:mime.lookup("path")});
 	} catch(e) {
-		return {status:404};
+		this.result.emit("finishRender",null,{status:404});
 	}
-	return {type:mime.lookup("path")};
 };
 exports.file.id = "static.file";
 exports.dir = function(dir,vars) {
-	console.log(arguments)
-	return exports.file(pathutil.join(dir,vars.file));
+	exports.file(pathutil.join(dir,vars.file));
 };
 
 exports.dir.id = "static.dir";
