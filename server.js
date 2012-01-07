@@ -52,6 +52,7 @@ const server = http.createServer(function(req,res) {
 			});
 		} else {
 			console.log("NO ROUTE:",req.url);
+			res.end();
 			//console.log(req);
 		}
 	});
