@@ -11,11 +11,11 @@ module.exports = function(actions) {
 		redirectors[k] = function(params) {
 			var url = template.route(base+"."+k,"GET",params);
 
-		}
-	})
+		};
+	});
 	actions.keys(function(action) {
 		actions[action].context = redirectors;
 		actions[action].id = base+"."+action;
-	})
+	});
 	return actions;
-}
+};
