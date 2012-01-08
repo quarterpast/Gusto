@@ -18,7 +18,7 @@ routes = data.split(/[\n\r]/).map(function(line) {
 	parts[2] = vm.createScript(parts[2],parts[1]);
 	return parts;
 }).compact();
-const server = http.createServer(function(req,res) {
+const server = http.createServer(function Listen(req,res) {
 	var body = new Buffer(req.headers['content-length'] || 0),
 	off = 0,
 	match = [];

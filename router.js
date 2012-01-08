@@ -2,7 +2,7 @@ const url = require("url"),
 list = require("mvc/list.js"),
 instance = require("mvc/instance.js"),
 static = require("static.js");
-module.exports = function(req,res,route) {
+module.exports = function Router(req,res,route) {
 	var params = {}, keys = [], uri = url.parse(req.url,true);
 	if(route[0] === "*" || route[0] == req.method) {
 		var reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
