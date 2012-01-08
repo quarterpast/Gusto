@@ -28,11 +28,12 @@ const server = http.createServer(function(req,res) {
 		});
 	}
 	try {
-		match = routes.map(require("router.js")
-		                  .bind(null,req,res))
-		                  .compact();
+		match = routes.map(
+		                require("router.js")
+		                .bind(null,req,res)
+		              ).compact();
 	} catch(e) {
-		console.log(e.stack);
+		//console.log(e.stack);
 		res.end();
 	}
 	req.on("end", function() {
@@ -42,19 +43,21 @@ const server = http.createServer(function(req,res) {
 		}
 		if(match.length) {
 			match[0](get.merge(post));
-			res.on("finishRender",function(data,opts) {
-				console.log(opts);
-				opts = opts || {};
-				res.writeHead(
-					opts.status || 200,
-					({
-						'Content-Type':opts.type || "text/html"
-					}).merge(opts.headers || {})
-				);
-				res.end(data);
+			res.on("done",function(status,reason,headers) {
+				if(Object.isObject(reason)) {
+					headers = reason;
+					reason = "";
+				}
+				res.statusCode = status;
+				for(var header in headers) {
+					if(headers.hasOwnProperty(header))
+						res.setHeader(header,headers[header]);
+				}
+				res.end(reason);
 			});
 		} else {
 			console.log("NO ROUTE:",req.url);
+			res.writeHead(404,"Can't find it.");
 			res.end();
 			//console.log(req);
 		}

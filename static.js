@@ -3,20 +3,20 @@ fs = require("fs"),
 pathutil = require("path"),
 mime = require("mime");
 
-exports.file = function(path) {
+exports.file = function(result,path) {
 	try {
 		var read = fs.createReadStream(path);
-		util.pump(read,this.result,function(error) {
+		util.pump(read,result,function(error) {
 			if(error) throw error;
 		});
-		this.result.emit("finishRender",null,{type:mime.lookup(path)});
+		result.emit("done",200,{"Content-type":mime.lookup(path)});
 	} catch(e) {
-		this.result.emit("finishRender",null,{status:404});
+		result.emit("done",404,path+" not found.");
 	}
 };
 exports.file.id = "static.file";
-exports.dir = function(dir,vars) {
-	exports.file(pathutil.join(dir,vars.file));
+exports.dir = function(result,dir,vars) {
+	exports.file(result,pathutil.join(dir,vars.file));
 };
 
 exports.dir.id = "static.dir";
