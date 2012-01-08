@@ -33,8 +33,7 @@ const server = http.createServer(function(req,res) {
 		                .bind(null,req,res)
 		              ).compact();
 	} catch(e) {
-		//console.log(e.stack);
-		res.end();
+		console.log(e.stack);
 	}
 	req.on("end", function() {
 		var post = {}, get = url.parse(req.url,true).query;
