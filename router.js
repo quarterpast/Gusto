@@ -23,7 +23,7 @@ module.exports = function Router(req,res,route) {
 			try {
 				action = route[2].runInNewContext(env);
 			} catch(e) {
-				if(e instanceof TypeError) {
+				if(e.name == "TypeError") {
 					return;
 				} else throw e;
 			}
