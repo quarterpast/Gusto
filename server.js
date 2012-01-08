@@ -41,9 +41,9 @@ const server = http.createServer(function Listen(req,res) {
 			post = querystring.parse(body.toString());
 		}
 		if(match.length) {
-			var data = "";
-			res.on("data",function(chunk) {
-				data += chunk;
+			var queue = "";
+			res.on("queue",function() {
+				queue = queue.concat.apply(queue,arguments);
 			});
 			res.on("done",function(status,reason,headers) {
 				if(Object.isObject(reason)) {
@@ -55,7 +55,9 @@ const server = http.createServer(function Listen(req,res) {
 						res.setHeader(header,headers[header]);
 				}
 				res.statusCode = status;
-				res.write(data);
+				queue.each(function(action) {
+					action[0](action[1]);
+				});
 				res.end(reason);
 			});
 			match[0](get.merge(post));
