@@ -22,7 +22,7 @@ module.exports = function(req,res,route) {
 				})
 			), id = action.id, run;
 			if(["static.file","static.dir"].some(id)) {
-				run = action.bind({result:res},route[3]);
+				run = action.bind(null,res,route[3]);
 			} else {
 				var bits = id.split('.'),
 				methods = instance(res,bits[0],bits[1]);
