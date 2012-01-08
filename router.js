@@ -5,10 +5,15 @@ static = require("static.js");
 module.exports = function Router(req,res,route) {
 	var params = {}, keys = [], uri = url.parse(req.url,true);
 	if(route[0] === "*" || route[0] == req.method) {
-		var reg = new RegExp("^"+route[1].replace(/\{([\w]+?)\}/g,function(m,key){
+		var reg = new RegExp("^"+route[1].replace(/\{([\w]+?)(\|[\s\S]+?)?(\/)?\}/g,function(m,key,sub,slash){
 			keys.push(key);
-			return "([\\w0-9.-]+)";
-			})+"$");
+			return sub ? sub : (slash == '/' ? "" : "([\\w0-9.-]+)");
+		})+"$");
+
+		console.log(reg,uri.pathname)
+		if("static.dir" == route[2]) {
+			
+		}
 		if(reg.test(uri.pathname)) {
 			uri.pathname.replace(reg,function(m){
 				for(var i = 1, l = keys.length; i <= l; ++i) {
