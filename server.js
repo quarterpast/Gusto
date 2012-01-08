@@ -41,7 +41,6 @@ const server = http.createServer(function(req,res) {
 			post = querystring.parse(body.toString());
 		}
 		if(match.length) {
-			match[0](get.merge(post));
 			res.on("done",function(status,reason,headers) {
 				if(Object.isObject(reason)) {
 					headers = reason;
@@ -54,6 +53,7 @@ const server = http.createServer(function(req,res) {
 				}
 				res.end(reason);
 			});
+			match[0](get.merge(post));
 		} else {
 			console.log("NO ROUTE:",req.url);
 			res.writeHead(404,"Can't find it.");
