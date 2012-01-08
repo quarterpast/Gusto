@@ -15,22 +15,21 @@ module.exports = function(req,res,route) {
 					params[keys[i-1]] = arguments[i];
 				}
 			});
-			console.log(list.controllers)
-			var action = route[2].runInNewContext(
-				({}).merge(list.controllers)
+			var env = ({}).merge(list.controllers)
 				.merge(params)
-				.merge({static: static})
-			), id = action.id, run;
-			console.log(id)
-			if(["static.file","static.dir"].some(id)) {
-				run = action.bind(null,res,route[3]);
-			} else {
-				var bits = id.split('.'),
-				methods = instance(res,bits[0],bits[1]);
-				run = action.bind(action.context.merge(methods));
-			}
+				.merge({static: static}),
+			action = route[2].runInNewContext(env),
+			id = action.id, run, bits = id.split('.');
+			if(bits[0] in env && bits[1] in env[bits[0]]) {
+				if(["static.file","static.dir"].some(id)) {
+					run = action.bind(null,res,route[3]);
+				} else {
+					methods = instance(res,bits[0],bits[1]);
+					run = action.bind(action.context.merge(methods));
+				}
 
-			return run;
+				return run;
+			}
 		}
 	}
 };
