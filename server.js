@@ -46,11 +46,11 @@ const server = http.createServer(function(req,res) {
 					headers = reason;
 					reason = "";
 				}
-				res.statusCode = status;
 				for(var header in headers) {
 					if(headers.hasOwnProperty(header))
 						res.setHeader(header,headers[header]);
 				}
+				res.statusCode = status;
 				res.end(reason);
 			});
 			match[0](get.merge(post));
