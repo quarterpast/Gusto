@@ -41,6 +41,10 @@ const server = http.createServer(function(req,res) {
 			post = querystring.parse(body.toString());
 		}
 		if(match.length) {
+			var data = "";
+			res.on("data",function(chunk) {
+				data += chunk;
+			});
 			res.on("done",function(status,reason,headers) {
 				if(Object.isObject(reason)) {
 					headers = reason;
@@ -51,6 +55,7 @@ const server = http.createServer(function(req,res) {
 						res.setHeader(header,headers[header]);
 				}
 				res.statusCode = status;
+				res.write(data);
 				res.end(reason);
 			});
 			match[0](get.merge(post));

@@ -11,7 +11,7 @@ module.exports = function(result,base,action) {
 			return {status:302,headers:{"Location":path}};
 		},
 		"renderJSON": function(args) {
-			result.write(JSON.stringify(args));
+			result.emit("data",JSON.stringify(args));
 			result.emit("done",200,{"Content-type":"application/json"});
 		},
 		"render": function(args,other) {
@@ -22,7 +22,7 @@ module.exports = function(result,base,action) {
 			args = args || {};
 			var path = base ? pathutil.join(base,action) : action;
 			new Renderer(path,args).on("render",function(output) {
-				result.write(output);
+				result.emit("data",output);
 				result.emit("done",200,{"Content-type":"text/html"});
 			});
 		}
