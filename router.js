@@ -15,21 +15,29 @@ module.exports = function(req,res,route) {
 					params[keys[i-1]] = arguments[i];
 				}
 			});
-			var env = ({}).merge(list.controllers)
-				.merge(params)
-				.merge({static: static}),
-			action = route[2].runInNewContext(env),
-			id = action.id, run, bits = id.split('.');
-			if(bits[0] in env && bits[1] in env[bits[0]]) {
-				if(["static.file","static.dir"].some(id)) {
-					run = action.bind(null,res,route[3]);
-				} else {
-					methods = instance(res,bits[0],bits[1]);
-					run = action.bind(action.context.merge(methods));
-				}
 
-				return run;
+			var env = ({}).merge(list.controllers)
+			              .merge(params)
+			              .merge({static: static});
+
+			try {
+				action = route[2].runInNewContext(env);
+			} catch(e) {
+				if(e instanceof TypeError) {
+					return;
+				} else throw e;
 			}
+
+			var id = action.id, run, bits = id.split('.');
+
+			if(["static.file","static.dir"].some(id)) {
+				run = action.bind(null,res,route[3]);
+			} else {
+				methods = instance(res,bits[0],bits[1]);
+				run = action.bind(action.context.merge(methods));
+			}
+
+			return run;
 		}
 	}
 };
