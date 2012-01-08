@@ -15,12 +15,13 @@ module.exports = function(req,res,route) {
 					params[keys[i-1]] = arguments[i];
 				}
 			});
+			console.log(list.controllers)
 			var action = route[2].runInNewContext(
-				list.controllers.merge(params)
-				.merge({
-					static: static
-				})
+				({}).merge(list.controllers)
+				.merge(params)
+				.merge({static: static})
 			), id = action.id, run;
+			console.log(id)
 			if(["static.file","static.dir"].some(id)) {
 				run = action.bind(null,res,route[3]);
 			} else {
