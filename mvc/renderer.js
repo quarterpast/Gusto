@@ -16,7 +16,7 @@ module.exports = function Renderer(path,args,layout) {
 				extend: function(daddy) {path = daddy;},
 				layout: layout,
 				set: function(k,v){args[k]=v;},
-				get: function(k) {return args[k];},
+				get: function(k,f) {return k in args ? args[k] : f || "";},
 				exists: function(k) {return k in args;}
 			}),
 			_: list.controllers

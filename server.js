@@ -41,9 +41,11 @@ const server = http.createServer(function Listen(req,res) {
 			post = querystring.parse(body.toString());
 		}
 		if(match.length) {
-			var queue = "";
+			var queue = [];
 			res.on("queue",function() {
-				queue = queue.concat.apply(queue,arguments);
+				Array.create(arguments).each(function(arg) {
+					queue.push(arg);
+				});
 			});
 			res.on("done",function(status,reason,headers) {
 				if(Object.isObject(reason)) {
@@ -56,7 +58,7 @@ const server = http.createServer(function Listen(req,res) {
 				}
 				res.statusCode = status;
 				queue.each(function(action) {
-					action[0](action[1]);
+					res[action.shift()].apply(res,action);
 				});
 				res.end(reason);
 			});
