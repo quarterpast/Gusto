@@ -10,12 +10,11 @@ module.exports = function Renderer(path,args,layout) {
 	that = this;
 	fs.readFile(resolved,function(err,data) {
 		if(err) throw err;
-		var comp, output;
+		var comp, output = "";
 		try {
 			comp = tmpl.compile(data.toString(),resolved);
 		} catch(e) {
 			console.log(e);
-
 		}
 		try {
 			output = comp.runInNewContext(
