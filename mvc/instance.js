@@ -1,6 +1,7 @@
 const util = require("util"),
 pathutil = require("path"),
-Renderer = require("mvc/renderer.js");
+Renderer = require("mvc/renderer.js"),
+ErrorHandler = require("error.js");
 
 module.exports = function(result,base,action) {
 	if(!("write" in result)) {
@@ -25,6 +26,11 @@ module.exports = function(result,base,action) {
 			new Renderer(path,args).on("render",function(output) {
 				result.emit("queue",["write",output]);
 				result.emit("done",200,{"Content-type":"text/html"});
+			}).on("error",function(e) {
+				new ErrorHandler(e).on("render",function(output) {
+					result.emit("queue",["write",output]);
+					result.emit("done",501,{"Content-type":"text/html"});
+				});
 			});
 		}
 	};

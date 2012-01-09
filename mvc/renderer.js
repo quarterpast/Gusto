@@ -14,7 +14,8 @@ module.exports = function Renderer(path,args,layout) {
 		try {
 			comp = tmpl.compile(data.toString(),resolved);
 		} catch(e) {
-			console.log(e);
+			that.emit("error",e);
+			return;
 		}
 		try {
 			output = comp.runInNewContext(
@@ -38,11 +39,14 @@ module.exports = function Renderer(path,args,layout) {
 				})
 			);
 		} catch(e) {
-			console.log(e);
+			that.emit("error",e);
+			return;
 		}
 		if(old != path) {
 			new Renderer(path,args,output).on("render",function(output) {
 				that.emit("render",output);
+			}).on("error",function(e){
+				that.emit("error",e);
 			});
 		} else {
 			that.emit("render",output);
