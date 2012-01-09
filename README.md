@@ -32,8 +32,6 @@ module.exports = {
 	}
 };
 ```
-Note: I couldn't be bothered implementing some kind of SQL, so ```mvc.model#fetch``` is modelled after Array#filter (actually, it *is* ```Array#filter```).
-
 
 How about a view‽
 
@@ -47,3 +45,9 @@ How about a view‽
 </article>
 ```
 The object passed to ```mvc.controller#render``` in the action becomes the global object in the template. The variable ```$``` is an object containing utility methods for templates, such as reverse routing and template inclusion. There's also a list of the controllers passed in on ```_```, to facilitate easy reverse routing.
+
+The internals
+=============
+Events. Events everywhere.
+
+So: main.js sets up the config and takes arguments, then calls server.js, which creates the server, readies the router and hotloader, and waits for a request. On request, the router gets any matching controllers, which are loaded on the fly thanks to the hotloader's getters, then the best match is run by the server. The controller does its business; any call to ```render``` initialises the renderer, loading the templates asynchronously, running jQote and emitting a ```render``` event when it's finished. In ```render```, the event is caught and the rendered content is queued for output to the server, and it emits a ```done``` event. The server listens for ```done```, flushes the headers and runs the queue, which probably includes some calls to response.write.
