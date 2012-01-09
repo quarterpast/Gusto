@@ -10,18 +10,30 @@ module.exports = function Renderer(path,args,layout) {
 	that = this;
 	fs.readFile(resolved,function(err,data) {
 		if(err) throw err;
-		var comp = tmpl.compile(data.toString(),resolved),
-		output = comp.runInNewContext(({}).merge(args).merge({
-			$: extensions.merge({
-				extend: function(daddy) {path = daddy;},
-				layout: layout,
-				set: function(k,v){args[k]=v;},
-				get: function(k,f) {return k in args ? args[k] : f || "";},
-				exists: function(k) {return k in args;}
-			}),
-			_: list.controllers
-		})
-		);
+		var comp, output;
+		try {
+			comp = tmpl.compile(data.toString(),resolved);
+		} catch(e) {
+			console.log(e);
+		}
+		try {
+			output = comp.runInNewContext(
+				({}).merge(args).merge({
+					$: extensions.merge({
+						extend: function(daddy) {path = daddy;},
+						layout: layout,
+						set: function(k,v){args[k]=v;},
+						get: function(k,f) {
+							return k in args ? args[k] : f || "";
+						},
+						exists: function(k) {return k in args;}
+					}),
+					_: list.controllers
+				})
+			);
+		} catch(e) {
+			console.log(e);
+		}
 		if(old != path) {
 			new Renderer(path,args,output).on("render",function(output) {
 				that.emit("render",output);
