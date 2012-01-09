@@ -27,6 +27,7 @@ module.exports = function(result,base,action) {
 				result.emit("queue",["write",output]);
 				result.emit("done",200,{"Content-type":"text/html"});
 			}).on("error",function(e) {
+				console.log(e.template);
 				new ErrorHandler(e).on("render",function(output) {
 					result.emit("queue",["write",output]);
 					result.emit("done",501,{"Content-type":"text/html"});

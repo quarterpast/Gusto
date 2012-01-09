@@ -19,7 +19,7 @@ module.exports = function Renderer(path,args,layout) {
 		}
 		try {
 			output = comp.runInNewContext(
-				({}).merge(args).merge({
+				Object.clone(args,true).merge({
 					$: extensions.merge({
 						layout: layout,
 						extend: function(daddy) {
