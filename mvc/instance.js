@@ -15,8 +15,9 @@ module.exports = function(result,base,action) {
 			result.emit("done",200,{"Content-type":"application/json"});
 		},
 		"render": function(args,other) {
+			var act = action;
 			if(Object.isString(args)) {
-				action = args;
+				act = args;
 				args = other;
 			}
 			args = args || {};
