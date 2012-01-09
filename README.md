@@ -1,36 +1,36 @@
 Struct
 ======
-...is a tiny little MVC framework, inspired rather loosely by Play!, aimed at Rhino 1.7R3. It uses the mostly-undocumented, probably-a-bad-choice com.sun.net.httpserver to cut down on dependencies.
+...is a tiny little MVC framework for Node.js, inspired rather loosely by Play!. It uses [JugglingDB](https://github.com/1602/jugglingdb) for the ORM, a [jQote2](https://github.com/quarterto/jQote2)-based template engine, my very own [hot.js](https://github.com/quarterto/hot.js) for hot module reloading, and finally [Sugar](http://sugarjs.com/) to sweeten up the API.
 
 Let's make a model!
 
 ```javascript
-const mvc = require("mvc.js").init(module.id),
-      models = mvc.models(module.id);
+const model = require("mvc/model.js"),
+      models = require("mvc/list.js").models;
 
-exports.post = mvc.model({
+exports.post = model.define({
 	title: {type:String},
 	date: {type:Date},
-	content: {type:String,flags:["main"]}
+	content: {type:String}
 });
+exports.post.belongsTo(models.user,{as:"author"});
 ```
 And a controller!
 
 ```javascript
-const mvc = require("mvc.js").init(module.id),
-      models = mvc.models(module.id);
+const models = require("mvc/list.js").models;
 
-exports.posts = mvc.controller({
+module.exports = {
 	"view": function(params) {
 		var post;
 		if("id" in params) {
-			post = models.post.fetch(function(post) post.id === params.id)[0];
+			post = models.post.find(params.id);
 		} else {
-			post = models.post.fetch(function() true)[0];
+			post = models.post.findAll();
 		}
 		this.render(post);
 	}
-});
+};
 ```
 Note: I couldn't be bothered implementing some kind of SQL, so ```mvc.model#fetch``` is modelled after Array#filter (actually, it *is* ```Array#filter```).
 
@@ -40,11 +40,10 @@ How about a view‽
 ```javascript
 {{$.extends("base")}}
 <article>
-	<h1>{{=this.title}}</h1>
-	<time pubdate="pubdate" datetime="{{=this.date.toJSON()}}">{{=this.date.format("dd/mm/yyyy")}}</time>
-	<p>{{=this.content}}</p>
+	<h1>{{=title}}</h1>
+	<h2>by {{=author.realName}}</h2>
+	<time pubdate="pubdate" datetime="{{=date.toJSON()}}">{{=date.relative()}}</time>
+	<p>{{=content}}</p>
 </article>
 ```
-The object passed to ```mvc.controller#render``` in the action becomes ```this``` in the template. The parameter ```$``` is an object containing utility methods for templates, such as reverse routing and template inclusion. It doesn't have to be called ```$```; you could call it ```utility``` or ```antidisestablishmentarianism``` if you really wanted.
-
-A few caveats: Rhino's current E4X parsing is... pretty bad. For example, empty tags are collapsed to XML short tags. So if you have ```<script src="path/to/file.js"></script>``` it gets collapsed to ```<script src="path/to/file.js"/>``` which all current browsers take as meaning that the entire rest of the page is the script body. Embedding scripts is sometimes janky too.
+The object passed to ```mvc.controller#render``` in the action becomes the global object in the template. The variable ```$``` is an object containing utility methods for templates, such as reverse routing and template inclusion. There's also a list of the controllers passed in on ```_```, to facilitate easy reverse routing.
