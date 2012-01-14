@@ -14,6 +14,7 @@ module.exports = function Renderer(path,args,layout) {
 		try {
 			comp = tmpl.compile(data.toString(),resolved);
 		} catch(e) {
+			console.log("compilation error")
 			that.emit("error",e);
 			return;
 		}
@@ -39,6 +40,7 @@ module.exports = function Renderer(path,args,layout) {
 				})
 			);
 		} catch(e) {
+			console.log("runtime error")
 			that.emit("error",e);
 			return;
 		}
