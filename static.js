@@ -7,10 +7,13 @@ exports.file = function(result,path) {
 	try {
 		var read = fs.createReadStream(path);
 		read.resume();
-		util.pump(read,result,function(error) {
+		read.on("error", function(error) {
 			if(error) throw error;
+		}).on("data",function(chunk) {
+			result.emit("queue",["write",chunk]);
+		}).on("end",function() {
+			result.emit("done",200,{"Content-type":mime.lookup(path)});
 		});
-		result.emit("done",200,{"Content-type":mime.lookup(path)});
 	} catch(e) {
 		result.emit("done",404,path+" not found.");
 	}
