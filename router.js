@@ -15,7 +15,7 @@ module.exports = function Router(req,res,route) {
 						return sub;
 					}
 					if(slash == '/') {
-						return "(([^/?*:;{}\\]+/)+)";
+						return "((/[^/?*:;{}\\\\]+)+)";
 					}
 					return "([\\w0-9.-]+)";
 				}
@@ -32,14 +32,15 @@ module.exports = function Router(req,res,route) {
 					params[keys[i-1]] = arguments[i];
 				}
 			});
-
 			var env = ({}).merge(list.controllers)
 			              .merge(params)
 			              .merge({static: staticRoute});
 
+			console.log(env)
 			try {
 				action = route[2].runInNewContext(env);
 			} catch(e) {
+				console.log(uri.pathname)
 				if(e.name == "TypeError") {
 					return;
 				} else throw e;
