@@ -11,7 +11,13 @@ module.exports = function Router(req,res,route) {
 				/\{([\w]+?)(\|[\s\S]+?)?(\/)?\}/g,
 				function(m,key,sub,slash){
 					keys.push(key);
-					return sub ? sub : (slash == '/' ? "(([^/?*:;{}\\]+/)+)" : "([\\w0-9.-]+)");
+					if(sub) {
+						return sub;
+					}
+					if(slash == '/') {
+						return "(([^/?*:;{}\\]+/)+)";
+					}
+					return "([\\w0-9.-]+)");
 				}
 			)+
 		"$");
