@@ -36,11 +36,9 @@ module.exports = function Router(req,res,route) {
 			              .merge(params)
 			              .merge({static: staticRoute});
 
-			console.log(env)
 			try {
 				action = route[2].runInNewContext(env);
 			} catch(e) {
-				console.log(uri.pathname)
 				if(e.name == "TypeError") {
 					return;
 				} else throw e;
@@ -54,7 +52,7 @@ module.exports = function Router(req,res,route) {
 				methods = instance(res,bits[0],bits[1]);
 				run = action.bind(action.context.merge(methods));
 			}
-
+			run.params = params;
 			return run;
 		}
 	}

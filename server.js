@@ -62,7 +62,7 @@ const server = http.createServer(function Listen(req,res) {
 				});
 				res.end(reason);
 			});
-			match[0](get.merge(post));
+			match[0](match[0].params.merge(get).merge(post));
 		} else {
 			console.log("NO ROUTE:",req.url);
 			res.writeHead(404,"Can't find it.");

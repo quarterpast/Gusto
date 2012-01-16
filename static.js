@@ -4,9 +4,9 @@ pathutil = require("path"),
 mime = require("mime");
 
 exports.file = function(result,path) {
-	//console.log(arguments);
 	try {
 		var read = fs.createReadStream(path);
+		read.resume();
 		util.pump(read,result,function(error) {
 			if(error) throw error;
 		});
@@ -17,7 +17,6 @@ exports.file = function(result,path) {
 };
 exports.file.id = "static.file";
 exports.dir = function(result,dir,vars) {
-	console.log(arguments);
 	exports.file(result,pathutil.join(dir,vars.file));
 };
 
