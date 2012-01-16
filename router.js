@@ -17,7 +17,7 @@ module.exports = function Router(req,res,route) {
 					if(slash == '/') {
 						return "(([^/?*:;{}\\]+/)+)";
 					}
-					return "([\\w0-9.-]+)");
+					return "([\\w0-9.-]+)";
 				}
 			)+
 		"$");
