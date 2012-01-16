@@ -17,7 +17,7 @@ exports.file = function(result,path) {
 };
 exports.file.id = "static.file";
 exports.dir = function(result,dir,vars) {
-	//console.log(arguments);
+	console.log(arguments);
 	exports.file(result,pathutil.join(dir,vars.file));
 };
 
