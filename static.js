@@ -3,12 +3,13 @@ util = require("util"),
 fs = require("fs"),
 pathutil = require("path"),
 mime = require("mime"),
-filters = require("mvc/list.js").filters;
+list = require("mvc/list.js");
 
 exports.file = function(result,path) {
 	var read = fs.createReadStream(path),
 	type = mime.lookup(path),
-	ext = pathutil.extname(path).substr(1);
+	ext = pathutil.extname(path).substr(1),
+	filters = list.filters;
 
 	if(ext in filters) {
 		var filter = filters[ext];

@@ -2,7 +2,6 @@ const fs = require("fs"),
       path = require("path"),
       hot = require("hot"),
       controller = require("mvc/controller.js");
-
 var initialisers = {
 	controllers: controller,
 	filters: function(spec) {
@@ -11,7 +10,6 @@ var initialisers = {
 	}
 },
 loaders = {};
-
 function fromFiles(thing) {
 	var out = {};
 	exports[thing] = {};
