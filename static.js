@@ -54,8 +54,8 @@ exports.file = function(request,result,path) {
 	});
 };
 exports.file.id = "static.file";
-exports.dir = function(result,dir,vars) {
-	exports.file(result,pathutil.join(dir,vars.file));
+exports.dir = function(request,result,dir,vars) {
+	exports.file(request,result,pathutil.join(dir,vars.file));
 };
 
 exports.dir.id = "static.dir";
