@@ -63,6 +63,7 @@ const server = http.createServer(function Listen(req,res) {
 					res[action.shift()].apply(res,action);
 				});
 				res.end(reason);
+				console.timeEnd(process.pid+" "+req.url);
 			});
 			match[0](match[0].params.merge(get).merge(post));
 		} else {
@@ -73,10 +74,10 @@ const server = http.createServer(function Listen(req,res) {
 				res.writeHead(404,req.url+" not found");
 				res.write(out);
 				res.end();
+				console.timeEnd(process.pid+" "+req.url);
 			});
 		
 		}
-		console.timeEnd(process.pid+" "+req.url);
 	});
 }),
 port = config[require.main.exports.mode].port || 8000;
