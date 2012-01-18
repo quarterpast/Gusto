@@ -47,7 +47,7 @@ module.exports = function Router(req,res,route) {
 			var id = action.id, run, bits = id.split('.');
 
 			if(["static.file","static.dir"].some(id)) {
-				run = action.bind(null,res,route[3]);
+				run = action.bind(null,req,res,route[3]);
 			} else {
 				methods = instance(res,bits[0],bits[1]);
 				run = action.bind(action.context.merge(methods));

@@ -6,7 +6,7 @@ mime = require("mime"),
 crypto = require("crypto"),
 list = require("mvc/list.js");
 
-exports.file = function(result,path) {
+exports.file = function(request,result,path) {
 	var read = fs.createReadStream(path),
 	type = mime.lookup(path),
 	ext = pathutil.extname(path).substr(1),
