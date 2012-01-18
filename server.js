@@ -3,6 +3,7 @@ http = require("http"),
 router = require("router.js"),
 static = require("static.js"),
 list = require("mvc/list.js"),
+ErrorHandler = require("error.js"),
 url = require("url"),
 path = require("path"),
 querystring = require("querystring"),
@@ -64,10 +65,15 @@ const server = http.createServer(function Listen(req,res) {
 			});
 			match[0](match[0].params.merge(get).merge(post));
 		} else {
-			console.log("NO ROUTE:",req.url);
-			res.writeHead(404,"Can't find it.");
-			res.end();
-			//console.log(req);
+			new ErrorHandler({
+				status:404,
+				message:"Could not find "+req.url
+			}).on("render",function(out){
+				res.writeHead(404,req.url+" not found");
+				res.write(out);
+				res.end();
+			});
+		
 		}
 	});
 }),
