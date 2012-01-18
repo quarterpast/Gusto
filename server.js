@@ -57,7 +57,7 @@ const server = http.createServer(function Listen(req,res) {
 					headers = reason;
 					reason = "";
 				}
-				res.writeHead(status,headers);
+				res.writeHead(status,reason,headers);
 				queue.each(function(action) {
 					res[action.shift()].apply(res,action);
 				});
