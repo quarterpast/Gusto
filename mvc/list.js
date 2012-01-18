@@ -4,7 +4,11 @@ const fs = require("fs"),
       controller = require("mvc/controller.js");
 
 var initialisers = {
-	controllers: controller
+	controllers: controller,
+	filters: function(spec) {
+		var ee = new process.EventEmitter();
+		return spec.merge(ee,true);
+	}
 },
 loaders = {};
 
@@ -14,9 +18,9 @@ function fromFiles(thing) {
 
 	fs.readdirSync(path.join("app",thing)).each(function(file) {
 		var base = path.basename(file,".js"),
-		init = thing in initialisers
-			? initialisers[thing]
-			: function(a){return a;};
+		init = thing in initialisers ?
+			initialisers[thing] :
+			function(a){return a;};
 		function save(module) {
 			out[base] = exports[thing][base] = init.call(base,module);
 		}
@@ -35,10 +39,11 @@ function fromFiles(thing) {
 
 fromFiles("controllers");
 fromFiles("models");
+fromFiles("filters");
 
 exports.isAction = function(func) {
 	var id = Object.isString(func) ? func : func.id;
 	return exports.controllers.values().some(function(cont) {
 		cont.values().map("id").some(id);
-	})
+	});
 };

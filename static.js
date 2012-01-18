@@ -3,32 +3,37 @@ util = require("util"),
 fs = require("fs"),
 pathutil = require("path"),
 mime = require("mime"),
-fpath = pathutil.join(config.appDir,"conf","filters.js"),
-filters = pathutil.existsSync(fpath) ? require(fpath) : {};
+filters = require("mvc/list.js").filters;
 
 exports.file = function(result,path) {
 	var read = fs.createReadStream(path),
-	type = mime.lookup(path);
+	type = mime.lookup(path),
+	ext = pathutil.extname(path).substr(1);
 
-	if(pathutil.extname(path) in filters) {
-		var filter = filters[pathutil.extname(path)];
-		type = filter.mime;
+	if(ext in filters) {
+		var filter = filters[ext];
+		filter.init(path);
 	}
 	read.resume();
 	read.on("error", function(error) {
 		result.emit("done",404,path+" not found.");
 	}).on("data",function(chunk) {
 		if(filter) {
-			filter.content(chunk,path).on("error",function(e) {
-				result.emit("done",500,"could not filter");
-			}).on("done",function(out) {
-				result.emit("queue",["write",out]);
-			});
+			filter.chunk(chunk,path);
 		} else {
 			result.emit("queue",["write",chunk]);
 		}
 	}).on("end",function() {
-		result.emit("done",200,{"Content-type":type});
+		if(filter) {
+			filter.output(path).on("error",function(e) {
+				result.emit("done",500,"couldn't filter");
+			}).on("done",function(out) {
+				result.emit("queue",["write",chunk]);
+				result.emit("done",200,{"Content-type":filter.type});
+			});
+		} else {
+			result.emit("done",200,{"Content-type":type});
+		}
 	});
 };
 exports.file.id = "static.file";
