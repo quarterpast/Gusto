@@ -20,7 +20,7 @@ routes = data.split(/[\n\r]/).map(function(line) {
 	return parts;
 }).compact();
 const server = http.createServer(function Listen(req,res) {
-	console.time(req.url);
+	console.time(process.pid+" "+req.url);
 	var body = new Buffer(req.headers['content-length'] || 0),
 	off = 0,
 	match = [];
@@ -76,7 +76,7 @@ const server = http.createServer(function Listen(req,res) {
 			});
 		
 		}
-		console.timeEnd(req.url);
+		console.timeEnd(process.pid+" "+req.url);
 	});
 }),
 port = config[require.main.exports.mode].port || 8000;
@@ -86,7 +86,8 @@ exports.go = function() {
 			port,
 			config[require.main.exports.mode].address,
 			console.log.bind(null,
-				"Listening on %s:%d",
+				"%d listening on %s:%d",
+				process.pid,
 				config[require.main.exports.mode].address,
 				port
 			)
@@ -95,7 +96,8 @@ exports.go = function() {
 		server.listen(
 			port,
 			console.log.bind(null,
-				"Listening on *:%d",
+				"%d listening on *:%d",
+				process.pid,
 				port
 			)
 		);
