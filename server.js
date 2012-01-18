@@ -67,7 +67,7 @@ const server = http.createServer(function Listen(req,res) {
 		} else {
 			new ErrorHandler({
 				status:404,
-				message:"Could not find "+req.url
+				path:req.url
 			}).on("render",function(out){
 				res.writeHead(404,req.url+" not found");
 				res.write(out);

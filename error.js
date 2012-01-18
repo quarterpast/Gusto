@@ -4,7 +4,6 @@ Renderer = require("mvc/renderer.js");
 
 module.exports = function ErrorHandler(e) {
 	var that = this;
-	console.dir(e.type);
 	new Renderer(
 		"status" in e ? e.status : "error",
 	e).on("render",function(output) {
