@@ -49,6 +49,9 @@ const server = http.createServer(function Listen(req,res) {
 					queue.push(arg);
 				});
 			});
+			res.on("clearQueue",function() {
+				queue = [];
+			});
 			res.on("done",function(status,reason,headers) {
 				if(Object.isObject(reason)) {
 					headers = reason;
