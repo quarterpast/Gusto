@@ -4,19 +4,34 @@ fs = require("fs"),
 pathutil = require("path"),
 mime = require("mime"),
 crypto = require("crypto"),
+zlib = require("zlib"),
 list = require("mvc/list.js");
 
+var cache = {};
+
 exports.file = function(request,result,path) {
-	var read = fs.createReadStream(path),
-	type = mime.lookup(path),
+	var type = mime.lookup(path),
 	ext = pathutil.extname(path).substr(1),
 	filters = list.filters,
-	hash = crypto.createHash("md5");
-
+	hash = crypto.createHash("md5"), read, gzip, filter;
 	if(ext in filters) {
-		var filter = filters[ext];
+		filter = filters[ext];
+		type = filter.type;
 		filter.init(path);
 	}
+	if(!(path in cache)) {
+		read = fs.createReadStream(path);
+		gzip = zlib.createGzip();
+	} else {
+		result.writeHead(304,"not modified",{
+			"Content-type":type,
+			"Content-encoding":"gzip",
+			"Expires":Date.create("next year").format(Date.RFC1123)
+		});
+		result.write(cache[path]);
+	}
+
+	hash.update(request.header.host);
 	read.resume();
 	read.on("error", function(error) {
 		result.emit("done",404,path+" not found.");
@@ -33,7 +48,8 @@ exports.file = function(request,result,path) {
 			result.emit("clearQueue");
 			return result.emit("done",304,"Not modified",{
 				"Content-type":type,
-				"ETag":etag
+				"ETag":etag,
+				"Expires":Date.create("next year").format(Date.RFC1123)
 			});
 		}
 		if(filter) {
@@ -43,13 +59,15 @@ exports.file = function(request,result,path) {
 				result.emit("queue",["write",out]);
 				result.emit("done",200,{
 					"Content-type":filter.type,
-					"ETag":etag
+					"ETag":etag,
+				"Expires":Date.create("next year").format(Date.RFC1123)
 				});
 			});
 		} else {
 			result.emit("done",200,{
 				"Content-type":type,
-				"ETag":etag
+				"ETag":etag,
+				"Expires":Date.create("next year").format(Date.RFC1123)
 			});
 		}
 	});
