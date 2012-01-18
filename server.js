@@ -20,7 +20,7 @@ routes = data.split(/[\n\r]/).map(function(line) {
 	return parts;
 }).compact();
 const server = http.createServer(function Listen(req,res) {
-	console.time(process.pid+" "+req.url);
+	console.time(process.pid+" "+req.connection.remoteAddress+" "+req.url);
 	var body = new Buffer(req.headers['content-length'] || 0),
 	off = 0,
 	match = [];
@@ -63,7 +63,7 @@ const server = http.createServer(function Listen(req,res) {
 					res[action.shift()].apply(res,action);
 				});
 				res.end(reason);
-				console.timeEnd(process.pid+" "+req.url);
+				console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
 			});
 			match[0](match[0].params.merge(get).merge(post));
 		} else {
@@ -74,7 +74,7 @@ const server = http.createServer(function Listen(req,res) {
 				res.writeHead(404,req.url+" not found");
 				res.write(out);
 				res.end();
-				console.timeEnd(process.pid+" "+req.url);
+				console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
 			});
 		
 		}
