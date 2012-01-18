@@ -29,7 +29,7 @@ exports.file = function(result,path) {
 			filter.output(path).on("error",function(e) {
 				result.emit("done",500,"couldn't filter");
 			}).on("done",function(out) {
-				result.emit("queue",["write",chunk]);
+				result.emit("queue",["write",out]);
 				result.emit("done",200,{"Content-type":filter.type});
 			});
 		} else {
