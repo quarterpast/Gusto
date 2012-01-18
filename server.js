@@ -57,15 +57,11 @@ const server = http.createServer(function Listen(req,res) {
 					headers = reason;
 					reason = "";
 				}
-				for(var header in headers) {
-					if(headers.hasOwnProperty(header))
-						res.setHeader(header,headers[header]);
-				}
-				res.statusCode = status;
+				res.writeHead(status,headers);
 				queue.each(function(action) {
 					res[action.shift()].apply(res,action);
 				});
-				res.end(reason);
+				res.end();
 				console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
 			});
 			match[0](match[0].params.merge(get).merge(post));
