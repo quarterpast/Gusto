@@ -6,7 +6,7 @@ module.exports = function ErrorHandler(e) {
 	var that = this;
 	console.dir(e.type);
 	new Renderer(
-		status in e ? status : "error",
+		"status" in e ? status : "error",
 	e).on("render",function(output) {
 		that.emit("render",output);
 	}).on("error",function(e) {
