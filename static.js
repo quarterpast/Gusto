@@ -29,6 +29,12 @@ exports.file = function(request,result,path) {
 		}
 	}).on("end",function() {
 		var etag = hash.digest("hex");
+		if(etag === request.headers["If-None-Match"]) {
+			return result.emit("done",304,"Not modified",{
+				"Content-type":type,
+				"ETag":etag
+			});
+		}
 		if(filter) {
 			filter.output(path).on("error",function(e) {
 				result.emit("done",500,"couldn't filter");
