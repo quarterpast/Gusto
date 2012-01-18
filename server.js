@@ -20,6 +20,7 @@ routes = data.split(/[\n\r]/).map(function(line) {
 	return parts;
 }).compact();
 const server = http.createServer(function Listen(req,res) {
+	console.time(req.url);
 	var body = new Buffer(req.headers['content-length'] || 0),
 	off = 0,
 	match = [];
@@ -75,6 +76,7 @@ const server = http.createServer(function Listen(req,res) {
 			});
 		
 		}
+		console.timeEnd(req.url);
 	});
 }),
 port = config[require.main.exports.mode].port || 8000;
