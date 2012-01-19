@@ -7,31 +7,18 @@ crypto = require("crypto"),
 zlib = require("zlib"),
 list = require("mvc/list.js");
 
-var cache = {};
-
 exports.file = function(request,result,path) {
-	var type = mime.lookup(path),
+	var read = fs.createReadStream(path),
+	type = mime.lookup(path),
 	ext = pathutil.extname(path).substr(1),
 	filters = list.filters,
-	hash = crypto.createHash("md5"), read, gzip, filter;
+	hash = crypto.createHash("md5");
+	hash.update(request.header.host);
+
 	if(ext in filters) {
-		filter = filters[ext];
-		type = filter.type;
+		var filter = filters[ext];
 		filter.init(path);
 	}
-	if(!(path in cache)) {
-		read = fs.createReadStream(path);
-		gzip = zlib.createGzip();
-	} else {
-		result.writeHead(304,"not modified",{
-			"Content-type":type,
-			"Content-encoding":"gzip",
-			"Expires":Date.create("next year").format(Date.RFC1123)
-		});
-		result.write(cache[path]);
-	}
-
-	hash.update(request.header.host);
 	read.resume();
 	read.on("error", function(error) {
 		result.emit("done",404,path+" not found.");

@@ -3,11 +3,7 @@ const fs = require("fs"),
       hot = require("hot"),
       controller = require("mvc/controller.js");
 var initialisers = {
-	controllers: controller,
-	filters: function(spec) {
-		var ee = new process.EventEmitter();
-		return spec.merge(ee,true);
-	}
+	controllers: controller
 },
 loaders = {};
 function fromFiles(thing) {
