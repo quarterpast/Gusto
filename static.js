@@ -13,7 +13,7 @@ exports.file = function(request,result,path) {
 	ext = pathutil.extname(path).substr(1),
 	filters = list.filters,
 	hash = crypto.createHash("md5");
-	hash.update(request.header.host);
+	hash.update(request.headers.host);
 
 	if(ext in filters) {
 		var filter = filters[ext];
@@ -25,7 +25,7 @@ exports.file = function(request,result,path) {
 	}).on("data",function(chunk) {
 		hash.update(chunk);
 		if(filter) {
-			filter.chunk(chunk,path);
+			filter.write(chunk,path);
 		} else {
 			result.emit("queue",["write",chunk]);
 		}
