@@ -35,6 +35,7 @@ exports.file = function(request,result,path) {
 			result.emit("clearQueue");
 			return result.emit("done",304,"Not modified",{
 				"Content-type":type,
+				"Cache-Control":"max-age=31556926",
 				"ETag":etag,
 				"Expires":Date.create("next year").format(Date.RFC1123)
 			});
@@ -46,13 +47,15 @@ exports.file = function(request,result,path) {
 				result.emit("queue",["write",out]);
 				result.emit("done",200,{
 					"Content-type":filter.type,
+					"Cache-Control":"max-age=31556926",
 					"ETag":etag,
-				"Expires":Date.create("next year").format(Date.RFC1123)
+					"Expires":Date.create("next year").format(Date.RFC1123)
 				});
 			});
 		} else {
 			result.emit("done",200,{
 				"Content-type":type,
+				"Cache-Control":"max-age=31556926",
 				"ETag":etag,
 				"Expires":Date.create("next year").format(Date.RFC1123)
 			});
