@@ -12,7 +12,7 @@ exports.file = function(request,result,path) {
 	type = mime.lookup(path),
 	ext = pathutil.extname(path).substr(1),
 	filters = list.filters,
-	hash = crypto.createHash("md5");
+	hash = crypto.createHash("sha224");
 	hash.update(request.headers.host);
 
 	if(ext in filters) {
