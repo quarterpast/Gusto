@@ -8,7 +8,7 @@ zlib = require("zlib"),
 list = require("mvc/list.js");
 
 exports.file = function(request,result,path) {
-	pathutil.exists(path,function(exists)) {
+	pathutil.exists(path,function(exists) {
 		if(exists) {
 			var read = fs.createReadStream(path),
 			type = mime.lookup(path),
@@ -27,7 +27,7 @@ exports.file = function(request,result,path) {
 			if(enc) {
 				result.writeHead(200,baseHead.merge({
 					"content-encoding": enc
-				});
+				}));
 				read.resume();
 				read.pipe(zlib["create"+enc.capitalize()]()).pipe(result);
 			} else {
@@ -40,7 +40,7 @@ exports.file = function(request,result,path) {
 			result.writeHead(404,path+" not found");
 		}
 		result.end();
-	}
+	});
 };
 exports.file.id = "static.file";
 
