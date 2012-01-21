@@ -12,8 +12,7 @@ exports.file = function(request,result,path) {
 		if(exists) {
 			var read = fs.createReadStream(path),
 			type = mime.lookup(path),
-			hash = crypto.createHash("sha224");
-			hash.update(request.headers.host),
+			hash = crypto.createHash("sha224"),
 			enc = request.headers["accept-encoding"].split(',')[0],
 			baseHead = {
 				"content-type": type,
@@ -21,8 +20,13 @@ exports.file = function(request,result,path) {
 				"expires":Date.create("next year").format(Date.RFC1123),
 				"trailer":"Etag"
 			};
+			console.log(hash)
+			hash.update(request.headers.host);
+
 			read.on("data",function(chunk) {
 				hash.update(chunk);
+			}).on("end",function(){
+				result.addTrailers({"Etag":hash.digest("hex")});
 			});
 			if(enc) {
 				result.writeHead(200,baseHead.merge({
@@ -35,7 +39,6 @@ exports.file = function(request,result,path) {
 				read.resume();
 				read.pipe(result);
 			}
-			result.addTrailers({"Etag":hash.digest("hex")});
 		} else {
 			result.writeHead(404,path+" not found");
 		}
