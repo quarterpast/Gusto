@@ -35,7 +35,7 @@ exports.file = function(request,result,path) {
 				read.resume();
 				read.pipe(result);
 			}
-			result.addTrailer("Etag",hash.digest("hex"));
+			result.addTrailers("Etag",hash.digest("hex"));
 		} else {
 			result.writeHead(404,path+" not found");
 		}
