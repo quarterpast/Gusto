@@ -1,7 +1,6 @@
 const stream = require("stream");
 module.exports = function filter(f) {
 	var that = new stream.Stream();
-	that.filter = f;
 	that.writable = true;
 	that.readable = true;
 	var buffer = new Buffer(1024);
