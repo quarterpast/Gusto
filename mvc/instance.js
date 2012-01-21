@@ -9,11 +9,11 @@ module.exports = function(result,base,action) {
 	}
 	return {
 		"redirect": function(path) {
-			return {status:302,headers:{"Location":path}};
+			result.writeHead(302,{"Location":path});
 		},
 		"renderJSON": function(args) {
-			result.emit("queue",["write",JSON.stringify(args)]);
-			result.emit("done",200,{"Content-type":"application/json"});
+			result.writeHead(200,{"Content-type":"application/json"});
+			result.write(JSON.stringify(args));
 		},
 		"render": function(args,other) {
 			var act = action;
@@ -24,13 +24,13 @@ module.exports = function(result,base,action) {
 			args = args || {};
 			var path = base ? pathutil.join(base,action) : action;
 			new Renderer(path,args).on("render",function(output) {
-				result.emit("queue",["write",output]);
-				result.emit("done",200,{"Content-type":"text/html"});
+				result.writeHead(200,{"Content-type":"text/html"});
+				result.write(output);
 			}).on("error",function(e) {
 				console.log(e.template);
 				new ErrorHandler(e).on("render",function(output) {
-					result.emit("queue",["write",output]);
-					result.emit("done",501,{"Content-type":"text/html"});
+					result.writeHead(501,{"Content-type":"text/html"});
+					result.write(output);
 				});
 			});
 		}
