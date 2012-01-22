@@ -35,7 +35,7 @@ module.exports = function CachedComp(method) {
 		return that;
 	};
 };
-const fs = require("fs");
+/*const fs = require("fs");
 var cg = module.exports("Gzip"),size = fs.statSync("lipsum.txt").size;
 
 for(var i=0; i<3; ++i) {
@@ -46,4 +46,4 @@ for(var i=0; i<3; ++i) {
 	r.resume();
 	r.pipe(cg("lipsum.txt",size)).pipe(w);
 	console.timeEnd(i);
-}
+}*/
