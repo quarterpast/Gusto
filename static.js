@@ -37,7 +37,7 @@ exports.file = function(request,result,path) {
 				};
 				hash.update(request.headers.host);
 
-				stream.Stream.prototype.filter = function(dest) {
+				stream.Stream.prototype.filter = function(dest,opts) {
 					if(filter) {
 						var that = this, f = list.filters[ext],
 						b = new Buffer(stat.size), off = 0;
@@ -49,12 +49,12 @@ exports.file = function(request,result,path) {
 								result.writeHead(500,"could not filter "+path);
 								result.end();
 							}).on("data",function(out) {
-								dest.write(out);
+								dest.end(out);
 							});
 						});
 						return dest;
 					}
-					return this.pipe(dest);
+					return this.pipe(dest,opts);
 				};
 
 				read.on("data",function(chunk) {

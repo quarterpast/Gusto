@@ -43,9 +43,12 @@ const server = http.createServer(function Listen(req,res) {
 			post = querystring.parse(body.toString());
 		}
 		if(match.length) {
-			var finish = res.end;
+			var finish = res.end, ended = false;
 			res.end = function() {
-				console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
+				if(!ended) {
+					console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
+					ended = true;
+				}
 				finish.apply(res,arguments);
 			};
 			res.on("pipe",function(src){
