@@ -13,7 +13,7 @@ module.exports = function(result,base,action) {
 		},
 		"renderJSON": function(args) {
 			result.writeHead(200,{"Content-type":"application/json"});
-			result.write(JSON.stringify(args));
+			result.end(JSON.stringify(args));
 		},
 		"render": function(args,other) {
 			var act = action;
@@ -25,12 +25,12 @@ module.exports = function(result,base,action) {
 			var path = base ? pathutil.join(base,action) : action;
 			new Renderer(path,args).on("render",function(output) {
 				result.writeHead(200,{"Content-type":"text/html"});
-				result.write(output);
+				result.end(output);
 			}).on("error",function(e) {
 				console.log(e.template);
 				new ErrorHandler(e).on("render",function(output) {
 					result.writeHead(501,{"Content-type":"text/html"});
-					result.write(output);
+					result.end(output);
 				});
 			});
 		}

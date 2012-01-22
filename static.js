@@ -20,7 +20,6 @@ exports.file = function(request,result,path) {
 				"expires":Date.create("next year").format(Date.RFC1123),
 				"trailer":"Etag"
 			};
-			console.log(hash)
 			hash.update(request.headers.host);
 
 			read.on("data",function(chunk) {
@@ -34,15 +33,17 @@ exports.file = function(request,result,path) {
 				}));
 				read.resume();
 				read.pipe(zlib["create"+enc.capitalize()]()).pipe(result);
+				result.end();
 			} else {
 				result.writeHead(200,baseHead);
 				read.resume();
 				read.pipe(result);
+				result.end();
 			}
 		} else {
 			result.writeHead(404,path+" not found");
+			result.end();
 		}
-		result.end();
 	});
 };
 exports.file.id = "static.file";

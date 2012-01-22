@@ -43,27 +43,11 @@ const server = http.createServer(function Listen(req,res) {
 			post = querystring.parse(body.toString());
 		}
 		if(match.length) {
-			var queue = [];
-			res.on("queue",function() {
-				Array.create(arguments).each(function(arg) {
-					queue.push(arg);
-				});
-			});
-			res.on("clearQueue",function() {
-				queue = [];
-			});
-			res.on("done",function(status,reason,headers) {
-				if(Object.isObject(reason)) {
-					headers = reason;
-					reason = "";
-				}
-				res.writeHead(status,reason,headers);
-				queue.each(function(action) {
-					res[action.shift()].apply(res,action);
-				});
-				res.end();
+			var finish = res.end;
+			res.end = function() {
 				console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
-			});
+				finish.apply(res,arguments);
+			};
 			match[0](match[0].params.merge(get).merge(post));
 		} else {
 			new ErrorHandler({
@@ -71,9 +55,7 @@ const server = http.createServer(function Listen(req,res) {
 				path:req.url
 			}).on("render",function(out){
 				res.writeHead(404,req.url+" not found");
-				res.write(out);
-				res.end();
-				console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
+				res.end(out);
 			});
 		
 		}
