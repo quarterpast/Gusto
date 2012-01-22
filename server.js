@@ -43,7 +43,7 @@ const server = http.createServer(function Listen(req,res) {
 			post = querystring.parse(body.toString());
 		}
 		if(match.length) {
-			var finish = res.end, ended = false;
+			var finish = res.end;
 			res.end = function() {
 				console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
 				finish.apply(res,arguments);
