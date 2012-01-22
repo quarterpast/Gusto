@@ -10,7 +10,6 @@ module.exports = function CachedComp(method) {
 	
 	var cache = {};
 	return function(id,size,options) {
-		console.log(cache)
 		if(id in cache) return cache[id];
 
 		var that = zlib["create"+method](options || {});
@@ -22,11 +21,12 @@ module.exports = function CachedComp(method) {
 		}).on("end",function() {
 			var actual = new Buffer(offset), enc;
 			buffer.copy(actual);
-			cache[id] = new stream.Stream;
+			cache[id] = new stream.Stream();
 			cache[id].readable = true;
-			cache[id].setEncoding = function(newEnc) {enc = newEnc};
+			cache[id].setEncoding = function(newEnc) {
+				enc = newEnc;
+			};
 			cache[id].resume = function() {
-				console.log("hello")
 				var out = enc ? actual.toString(enc) : actual;
 				cache[id].emit("data",out);
 			};
