@@ -1,4 +1,5 @@
 require("sugar");
+require("coffee-script");
 Object.sugar();
 const fs = require("fs"),
 cluster = require("cluster"),
