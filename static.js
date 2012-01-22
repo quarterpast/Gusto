@@ -5,6 +5,7 @@ pathutil = require("path"),
 mime = require("mime"),
 crypto = require("crypto"),
 cachezlib = require("cachezlib.js"),
+stream = require("stream"),
 list = require("mvc/list.js");
 
 exports.file = function(request,result,path) {
@@ -19,6 +20,7 @@ exports.file = function(request,result,path) {
 				type = mime.lookup(path),
 				hash = crypto.createHash("sha224"),
 				enc = request.headers["accept-encoding"].split(',')[0],
+				ext = pathutil.extname(path).substr(1),
 				cached = cachezlib(enc.capitalize())(
 					path+stat.mtime.getTime(),
 					stat.size
@@ -31,6 +33,13 @@ exports.file = function(request,result,path) {
 				};
 				hash.update(request.headers.host);
 
+				stream.Stream.prototype.filter = function(dest) {
+					if(ext in list.filters) {
+						this.pipe(list.filters[ext]);
+					}
+					return this;
+				};
+
 				read.on("data",function(chunk) {
 					hash.update(chunk);
 				}).on("end",function(){
@@ -41,12 +50,12 @@ exports.file = function(request,result,path) {
 						"content-encoding": enc
 					}));
 					read.resume();
-					read.pipe(cached).pipe(result);
+					read.pipe(cached).filter().pipe(result);
 					result.end();
 				} else {
 					result.writeHead(200,baseHead);
 					read.resume();
-					read.pipe(result);
+					read.filter().pipe(result);
 					result.end();
 				}
 			});
