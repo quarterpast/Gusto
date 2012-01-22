@@ -43,6 +43,9 @@ exports.file = function(request,result,path) {
 						}).on("end",function() {
 							f(b,path).on("data",function(out) {
 								dest.write(out);
+							}).on("error",function(e) {
+								result.writeHead(500,"could not filter "+path);
+								result.end();
 							});
 						});
 						return dest;
