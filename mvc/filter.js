@@ -6,7 +6,6 @@ module.exports = function filter(f) {
 	var buffer = new Buffer(1024);
 	offset = 0;
 
-
 	that.write = function(d,e) {
 		if(!Buffer.isBuffer(d)) {
 			d = new Buffer(d,e);
@@ -25,3 +24,7 @@ module.exports = function filter(f) {
 
 	return that;
 };
+
+module.exports.identity = module.exports(function(data) {
+	this.emit("data",data);
+});
