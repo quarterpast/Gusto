@@ -38,7 +38,7 @@ exports.file = function(request,result,path) {
 						"content-encoding": enc
 					}));
 					read.resume();
-					read.pipe().pipe(result);
+					read.pipe(cached).pipe(result);
 					result.end();
 				} else {
 					result.writeHead(200,baseHead);
