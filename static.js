@@ -35,9 +35,19 @@ exports.file = function(request,result,path) {
 
 				stream.Stream.prototype.filter = function(dest) {
 					if(ext in list.filters) {
-						this.pipe(list.filters[ext]);
+						var that = this, f = list.filters[ext],
+						b = new Buffer(stat.size), off = 0;
+						this.on("data",function(chunk) {
+							chunk.copy(b,off);
+							off += chunk.length;
+						}).on("end",function() {
+							f(buf,path).on("data",function(out) {
+								dest.write(out);
+							});
+						});
+						return dest;
 					}
-					return this;
+					return this.pipe(dest);
 				};
 
 				read.on("data",function(chunk) {
@@ -50,12 +60,12 @@ exports.file = function(request,result,path) {
 						"content-encoding": enc
 					}));
 					read.resume();
-					read.pipe(cached).filter().pipe(result);
+					read.pipe(cached).filter(result);
 					result.end();
 				} else {
 					result.writeHead(200,baseHead);
 					read.resume();
-					read.filter().pipe(result);
+					read.filter(result);
 					result.end();
 				}
 			});
