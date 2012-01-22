@@ -68,12 +68,10 @@ exports.file = function(request,result,path) {
 					}));
 					read.resume();
 					read.filter(cached).pipe(result);
-					result.end();
 				} else {
 					result.writeHead(200,baseHead);
 					read.resume();
 					read.filter(result);
-					result.end();
 				}
 			});
 		} else {

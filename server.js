@@ -48,6 +48,11 @@ const server = http.createServer(function Listen(req,res) {
 				console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
 				finish.apply(res,arguments);
 			};
+			res.on("pipe",function(src){
+				src.on("end",function(){
+					res.end();
+				});
+			});
 			match[0](match[0].params.merge(get).merge(post));
 		} else {
 			new ErrorHandler({
