@@ -16,11 +16,15 @@ exports.file = function(request,result,path) {
 					result.writeHead(500,"could not stat "+path);
 					result.end();
 				}
+				var ext = pathutil.extname(path).substr(1),
+				type = mime.lookup(path),filter;
+				if(ext in list.filters) {
+					filter = list.filters[ext];
+					type = filter.type;
+				}
 				var read = fs.createReadStream(path),
-				type = mime.lookup(path),
 				hash = crypto.createHash("sha224"),
 				enc = request.headers["accept-encoding"].split(',')[0],
-				ext = pathutil.extname(path).substr(1),
 				cached = cachezlib(enc.capitalize())(
 					path+stat.mtime.getTime(),
 					stat.size
@@ -34,7 +38,7 @@ exports.file = function(request,result,path) {
 				hash.update(request.headers.host);
 
 				stream.Stream.prototype.filter = function(dest) {
-					if(ext in list.filters) {
+					if(filter) {
 						var that = this, f = list.filters[ext],
 						b = new Buffer(stat.size), off = 0;
 						this.on("data",function(chunk) {
