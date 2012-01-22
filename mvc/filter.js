@@ -14,14 +14,14 @@ module.exports = function filter(f) {
 		d.copy(buffer,offset);
 		offset += d.length;
 		return true;
-	}
+	};
 	that.end = function(d,e) {
 		if(d) {
 			this.write(d,e);
 		}
 		this.emit("data",f(buffer));
 		return true;
-	}
+	};
 
 	return that;
 };
