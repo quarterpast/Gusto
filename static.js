@@ -45,11 +45,11 @@ exports.file = function(request,result,path) {
 							chunk.copy(b,off);
 							off += chunk.length;
 						}).on("end",function() {
-							f(b,path).on("data",function(out) {
-								dest.write(out);
-							}).on("error",function(e) {
+							f(b,path).on("error",function(e) {
 								result.writeHead(500,"could not filter "+path);
 								result.end();
+							}).on("data",function(out) {
+								dest.write(out);
 							});
 						});
 						return dest;
@@ -67,7 +67,7 @@ exports.file = function(request,result,path) {
 						"content-encoding": enc
 					}));
 					read.resume();
-					read.pipe(cached).filter(result);
+					read.filter(cached).pipe(result);
 					result.end();
 				} else {
 					result.writeHead(200,baseHead);
