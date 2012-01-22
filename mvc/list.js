@@ -1,9 +1,11 @@
 const fs = require("fs"),
       path = require("path"),
       hot = require("hot"),
-      controller = require("mvc/controller.js");
+      controller = require("mvc/controller.js"),
+      filter = require("mvc/filter.js");
 var initialisers = {
-	controllers: controller
+	controllers: controller,
+	filters: filter
 },
 loaders = {};
 function fromFiles(thing) {

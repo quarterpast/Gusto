@@ -11,7 +11,10 @@ exports.file = function(request,result,path) {
 	pathutil.exists(path,function(exists) {
 		if(exists) {
 			fs.stat(path,function(err,stat) {
-				if(err) throw err;
+				if(err) {
+					result.writeHead(500,"could not stat "+path);
+					result.end();
+				}
 				var read = fs.createReadStream(path),
 				type = mime.lookup(path),
 				hash = crypto.createHash("sha224"),

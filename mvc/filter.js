@@ -19,7 +19,7 @@ module.exports = function filter(f) {
 		if(d) {
 			this.write(d,e);
 		}
-		this.emit("data",f(buffer));
+		f.call(this,buffer);
 		return true;
 	};
 
