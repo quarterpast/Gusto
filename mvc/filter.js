@@ -24,7 +24,3 @@ module.exports = function filter(f) {
 
 	return that;
 };
-
-module.exports.identity = module.exports(function(data) {
-	this.emit("data",data);
-});
