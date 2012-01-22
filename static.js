@@ -41,7 +41,7 @@ exports.file = function(request,result,path) {
 							chunk.copy(b,off);
 							off += chunk.length;
 						}).on("end",function() {
-							f(buf,path).on("data",function(out) {
+							f(b,path).on("data",function(out) {
 								dest.write(out);
 							});
 						});
