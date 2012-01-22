@@ -10,7 +10,8 @@ list = require("mvc/list.js");
 exports.file = function(request,result,path) {
 	pathutil.exists(path,function(exists) {
 		if(exists) {
-			fs.stat(path,function(stat) {
+			fs.stat(path,function(err,stat) {
+				if(err) throw err;
 				var read = fs.createReadStream(path),
 				type = mime.lookup(path),
 				hash = crypto.createHash("sha224"),
