@@ -15,7 +15,7 @@ actions = {
 				cluster.fork();
 			}
 			cluster.on('death', function(worker) {
-				console.log('worker ' + worker.pid + ' died');
+				console.log('hamster ' + worker.pid + ' died');
 				cluster.fork();
 			});
 		} else {

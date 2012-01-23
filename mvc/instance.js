@@ -21,7 +21,7 @@ module.exports = function(result,base,action) {
 				args = other;
 			}
 			args = args || {};
-			var path = base ? pathutil.join(base,action) : action;
+			var path = base ? pathutil.join(base,act) : act;
 			new Renderer(path,args).on("render",function(output) {
 				result.writeHead(200,{"Content-type":"text/html"});
 				result.end(output);
