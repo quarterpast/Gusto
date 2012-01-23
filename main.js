@@ -14,8 +14,8 @@ actions = {
 			for (var i = 0; i < numCPUs; i++) {
 				cluster.fork();
 			}
-			cluster.on('death', function(worker) {
-				console.log('hamster ' + worker.pid + ' died');
+			cluster.on('death', function(hamster) {
+				console.log('hamster ' + hamster.pid + ' died');
 				cluster.fork();
 			});
 		} else {

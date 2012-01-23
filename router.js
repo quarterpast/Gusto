@@ -47,7 +47,7 @@ module.exports = function Router(req,res,route) {
 					return;
 				} else throw e;
 			}
-
+			if(!action) return null;
 			var id = action.id, run, bits = id.split('.');
 
 			if(["static.file","static.dir","redirect"].some(id)) {
