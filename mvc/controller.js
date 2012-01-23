@@ -10,7 +10,7 @@ module.exports = function(actions) {
 	actions.keys(function(k) {
 		redirectors[k] = function(params) {
 			var url = template.route(base+"."+k,"GET",params);
-
+			this.redirect(url);
 		};
 	});
 	actions.keys(function(action) {

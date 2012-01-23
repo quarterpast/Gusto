@@ -1,6 +1,7 @@
 const util = require("util"),
 pathutil = require("path"),
 Renderer = require("mvc/renderer.js"),
+redirect = require("redirect.js"),
 ErrorHandler = require("error.js");
 
 module.exports = function(result,base,action) {
@@ -8,6 +9,7 @@ module.exports = function(result,base,action) {
 		throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(result)));
 	}
 	return {
+		"redirect": redirect.fill(null,result),
 		"renderJSON": function(args) {
 			result.writeHead(200,{"Content-type":"application/json"});
 			result.end(JSON.stringify(args));

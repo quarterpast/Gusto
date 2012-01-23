@@ -1,6 +1,7 @@
 const list = require("mvc/list.js"),
 fs = require("fs"),
 path = require("path"),
+querystring = require("querystring"),
 static = require("static.js"),
 config = require.main.exports.config,
 data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")).toString(),
@@ -10,8 +11,9 @@ routes = data.split(/[\n\r]/).map(function(line) {
 		throw new SyntaxError("Invalid HTTP method "+parts[0]);
 	return parts;
 });
-exports.route = function(action,method) {
+exports.route = function(action,method,params) {
 	var id = Object.isFunction(action) ? action.id : action,
+	query = querystring.stringify(params),
 	filter = routes.map(function(route) {
 		if(!!method && route[0] != "*" && method != route[0]) return null;
 
@@ -23,7 +25,11 @@ exports.route = function(action,method) {
 
 		if("static.dir" === route[2]) {
 			if(path.dirname(id) != route[3]) return null;
-			return route[1].replace('{file}',path.basename(id));
+			return route[1].replace('{file/}',path.basename(id));
+		}
+
+		if("redirect" === route[2]) {
+			return null; //@TODO: actually reverse redirect
 		}
 
 		if(list.isAction(route[2])) {
@@ -48,7 +54,7 @@ exports.route = function(action,method) {
 		return uri;
 	}).compact();
 	if(filter.length) {
-		return filter[0];
+		return filter[0]+(query && '&'+query);
 	}
 	throw new SyntaxError("Could not route "+id);
 };
