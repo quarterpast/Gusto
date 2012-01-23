@@ -2,7 +2,7 @@ const url = require("url"),
 list = require("mvc/list.js"),
 instance = require("mvc/instance.js"),
 staticRoute = require("static.js"),
-redirect = require("redirect.js";
+redirect = require("redirect.js");
 module.exports = function Router(req,res,route) {
 	var params = {}, keys = [], uri = url.parse(req.url,true);
 	if(route[0] === "*" || route[0] == req.method) {
