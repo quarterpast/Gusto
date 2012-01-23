@@ -54,7 +54,7 @@ exports.route = function(action,method,params) {
 		return uri;
 	}).compact();
 	if(filter.length) {
-		return filter[0]+(query && '&'+query);
+		return filter[0]+(query && '?'+query);
 	}
 	throw new SyntaxError("Could not route "+id);
 };
