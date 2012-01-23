@@ -8,9 +8,6 @@ module.exports = function(result,base,action) {
 		throw new TypeError(util.format("how am I supposed to write with \"%s\"",util.inspect(result)));
 	}
 	return {
-		"redirect": function(path) {
-			result.writeHead(302,{"Location":path});
-		},
 		"renderJSON": function(args) {
 			result.writeHead(200,{"Content-type":"application/json"});
 			result.end(JSON.stringify(args));

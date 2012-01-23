@@ -1,7 +1,8 @@
 const url = require("url"),
 list = require("mvc/list.js"),
 instance = require("mvc/instance.js"),
-staticRoute = require("static.js");
+staticRoute = require("static.js"),
+redirect = require("redirect.js";
 module.exports = function Router(req,res,route) {
 	var params = {}, keys = [], uri = url.parse(req.url,true);
 	if(route[0] === "*" || route[0] == req.method) {
@@ -34,7 +35,10 @@ module.exports = function Router(req,res,route) {
 			});
 			var env = ({}).merge(list.controllers)
 			              .merge(params)
-			              .merge({static: staticRoute});
+			              .merge({
+				              static: staticRoute,
+				              redirect: redirect
+				            });
 
 			try {
 				action = route[2].runInNewContext(env);
@@ -46,7 +50,7 @@ module.exports = function Router(req,res,route) {
 
 			var id = action.id, run, bits = id.split('.');
 
-			if(["static.file","static.dir"].some(id)) {
+			if(["static.file","static.dir","redirect"].some(id)) {
 				run = action.bind(null,req,res,route[3]);
 			} else {
 				methods = instance(res,bits[0],bits[1]);
