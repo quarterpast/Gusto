@@ -22,11 +22,6 @@ module.exports = function Router(req,res,route) {
 				}
 			)+
 		"$");
-
-		//console.log(reg,uri.pathname)
-		if("static.dir" == route[2]) {
-			
-		}
 		if(reg.test(uri.pathname)) {
 			uri.pathname.replace(reg,function(m){
 				for(var i = 1, l = keys.length; i <= l; ++i) {
@@ -50,7 +45,7 @@ module.exports = function Router(req,res,route) {
 			if(!action) return null;
 			var id = action.id, run, bits = id.split('.');
 
-			if(["static.file","static.dir","redirect"].some(id)) {
+			if(["static.file","static.dir","static.url","redirect"].some(id)) {
 				run = action.bind(null,req,res,route[3]);
 			} else {
 				methods = instance(res,bits[0],bits[1]);

@@ -6,7 +6,8 @@ mime = require("mime"),
 crypto = require("crypto"),
 cachezlib = require("cachezlib.js"),
 stream = require("stream"),
-list = require("mvc/list.js");
+list = require("mvc/list.js"),
+http = require("http");
 
 exports.file = function(request,result,path) {
 	pathutil.exists(path,function(exists) {
@@ -86,3 +87,18 @@ exports.dir = function(request,result,dir,vars) {
 	exports.file(request,result,pathutil.join(dir,vars.file));
 };
 exports.dir.id = "static.dir";
+
+exports.url = function(request,result,url,vars) {
+	var var options = {
+		host: url,
+		port: 80,
+		path: vars.file
+	};
+	http.get(options,function(getres) {
+		getres.pipe(result);
+	}).on("error",function(e) {
+		result.writeHead(404,pathutil.join(url,var.file)+" not found");
+		result.end();
+	});
+}
+exports.url.id = "static.url";
