@@ -89,15 +89,20 @@ exports.dir = function(request,result,dir,vars) {
 exports.dir.id = "static.dir";
 
 exports.url = function(request,result,url,vars) {
-	var var options = {
-		host: url,
+	var parts = url.split("/"),
+	options = {
+		host: parts.shift(),
 		port: 80,
-		path: vars.file
+		path: pathutil.join(parts.join("/"),vars.file)
 	};
 	http.get(options,function(getres) {
-		getres.pipe(result);
+		getres.on("data",function(r){
+			console.log(r)
+		})
+		result.end();
 	}).on("error",function(e) {
-		result.writeHead(404,pathutil.join(url,var.file)+" not found");
+		console.log(e)
+		result.writeHead(404,pathutil.join(url,vars.file)+" not found");
 		result.end();
 	});
 }
