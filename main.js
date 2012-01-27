@@ -27,7 +27,10 @@ actions = {
 		this.each(function(k,v){
 			console.log(k.padRight(" ",8-k.length),v.desc);
 		});
-	}.merge({desc:"Show this help"})
+	}.merge({desc:"Show this help"}),
+	"pack": function() {
+		
+	}.merge({desc:"Package the app in a single directory suitable for e.g. Nodester"})
 };
 if(process.argv[2] in actions)
 	actions[process.argv[2]].apply(actions,process.argv.slice(3));
