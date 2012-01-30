@@ -42,6 +42,7 @@ const server = http.createServer(function Listen(req,res) {
 		if(off) {
 			post = querystring.parse(body.toString());
 		}
+		res.params = get.merge(post);
 		if(match.length) {
 			var finish = res.end;
 			res.end = function() {

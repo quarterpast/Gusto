@@ -13,7 +13,7 @@ module.exports = function Router(req,res,route) {
 				function(m,key,sub,slash){
 					keys.push(key);
 					if(sub) {
-						return sub;
+						return sub.substr(1);
 					}
 					if(slash == '/') {
 						return "((/[^/?*:;{}\\\\]+)+)";
