@@ -32,7 +32,6 @@ exports.route = function(action,method,params) {
 			return; //@TODO: actually reverse redirect
 		}
 		if(list.isAction(route[2])) {
-			console.log(id,route[2]);
 			if(route[2] !== id) return;
 			return route[1];
 		}
