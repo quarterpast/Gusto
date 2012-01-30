@@ -28,6 +28,10 @@ exports.route = function(action,method,params) {
 			return route[1].replace('{file/}',path.basename(id));
 		}
 
+		if("static.url" === route[2]) {
+			return; //@TODO: actually give the url back
+		}
+
 		if("redirect" === route[2]) {
 			return; //@TODO: actually reverse redirect
 		}
@@ -35,9 +39,14 @@ exports.route = function(action,method,params) {
 			if(route[2] !== id) return;
 			return route[1];
 		}
-
-		var keys = route[2].replace(/^this\[|\]$/g,'').split("]["),
-		reg = new RegExp("^"+keys.map(function() {
+		var base = "", keys = route[2].replace(
+			/^([a-z\$_][a-z0-9\$_]*)\[|\]$/gi,function(m,b){
+			if(m !== ']' && b != "this") base = b;
+			return "";
+		}).split("]["),
+		reg = new RegExp("^"+(
+			base && base+"\\."
+		)+keys.map(function() {
 			return "([\\$_a-zA-Z][\\$_0-9a-zA-Z]*)";
 		}).join("\\.")+"$"),
 		uri = route[1];
@@ -45,6 +54,7 @@ exports.route = function(action,method,params) {
 		if(!reg.test(id)) return;
 
 		id.replace(reg,function(m) {
+			console.log(m)
 			var args = Array.create(arguments);
 			args.each(function(arg,i) {
 				uri = uri.replace('{'+keys[i-1]+'}',arg);
