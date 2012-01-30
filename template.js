@@ -58,7 +58,3 @@ exports.route = function(action,method,params) {
 	}
 	throw new SyntaxError("Could not route "+id);
 };
-exports.include = function(template,args) {
-	var template = require("app/views/"+template+".ejs").template;
-	return template.call(args,exports).toXMLString();
-};
