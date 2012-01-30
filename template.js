@@ -54,7 +54,6 @@ exports.route = function(action,method,params) {
 		if(!reg.test(id)) return;
 
 		id.replace(reg,function(m) {
-			console.log(m)
 			var args = Array.create(arguments);
 			args.each(function(arg,i) {
 				uri = uri.replace('{'+keys[i-1]+'}',arg);
