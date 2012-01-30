@@ -26,9 +26,9 @@ module.exports = function(result,base,action) {
 			.on("render",function(output) {
 				var headers = {"Content-type":"text/html"};
 				if(results.params.ajax) {
-					headers.merge({"X-Template-Params":JSON.stringify(args)})
+					headers.merge({"X-Template-Params":JSON.stringify(args)});
 				}
-				result.writeHead(200,);
+				result.writeHead(200,headers);
 				result.end(output);
 			}).on("error",function(e) {
 				console.log(e.template);
