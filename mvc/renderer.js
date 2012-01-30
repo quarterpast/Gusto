@@ -4,12 +4,13 @@ pathutil = require("path"),
 tmpl = require("tmpl"),
 list = require("mvc/list.js");
 
-module.exports = function Renderer(path,args,action,layout) {
+module.exports = function Renderer(path,args,action,layout,ajax) {
 	var resolved = pathutil.join("app/views/",path+".ejs"),
 	old = path,
 	that = this;
 	fs.readFile(resolved,function(err,data) {
 		if(err) throw err;
+		if(ajax) that.emit("render",data);
 		var comp, output = "";
 		try {
 			comp = tmpl.compile(data.toString(),resolved);
