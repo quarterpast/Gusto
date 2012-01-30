@@ -38,9 +38,6 @@ fromFiles("filters");
 exports.isAction = function(func) {
 	var id = Object.isString(func) ? func : func.id;
 	return exports.controllers.values().some(function(cont) {
-		cont.values().map("id").some(function(t){
-			console.log(t===id)
-			return t === id;
-		});
+		return cont.values().map("id").some(id);
 	});
 };
