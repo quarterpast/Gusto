@@ -15,25 +15,25 @@ exports.route = function(action,method,params) {
 	var id = Object.isFunction(action) ? action.id : action,
 	query = querystring.stringify(params),
 	filter = routes.map(function(route) {
-		if(!!method && route[0] != "*" && method != route[0]) return null;
+		if(!!method && route[0] != "*" && method != route[0]) return;
 
 		if("static.file" === route[2]) {
-			if(route[3] !== id) return null;
-			if(!path.existsSync(id)) return null;
+			if(route[3] !== id) return;
+			if(!path.existsSync(id)) return;
 			return route[1];
 		}
 
 		if("static.dir" === route[2]) {
-			if(path.dirname(id) != route[3]) return null;
+			if(path.dirname(id) != route[3]) return;
 			return route[1].replace('{file/}',path.basename(id));
 		}
 
 		if("redirect" === route[2]) {
-			return null; //@TODO: actually reverse redirect
+			return; //@TODO: actually reverse redirect
 		}
-
 		if(list.isAction(route[2])) {
-			if(route[2] !== id) return null;
+			console.log(id,route[2]);
+			if(route[2] !== id) return;
 			return route[1];
 		}
 
@@ -43,7 +43,7 @@ exports.route = function(action,method,params) {
 		}).join("\\.")+"$"),
 		uri = route[1];
 
-		if(!reg.test(id)) return null;
+		if(!reg.test(id)) return;
 
 		id.replace(reg,function(m) {
 			var args = Array.create(arguments);

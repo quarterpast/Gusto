@@ -4,7 +4,7 @@ pathutil = require("path"),
 tmpl = require("tmpl"),
 list = require("mvc/list.js");
 
-module.exports = function Renderer(path,args,layout) {
+module.exports = function Renderer(path,args,action,layout) {
 	var resolved = pathutil.join("app/views/",path+".ejs"),
 	old = path,
 	that = this;
@@ -14,7 +14,7 @@ module.exports = function Renderer(path,args,layout) {
 		try {
 			comp = tmpl.compile(data.toString(),resolved);
 		} catch(e) {
-			console.log("compilation error")
+			console.log("compilation error");
 			that.emit("error",e);
 			return;
 		}
@@ -22,6 +22,7 @@ module.exports = function Renderer(path,args,layout) {
 			output = comp.runInNewContext(
 				Object.clone(args,true).merge({
 					$: extensions.merge({
+						action: action,
 						layout: layout,
 						extend: function(daddy) {
 							path = daddy;
@@ -40,12 +41,12 @@ module.exports = function Renderer(path,args,layout) {
 				})
 			);
 		} catch(e) {
-			console.log("runtime error")
+			console.log("runtime error");
 			that.emit("error",e);
 			return;
 		}
 		if(old != path) {
-			new Renderer(path,args,output).on("render",function(output) {
+			new Renderer(path,args,action,output).on("render",function(output) {
 				that.emit("render",output);
 			}).on("error",function(e){
 				that.emit("error",e);

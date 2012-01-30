@@ -22,7 +22,7 @@ module.exports = function(result,base,action) {
 			}
 			args = args || {};
 			var path = base ? pathutil.join(base,act) : act;
-			new Renderer(path,args).on("render",function(output) {
+			new Renderer(path,args,base+"."+action).on("render",function(output) {
 				result.writeHead(200,{"Content-type":"text/html"});
 				result.end(output);
 			}).on("error",function(e) {
