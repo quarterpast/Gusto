@@ -21,7 +21,7 @@ module.exports = function Router(req,res,route) {
 					return "([\\w0-9.-]+)";
 				}
 			)+
-		"$");
+			"$");
 		if(reg.test(uri.pathname)) {
 			uri.pathname.replace(reg,function(m){
 				for(var i = 1, l = keys.length; i <= l; ++i) {

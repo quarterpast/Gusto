@@ -10,7 +10,7 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 	that = this;
 	fs.readFile(resolved,function(err,data) {
 		if(err) throw err;
-		if(ajax) that.emit("render",data);
+		if(ajax) return that.emit("render",data);
 		var comp, output = "";
 		try {
 			comp = tmpl.compile(data.toString(),resolved);
@@ -47,7 +47,7 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 			return;
 		}
 		if(old != path) {
-			new Renderer(path,args,action,output).on("render",function(output) {
+			new Renderer(path,args,action,output,false).on("render",function(output) {
 				that.emit("render",output);
 			}).on("error",function(e){
 				that.emit("error",e);

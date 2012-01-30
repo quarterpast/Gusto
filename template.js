@@ -47,10 +47,9 @@ exports.route = function(action,method,params) {
 		reg = new RegExp("^"+(
 			base && base+"\\."
 		)+keys.map(function() {
-			return "([\\$_a-zA-Z][\\$_0-9a-zA-Z]*(|[\s\S]+?)?)";
+			return "([\\$_a-zA-Z][\\$_0-9a-zA-Z]*)";
 		}).join("\\.")+"$"),
 		uri = route[1];
-		console.log(reg,id)
 
 		if(!reg.test(id)) return;
 		id.replace(reg,function(m) {

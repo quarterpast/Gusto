@@ -21,12 +21,16 @@ module.exports = function(result,base,action) {
 				args = other;
 			}
 			args = args || {};
-			var path = base ? pathutil.join(base,act) : act;
-			new Renderer(path,args,base+"."+action,result.params.ajax)
+			var path = base ? pathutil.join(base,act) : act,
+			ajax = "ajax" in result.params;
+			new Renderer(path,args,base+"."+action,"",ajax)
 			.on("render",function(output) {
 				var headers = {"Content-type":"text/html"};
-				if(result.params.ajax) {
-					headers.merge({"X-Template-Params":JSON.stringify(args)});
+				if(ajax) {
+					headers = {
+						"X-Template-Params":JSON.stringify(args),
+						"Content-type":"text/plain"
+					}
 				}
 				result.writeHead(200,headers);
 				result.end(output);
