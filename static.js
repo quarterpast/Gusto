@@ -7,6 +7,8 @@ crypto = require("crypto"),
 cachezlib = require("cachezlib.js"),
 stream = require("stream"),
 list = require("mvc/list.js"),
+Renderer = require("mvc/renderer.js"),
+ErrorHandler = require("error.js"),
 http = require("http");
 
 exports.file = function(request,result,path) {
@@ -107,3 +109,17 @@ exports.url = function(request,result,url,vars) {
 	});
 }
 exports.url.id = "static.url";
+
+exports.template = function(request,result,url,vars) {
+	new Renderer(vars.file,{},null,null,true).on("render",
+	function(output) {
+		result.writeHead(200,{"Content-type":"text/x-template"});
+		result.end(output);
+	}).on("error",function(e) {
+		new ErrorHandler(e).on("render",function(output) {
+			result.writeHead(501,{"Content-type":"text/html"});
+			result.end(output);
+		});
+	});
+};
+exports.template.id = "static.template";
