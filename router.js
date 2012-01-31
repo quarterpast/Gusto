@@ -16,12 +16,13 @@ module.exports = function Router(req,res,route) {
 						return sub.substr(1);
 					}
 					if(slash == '/') {
-						return "((/[^/?*:;{}\\\\]+)+)";
+						return "((/?[^/?*:;{}\\\\]+)+)";
 					}
 					return "([\\w0-9.-]+)";
 				}
 			)+
 			"$");
+
 		if(reg.test(uri.pathname)) {
 			uri.pathname.replace(reg,function(m){
 				for(var i = 1, l = keys.length; i <= l; ++i) {
@@ -34,7 +35,6 @@ module.exports = function Router(req,res,route) {
 				              static: staticRoute,
 				              redirect: redirect
 				            });
-
 			try {
 				action = route[2].runInNewContext(env);
 			} catch(e) {
@@ -45,7 +45,13 @@ module.exports = function Router(req,res,route) {
 			if(!action) return null;
 			var id = action.id, run, bits = id.split('.');
 
-			if(["static.file","static.dir","static.url","redirect"].some(id)) {
+			if([
+				"static.file",
+				"static.dir",
+				"static.url",
+				"static.template",
+				"redirect"
+			].some(id)) {
 				run = action.bind(null,req,res,route[3]);
 			} else {
 				methods = instance(res,bits[0],bits[1]);
