@@ -21,7 +21,7 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 			return;
 		}
 		try {
-			output = comp.runInNewContext(
+			this.output = output = comp.runInNewContext(
 				Object.clone(args,true).merge({
 					$: extensions.merge({
 						action: action,
@@ -37,6 +37,12 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 						},
 						exists: function(k) {
 							return k in args;
+						},
+						include: function(path,extras) {
+							return new Renderer(path,extras.merge(args))
+							.on("error",function(e) {
+								that.emit("error",e);
+							}).output;
 						}
 					}),
 					_: list.controllers
