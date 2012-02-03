@@ -2,10 +2,11 @@ const extensions = require("../template.js"),
 fs = require("fs"),
 pathutil = require("path"),
 tmpl = require("tmpl"),
-list = require("./list.js");
+list = require("./list.js"),
+config = require("../main.js").config;
 
 module.exports = function Renderer(path,args,action,layout,ajax) {
-	var resolved = pathutil.join("app/views/",path+".ejs"),
+	var resolved = pathutil.join(config.appDir,"app","views",path+".ejs"),
 	old = path,
 	that = this;
 	fs.readFile(resolved,function(err,data) {

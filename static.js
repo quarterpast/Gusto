@@ -52,7 +52,7 @@ exports.file = function(request,result,path) {
 							off += chunk.length;
 						}).on("end",function() {
 							f(b,path).on("error",function(e) {
-								result.writeHead(500,"could not filter "+path);
+								result.writeHead(501,"could not filter "+path);
 								result.end();
 							}).on("data",function(out) {
 								dest.end(out);
