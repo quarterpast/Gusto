@@ -16,7 +16,7 @@ exports.file = function(request,result,path) {
 		if(exists) {
 			fs.stat(path,function(err,stat) {
 				if(err) {
-					result.writeHead(500,"could not stat "+path);
+					result.writeHead(501,"could not stat "+path);
 					result.end();
 				}
 				var ext = pathutil.extname(path).substr(1),
