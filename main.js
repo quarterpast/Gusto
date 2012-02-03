@@ -2,9 +2,15 @@ require("sugar");
 Object.sugar();
 
 const cluster = require("cluster"),
+fs = require("fs"),
+path = require("path"),
 numCPUs = require('os').cpus().length,
 appDir = process.cwd();
-console.log(appDir)
+
+exports.mvc = {
+	list: require("./mvc/list.js")
+};
+
 exports.run = function(base) {
 	var config = exports.config = base.merge({appDir: appDir});
 	if(config.cluster && cluster.isMaster) {
