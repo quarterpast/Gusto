@@ -11,8 +11,8 @@ fs = require("fs"),
 vm = require("vm"),
 data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")).toString(),
 routes = data.split(/[\n\r]/).map(function(line) {
+	line = line.split("#").shift() || return;
 	var parts = line.split(/\s+/);
-	if(line.startsWith("#")) return;
 	if(parts.length < 2) return;
 	if(!["*","HEAD","GET","POST","PUT","TRACE","DELETE","OPTIONS","PATCH"].some(parts[0]))
 		throw new SyntaxError("Invalid HTTP method "+parts[0]);
