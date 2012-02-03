@@ -1,9 +1,9 @@
-const config = require.main.exports.config,
+const config = require("./main.js").config,
 http = require("http"),
-router = require("router.js"),
-list = require("mvc/list.js"),
-static = require("static.js"),
-ErrorHandler = require("error.js"),
+router = require("./router.js"),
+list = require("./mvc/list.js"),
+static = require("./static.js"),
+ErrorHandler = require("./error.js"),
 url = require("url"),
 path = require("path"),
 querystring = require("querystring"),
@@ -11,8 +11,9 @@ fs = require("fs"),
 vm = require("vm"),
 data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")).toString(),
 routes = data.split(/[\n\r]/).map(function(line) {
+	line = line.split("#").shift();
+	if(!line) return;
 	var parts = line.split(/\s+/);
-	if(line.startsWith("#")) return;
 	if(parts.length < 2) return;
 	if(!["*","HEAD","GET","POST","PUT","TRACE","DELETE","OPTIONS","PATCH"].some(parts[0]))
 		throw new SyntaxError("Invalid HTTP method "+parts[0]);
@@ -31,7 +32,7 @@ const server = http.createServer(function Listen(req,res) {
 	}
 	try {
 		match = routes.map(
-		                require("router.js")
+		                require("./router.js")
 		                .bind(null,req,res)
 		              ).compact();
 	} catch(e) {
@@ -62,16 +63,16 @@ const server = http.createServer(function Listen(req,res) {
 		}
 	});
 }),
-port = config[require.main.exports.mode].port || 8000;
+port = config.port || 8000;
 exports.go = function() {
-	if("address" in config[require.main.exports.mode]) {
+	if("address" in config) {
 		server.listen(
 			port,
-			config[require.main.exports.mode].address,
+			config.address,
 			console.log.bind(null,
 				"%d listening on %s:%d",
 				process.pid,
-				config[require.main.exports.mode].address,
+				config.address,
 				port
 			)
 		);

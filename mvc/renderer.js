@@ -1,8 +1,8 @@
-const extensions = require("template.js"),
+const extensions = require("../template.js"),
 fs = require("fs"),
 pathutil = require("path"),
 tmpl = require("tmpl"),
-list = require("mvc/list.js");
+list = require("./list.js");
 
 module.exports = function Renderer(path,args,action,layout,ajax) {
 	var resolved = pathutil.join("app/views/",path+".ejs"),

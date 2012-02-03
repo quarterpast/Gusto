@@ -1,7 +1,8 @@
 const fs = require("fs"),
       path = require("path"),
       hot = require("hot"),
-      controller = require("mvc/controller.js");
+      controller = require("./controller.js"),
+      config = require("../main.js").config;
 var initialisers = {
 	controllers: controller
 },
@@ -10,7 +11,7 @@ function fromFiles(thing) {
 	var out = {};
 	exports[thing] = {};
 
-	fs.readdirSync(path.join("app",thing)).each(function(file) {
+	fs.readdirSync(path.join(config.appDir,"app",thing)).each(function(file) {
 		var base = path.basename(file,".js"),
 		init = thing in initialisers ?
 			initialisers[thing] :
@@ -22,7 +23,7 @@ function fromFiles(thing) {
 			exports[thing].__defineGetter__(base,function() {
 				if(!(base in loaders)) {
 					loaders[base] = new hot.load(
-						path.join("app",thing,file)
+						path.join(config.appDir,"app",thing,file)
 					).on("reload",save);
 				}
 				return init.call(base,loaders[base].module);

@@ -1,8 +1,8 @@
 const util = require("util"),
 pathutil = require("path"),
-Renderer = require("mvc/renderer.js"),
-redirect = require("redirect.js"),
-ErrorHandler = require("error.js");
+Renderer = require("./renderer.js"),
+redirect = require("../redirect.js"),
+ErrorHandler = require("../error.js");
 
 module.exports = function(result,base,action) {
 	if(!("write" in result)) {

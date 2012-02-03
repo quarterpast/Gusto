@@ -1,38 +1,27 @@
 require("sugar");
-require("coffee-script");
 Object.sugar();
-const fs = require("fs"),
-cluster = require("cluster"),
+
+const cluster = require("cluster"),
+fs = require("fs"),
+path = require("path"),
 numCPUs = require('os').cpus().length,
-appDir = process.cwd(),
-base = JSON.parse(fs.readFileSync(appDir+"/conf/app.conf","utf8")),
-config = exports.config = base.merge({appDir: appDir}),
-actions = {
-	"run": function(mode) {
-		exports.mode = mode || "testing";
-		if(cluster.isMaster) {
-			for (var i = 0; i < numCPUs; i++) {
-				cluster.fork();
-			}
-			cluster.on('death', function(hamster) {
-				console.log('hamster ' + hamster.pid + ' died');
-				cluster.fork();
-			});
-		} else {
-			require("server.js").go();
+appDir = process.cwd();
+
+exports.run = function(base) {
+	var config = exports.config = base.merge({appDir: appDir});
+	exports.mvc = {
+		list: require("./mvc/list.js"),
+		model: require("./mvc/model.js")
+	};
+	if(config.cluster && cluster.isMaster) {
+		for (var i = 0; i < numCPUs; i++) {
+			cluster.fork();
 		}
-	}.merge({desc:"Run the app in testing mode"}),
-	"help": function(){
-		console.log("Struct framework\n");
-		this.each(function(k,v){
-			console.log(k.padRight(" ",8-k.length),v.desc);
+		cluster.on('death', function(hamster) {
+			console.log('hamster ' + hamster.pid + ' died');
+			config.respawn && cluster.fork();
 		});
-	}.merge({desc:"Show this help"}),
-	"pack": function() {
-		
-	}.merge({desc:"Package the app in a single directory suitable for e.g. Nodester"})
+	} else {
+		require("./server.js").go();
+	}
 };
-if(process.argv[2] in actions)
-	actions[process.argv[2]].apply(actions,process.argv.slice(3));
-else
-	actions.help();
