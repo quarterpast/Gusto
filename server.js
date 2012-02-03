@@ -32,7 +32,7 @@ const server = http.createServer(function Listen(req,res) {
 	}
 	try {
 		match = routes.map(
-		                require("router.js")
+		                require("./router.js")
 		                .bind(null,req,res)
 		              ).compact();
 	} catch(e) {
@@ -63,16 +63,16 @@ const server = http.createServer(function Listen(req,res) {
 		}
 	});
 }),
-port = config[require.main.exports.mode].port || 8000;
+port = config.port || 8000;
 exports.go = function() {
-	if("address" in config[require.main.exports.mode]) {
+	if("address" in config) {
 		server.listen(
 			port,
-			config[require.main.exports.mode].address,
+			config.address,
 			console.log.bind(null,
 				"%d listening on %s:%d",
 				process.pid,
-				config[require.main.exports.mode].address,
+				config.address,
 				port
 			)
 		);
