@@ -27,11 +27,7 @@ exports.file = function(request,result,path) {
 				}
 				var read = fs.createReadStream(path),
 				hash = crypto.createHash("sha224"),
-				enc = request.headers["accept-encoding"].split(',')[0],
-				cached = cachezlib(enc.capitalize())(
-					path+stat.mtime.getTime(),
-					stat.size
-				),
+				enc,cached,
 				baseHead = {
 					"content-type": type,
 					"cache-control":"max-age=31556926",
@@ -39,6 +35,14 @@ exports.file = function(request,result,path) {
 					"trailer":"Etag"
 				};
 				hash.update(request.headers.host);
+
+				if("accept-encoding" in request.headers) {
+					enc = request.headers["accept-encoding"].split(',')[0];
+					cached = cachezlib(enc.capitalize())(
+						path+stat.mtime.getTime(),
+						stat.size
+					);
+				}
 
 				stream.Stream.prototype.filter = function(dest,opts) {
 					if(filter) {
