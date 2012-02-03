@@ -1,7 +1,7 @@
 const fs = require("fs"),
       path = require("path"),
       hot = require("hot"),
-      controller = require("mvc/controller.js");
+      controller = require("./controller.js");
 var initialisers = {
 	controllers: controller
 },

@@ -1,14 +1,13 @@
-const config = require.main.exports.config,
-util = require("util"),
+const util = require("util"),
 fs = require("fs"),
 pathutil = require("path"),
 mime = require("mime"),
 crypto = require("crypto"),
-cachezlib = require("cachezlib.js"),
+cachezlib = require("./cachezlib.js"),
 stream = require("stream"),
-list = require("mvc/list.js"),
-Renderer = require("mvc/renderer.js"),
-ErrorHandler = require("error.js"),
+list = require("./mvc/list.js"),
+Renderer = require("./mvc/renderer.js"),
+ErrorHandler = require("./error.js"),
 http = require("http");
 
 exports.file = function(request,result,path) {

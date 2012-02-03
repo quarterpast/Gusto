@@ -1,9 +1,9 @@
-const list = require("mvc/list.js"),
+const list = require("./mvc/list.js"),
+static = require("./static.js"),
+config = require("./main.js"),
 fs = require("fs"),
 path = require("path"),
 querystring = require("querystring"),
-static = require("static.js"),
-config = require.main.exports.config,
 data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")).toString(),
 routes = data.split(/[\n\r]/).map(function(line) {
 	var parts = line.split(/\s+/);
