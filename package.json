@@ -1,4 +1,5 @@
 {
 	"name" : "struct",
-	"main" : "./main.js"
+	"main" : "./main.js",
+	"version": "0.0.1"
 }

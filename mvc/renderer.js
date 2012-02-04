@@ -39,10 +39,17 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 							return k in args;
 						},
 						include: function(path,extras) {
-							return new Renderer(path,extras.merge(args))
+							extras = extras || {};
+							var rend = new Renderer(path,Object.merge(extras,args))
 							.on("error",function(e) {
 								that.emit("error",e);
-							}).output;
+							});
+							console.log(rend)
+							return {
+								toString: function() {
+									return rend.output;
+								}
+							}
 						}
 					}),
 					_: list.controllers
