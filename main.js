@@ -10,6 +10,10 @@ pidFile = path.join(appDir,"struct.pid");
 
 
 exports.run = function(base) {
+	function fork() {
+		var pid = cluster.fork().pid.toString();
+		fs.open(path.join("pids.d",pid),"w");
+	}
 	var config = exports.config = base.merge({appDir: appDir});
 	
 	exports.mvc = {
@@ -18,13 +22,12 @@ exports.run = function(base) {
 	};
 	if(config.cluster && cluster.isMaster) {
 		for (var i = 0; i < numCPUs; i++) {
-			var pid = cluster.fork().pid.toString();
-			fs.open(path.join("pids.d",pid),"w");
+			fork();
 		}
 		cluster.on('death', function(hamster) {
 			console.log('hamster ' + hamster.pid + ' died');
-			fs.unlink(path.join("pids.d",pid));
-			config.respawn && cluster.fork();
+			fs.unlink(path.join("pids.d",hamster.pid.toString()));
+			config.respawn && fork();
 		});
 	} else {
 		require("./server.js").go();
