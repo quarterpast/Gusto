@@ -15,7 +15,7 @@ exports.run = function(base) {
 	&& fs.readFileSync(pidFile,"UTF-8");
 
 	if(pids) {
-		pids = pids.split(" ");
+		pids = pids.split("\n");
 	} else {
 		pids = [];
 	}
@@ -26,7 +26,9 @@ exports.run = function(base) {
 	};
 	if(config.cluster && cluster.isMaster) {
 		for (var i = 0; i < numCPUs; i++) {
-			cluster.fork();
+			var pid = cluster.fork().pid;
+			pids.push(pid);
+			fs.writeFile(pidFile,pids.join(" "));
 		}
 		cluster.on('death', function(hamster) {
 			pids.remove(hamster.pid);
@@ -35,8 +37,6 @@ exports.run = function(base) {
 			config.respawn && cluster.fork();
 		});
 	} else {
-		pids.push(process.pid);
-		fs.writeFile(pidFile,pids.join(" "));
 		require("./server.js").go();
 	}
 };
