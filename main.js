@@ -12,7 +12,7 @@ pidFile = path.join(appDir,"struct.pid");
 exports.run = function(base) {
 	var config = exports.config = base.merge({appDir: appDir});
 	var pids = path.existsSync(pidFile)
-	&& fs.readFileSync(pidFile);
+	&& fs.readFileSync(pidFile,"UTF-8");
 
 	if(pids) {
 		pids = pids.split(" ");
