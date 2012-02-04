@@ -19,7 +19,7 @@ exports.run = function(base) {
 	if(config.cluster && cluster.isMaster) {
 		for (var i = 0; i < numCPUs; i++) {
 			var pid = cluster.fork().pid;
-			console.log(path.join("pids.d",pid))
+			console.log(pid)
 			fs.open(path.join("pids.d",pid),"w");
 		}
 		cluster.on('death', function(hamster) {
