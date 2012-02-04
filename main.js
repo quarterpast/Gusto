@@ -11,15 +11,7 @@ pidFile = path.join(appDir,"struct.pid");
 
 exports.run = function(base) {
 	var config = exports.config = base.merge({appDir: appDir});
-	var pids = path.existsSync(pidFile)
-	&& fs.readFileSync(pidFile,"UTF-8");
-
-	if(pids) {
-		pids = pids.split("\n");
-	} else {
-		pids = [];
-	}
-
+	
 	exports.mvc = {
 		list: require("./mvc/list.js"),
 		model: require("./mvc/model.js")
@@ -27,13 +19,12 @@ exports.run = function(base) {
 	if(config.cluster && cluster.isMaster) {
 		for (var i = 0; i < numCPUs; i++) {
 			var pid = cluster.fork().pid;
-			pids.push(pid);
-			fs.writeFile(pidFile,pids.join(" "));
+			
+			fs.open(path.join("pids.d",pid),"w");
 		}
 		cluster.on('death', function(hamster) {
-			pids.remove(hamster.pid);
-			fs.writeFile(pidFile,pids.join(" "));
 			console.log('hamster ' + hamster.pid + ' died');
+			fs.unlink(path.join("pids.d",pid));
 			config.respawn && cluster.fork();
 		});
 	} else {
