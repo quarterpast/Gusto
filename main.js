@@ -5,10 +5,14 @@ const cluster = require("cluster"),
 fs = require("fs"),
 path = require("path"),
 numCPUs = require('os').cpus().length,
-appDir = process.cwd();
+appDir = process.cwd(),
+pidFile = path.join(appDir,"struct.pid");
+
 
 exports.run = function(base) {
 	var config = exports.config = base.merge({appDir: appDir});
+	var pids = fs.readFileSync(pidFile).split(" ");
+
 	exports.mvc = {
 		list: require("./mvc/list.js"),
 		model: require("./mvc/model.js")
@@ -18,10 +22,14 @@ exports.run = function(base) {
 			cluster.fork();
 		}
 		cluster.on('death', function(hamster) {
+			pids.remove(hamster.pid);
+			fs.writeFile(pidFile,pids.join(" "));
 			console.log('hamster ' + hamster.pid + ' died');
 			config.respawn && cluster.fork();
 		});
 	} else {
+		pids.push(process.pid);
+		fs.writeFile(pidFile,pids.join(" "));
 		require("./server.js").go();
 	}
 };
