@@ -11,7 +11,14 @@ pidFile = path.join(appDir,"struct.pid");
 
 exports.run = function(base) {
 	var config = exports.config = base.merge({appDir: appDir});
-	var pids = fs.readFileSync(pidFile).split(" ");
+	var pids = path.existsSync(pidFile)
+	&& fs.readFileSync(pidFile);
+
+	if(pids) {
+		pids = pids.split(" ");
+	} else {
+		pids = [];
+	}
 
 	exports.mvc = {
 		list: require("./mvc/list.js"),
