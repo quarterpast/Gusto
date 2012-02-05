@@ -1,5 +1,5 @@
-const list = require("./mvc/list.js"),
-static = require("./static.js"),
+const list = require("mvc/list.js"),
+static = require("server/static.js"),
 config = require("./main.js"),
 fs = require("fs"),
 path = require("path"),

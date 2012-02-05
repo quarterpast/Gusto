@@ -30,6 +30,6 @@ exports.run = function(base) {
 			config.respawn && fork();
 		});
 	} else {
-		require("./server.js").go();
+		require("server/server.js").go();
 	}
 };

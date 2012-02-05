@@ -1,6 +1,6 @@
 const url = require("url"),
-list = require("./mvc/list.js"),
-instance = require("./mvc/instance.js"),
+list = require("../mvc/list.js"),
+instance = require("../mvc/instance.js"),
 staticRoute = require("./static.js"),
 redirect = require("./redirect.js");
 

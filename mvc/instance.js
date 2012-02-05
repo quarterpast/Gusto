@@ -1,7 +1,7 @@
 const util = require("util"),
 pathutil = require("path"),
 Renderer = require("./renderer.js"),
-redirect = require("../redirect.js"),
+redirect = require("../server/redirect.js"),
 ErrorHandler = require("../error.js");
 
 module.exports = function(result,base,action) {
