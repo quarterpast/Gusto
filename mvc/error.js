@@ -1,6 +1,6 @@
 const util = require("util"),
 pathutil = require("path"),
-Renderer = require("mvc/renderer.js");
+Renderer = require("../mvc/renderer.js");
 
 module.exports = function ErrorHandler(e) {
 	var that = this, orig = e;
