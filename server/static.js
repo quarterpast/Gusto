@@ -3,13 +3,13 @@ fs = require("fs"),
 pathutil = require("path"),
 mime = require("mime"),
 crypto = require("crypto"),
-cachezlib = require("../cachezlib.js"),
+cachezlib = require("./cachezlib.js"),
 stream = require("stream"),
 list = require("../mvc/list.js"),
 Renderer = require("../mvc/renderer.js"),
-ErrorHandler = require("../error.js"),
+ErrorHandler = require("../mvc/error.js"),
 http = require("http"),
-reverse = require("../template.js").route;
+reverse = require("../mvc/template.js").route;
 
 exports.file = function(request,result,path) {
 	pathutil.exists(path,function(exists) {

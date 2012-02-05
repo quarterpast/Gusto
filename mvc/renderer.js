@@ -1,4 +1,4 @@
-const extensions = require("../template.js"),
+const extensions = require("./template.js"),
 fs = require("fs"),
 pathutil = require("path"),
 tmpl = require("tmpl"),
