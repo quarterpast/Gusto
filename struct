@@ -1,3 +1,0 @@
-#!/bin/sh
-structpath=$(dirname $0)
-NODE_PATH=$NODE_PATH:$structpath:$(pwd) node $structpath/main.js $@

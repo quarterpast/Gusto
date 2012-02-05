@@ -8,7 +8,8 @@ stream = require("stream"),
 list = require("./mvc/list.js"),
 Renderer = require("./mvc/renderer.js"),
 ErrorHandler = require("./error.js"),
-http = require("http");
+http = require("http"),
+reverse = require("./template.js").route;
 
 exports.file = function(request,result,path) {
 	pathutil.exists(path,function(exists) {
@@ -126,3 +127,8 @@ exports.template = function(request,result,url,vars) {
 	});
 };
 exports.template.id = "static.template";
+
+exports.route = function(request,result,url,vars) {
+	var route = reverse(vars.file,request.method,)
+};
+exports.route.id = "static.route";
