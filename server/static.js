@@ -127,8 +127,8 @@ exports.template = function(request,result,url,vars) {
 	});
 };
 exports.template.id = "static.template";
-
+/*
 exports.route = function(request,result,url,vars) {
 	var route = reverse(vars.file,request.method,)
 };
-exports.route.id = "static.route";
+exports.route.id = "static.route";*/
