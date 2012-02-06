@@ -1,6 +1,6 @@
 const fs = require("fs"),
 pathutil = require("path"),
-template = require("../template.js");
+template = require("./template.js");
 
 module.exports = function(actions) {
 	if(Object.isString(this)) {
