@@ -1,5 +1,5 @@
 require("sugar");
-Object.sugar();
+Object.extend();
 
 const cluster = require("cluster"),
 fs = require("fs"),
