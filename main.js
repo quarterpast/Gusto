@@ -17,8 +17,8 @@ exports.run = function(base) {
 	var config = exports.config = base.merge({appDir: appDir});
 	
 	exports.mvc = {
-		list: require("mvc/list.js"),
-		model: require("mvc/model.js")
+		list: require("./mvc/list.js"),
+		model: require("./mvc/model.js")
 	};
 	if(config.cluster && cluster.isMaster) {
 		for (var i = 0; i < numCPUs; i++) {
@@ -30,6 +30,6 @@ exports.run = function(base) {
 			config.respawn && fork();
 		});
 	} else {
-		require("server/server.js").go();
+		require("./server/server.js").go();
 	}
 };
