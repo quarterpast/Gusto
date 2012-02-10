@@ -1,3 +1,5 @@
+// renderer.js
+// invokes the template engine, sets up inheritance etc.
 const extensions = require("./template.js"),
 fs = require("fs"),
 pathutil = require("path"),
@@ -11,6 +13,7 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 	that = this;
 	fs.readFile(resolved,function(err,data) {
 		if(err) throw err;
+		// a raw template was requested, let's oblige them
 		if(ajax) return that.emit("render",data);
 		var comp, output = "";
 		try {
@@ -22,6 +25,7 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 		}
 		try {
 			this.output = output = comp.runInNewContext(
+				// give the compiled templates variables and functions and stuff
 				Object.clone(args,true).merge({
 					$: extensions.merge({
 						action: action,
@@ -61,6 +65,7 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 			return;
 		}
 		if(old != path) {
+			// $.extend was call, so now we compile that template
 			new Renderer(path,args,action,output,false).on("render",function(output) {
 				that.emit("render",output);
 			}).on("error",function(e){

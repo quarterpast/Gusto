@@ -1,3 +1,5 @@
+// static.js
+// methods for serving static files
 const util = require("util"),
 fs = require("fs"),
 pathutil = require("path"),
@@ -12,6 +14,7 @@ http = require("http"),
 reverse = require("../mvc/template.js").route;
 
 exports.file = function(request,result,path) {
+	// serve an individual file
 	pathutil.exists(path,function(exists) {
 		if(exists) {
 			fs.stat(path,function(err,stat) {
@@ -37,14 +40,18 @@ exports.file = function(request,result,path) {
 				hash.update(request.headers.host);
 
 				if("accept-encoding" in request.headers) {
+					// THIS IS NOT RFC 2616 COMPLIANT
+					// (ignores qvalues. in fact, probably crashes)
 					enc = request.headers["accept-encoding"].split(',')[0];
 					cached = cachezlib(enc.capitalize())(
+						// not entirely sure the cache works
 						path+stat.mtime.getTime(),
 						stat.size
 					);
 				}
 
 				stream.Stream.prototype.filter = function(dest,opts) {
+					// passes the data though the filter
 					if(filter) {
 						var that = this, f = list.filters[ext],
 						b = new Buffer(stat.size), off = 0;
@@ -61,6 +68,7 @@ exports.file = function(request,result,path) {
 						});
 						return dest;
 					}
+					// unless it doesnt exist, in which case just pipe
 					return this.pipe(dest,opts);
 				};
 
@@ -87,14 +95,16 @@ exports.file = function(request,result,path) {
 		}
 	});
 };
-exports.file.id = "static.file";
+exports.file.id = "static.file";// for the router
 
 exports.dir = function(request,result,dir,vars) {
+	// serve a folder. delegates to static.file
 	exports.file(request,result,pathutil.join(dir,vars.file));
 };
 exports.dir.id = "static.dir";
 
 exports.url = function(request,result,url,vars) {
+	// serve an url, e.g. for a CDN. DOESN'T WORK.
 	var parts = url.split("/"),
 	options = {
 		host: parts.shift(),
@@ -115,6 +125,7 @@ exports.url = function(request,result,url,vars) {
 exports.url.id = "static.url";
 
 exports.template = function(request,result,url,vars) {
+	// spit out an unrendered template
 	new Renderer(vars.file,{},null,null,true).on("render",
 	function(output) {
 		result.writeHead(200,{"Content-type":"text/x-template"});

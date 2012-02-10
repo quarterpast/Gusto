@@ -1,3 +1,5 @@
+// list.js
+// somewhat of a misnomer. actually invokes the hotloader
 const fs = require("fs"),
       path = require("path"),
       hot = require("hot"),
@@ -8,6 +10,7 @@ var initialisers = {
 },
 loaders = {};
 function fromFiles(thing) {
+	// when given a path, sets up the loaders
 	var out = {};
 	exports[thing] = {};
 
@@ -17,10 +20,13 @@ function fromFiles(thing) {
 			initialisers[thing] :
 			function(a){return a;};
 		function save(module) {
+			// exports the hot.js-loaded modules exported
 			out[base] = exports[thing][base] = init.call(base,module);
 		}
 		if(path.extname(file) == '.js') {
 			exports[thing].__defineGetter__(base,function() {
+				// only actually load the module when it's requested
+				// (avoids circular dependency issues)
 				if(!(base in loaders)) {
 					loaders[base] = new hot.load(
 						path.join(config.appDir,"app",thing,file)
@@ -31,7 +37,7 @@ function fromFiles(thing) {
 		}
 	});
 }
-
+// load the things
 fromFiles("controllers");
 fromFiles("models");
 fromFiles("filters");

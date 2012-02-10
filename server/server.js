@@ -1,3 +1,5 @@
+// server.js
+// it's a server
 const config = require("../main.js").config,
 http = require("http"),
 router = require("./router.js"),
@@ -9,8 +11,10 @@ path = require("path"),
 querystring = require("querystring"),
 fs = require("fs"),
 vm = require("vm"),
+
 data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")).toString(),
 routes = data.split(/[\n\r]/).map(function(line) {
+	// parse the routes file into an array with vm scripts
 	line = line.split("#").shift();
 	if(!line) return;
 	var parts = line.split(/\s+/);
@@ -20,33 +24,43 @@ routes = data.split(/[\n\r]/).map(function(line) {
 	parts[2] = vm.createScript(parts[2],parts[1]);
 	return parts;
 }).compact();
+
 const server = http.createServer(function Listen(req,res) {
+	// yay! we got a request
+	// start timing
 	console.time(process.pid+" "+req.connection.remoteAddress+" "+req.url);
 	var body = new Buffer(req.headers['content-length'] || 0),
 	off = 0,
 	match = [];
 	if(req.method == "POST") {
+		// snarf the request body
 		req.on("data",function(chunk) {
 			off = body.write(chunk,off);
 		});
 	}
 	try {
+		// route the request
 		match = routes.map(
 		                require("./router.js")
 		                .bind(null,req,res)
 		              ).compact();
 	} catch(e) {
+		//@TODO: better handling of this
 		console.log(e.stack);
 	}
 	req.on("end", function() {
+		// request's finished, do our thing
 		var post = {}, get = url.parse(req.url,true).query;
 		if(off) {
+			// we snarfed some post data, parse it
 			post = querystring.parse(body.toString());
 		}
 		res.params = get.merge(post);
 		if(match.length) {
+			// there's a match!
 			var finish = res.end;
 			res.end = function() {
+				// done timing
 				console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
 				finish.apply(res,arguments);
 			};

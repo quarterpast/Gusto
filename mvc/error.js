@@ -1,3 +1,5 @@
+// error.js
+// renders an error template, gives it pertinent data
 const util = require("util"),
 pathutil = require("path"),
 Renderer = require("../mvc/renderer.js");
@@ -9,6 +11,7 @@ module.exports = function ErrorHandler(e) {
 	e).on("render",function(output) {
 		that.emit("render",output);
 	}).on("error",function(e) {
+		// we got an error when rendering the error page
 		console.error("WE'RE DOOMED!");
 		throw orig;
 	});

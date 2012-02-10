@@ -1,3 +1,6 @@
+// controller.js
+// turns an action hash into a proper controller
+// THIS IS GOING TO CHANGE
 const fs = require("fs"),
 pathutil = require("path"),
 template = require("./template.js");

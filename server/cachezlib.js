@@ -1,9 +1,12 @@
+// cachezlib.js
+// wraps zlib functions in a thing that caches it
+// not sure if it actually works
 const zlib = require("zlib"),
 stream = require("stream"),
 util = require("util");
 
 module.exports = function CachedComp(method) {
-	if(!("create"+method in zlib))
+	if(!("create"+method in zlib)) // there is no zlib
 		throw new TypeError(
 			util.format("'%s' is not a valid compression method",method)
 		);
@@ -16,11 +19,12 @@ module.exports = function CachedComp(method) {
 		var offset = 0;
 		var buffer = new Buffer(size);
 		that.on("data",function(chunk) {
+			// intercept and store the data
 			chunk.copy(buffer,offset);
 			offset += chunk.length;
 		}).on("end",function() {
 			var actual = new Buffer(offset), enc;
-			buffer.copy(actual);
+			buffer.copy(actual);// bodge up a ReadableStream
 			cache[id] = new stream.Stream();
 			cache[id].readable = true;
 			cache[id].setEncoding = function(newEnc) {
