@@ -61,6 +61,7 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 				if(promise.call) {
 					out = Q.call(promise,ctx);
 				} else if(promise.runInNewContext) {
+					console.log(promise)
 					out = promise.runInNewContext(ctx);
 				} else {
 					out = promise.toString();
