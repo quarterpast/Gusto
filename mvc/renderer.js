@@ -58,7 +58,6 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 		});
 		Q.all(comp.map(function(promise) {
 				var out;
-				console.log(promise);
 				if(promise.call) {
 					out = Q.call(promise,ctx);
 				} else if(promise.runInNewContext) {
