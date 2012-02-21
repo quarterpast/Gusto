@@ -25,6 +25,7 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 			return;
 		}
 		var ctx = Object.clone(args,true).merge({
+			message: "here i am!",
 			$: extensions.merge({
 				action: action,
 				layout: layout,
