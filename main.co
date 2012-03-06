@@ -15,10 +15,10 @@ exports.run = (base) ->
 
 	config = exports.config = base.merge appDir: appDir
 	
-	exports.mvc = {# so the app can use them
-		list: require("./mvc/list.js"),
-		model: require("./mvc/model.js")
-	};
+	exports.mvc = # so the app can use them
+		list: require "./mvc/list.co"
+		model: require "./mvc/model.co"
+		
 	# if the app wants us to fork and this is the master process...
 	if config.cluster and cluster.isMaster then
 		for i til numCPUs then
@@ -33,4 +33,4 @@ exports.run = (base) ->
 	else 
 		# this is a child process, or we're not forking
 		# either way, init and run the server
-		require "./server/server.js" .go!
+		require "./server/server.co" .go!
