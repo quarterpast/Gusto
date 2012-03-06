@@ -1,0 +1,36 @@
+require \sugar # library with sweet API additions
+Object.extend! # attach things to Object.prototype
+
+cluster = require \cluster
+fs = require \fs
+path = require \path
+numCPUs = require \os .cpus!.length
+appDir = process.cwd!
+pidFile = path.join appDir,"struct.pid"
+
+exports.run = (base) ->
+	fork = ->
+		pid = cluster.fork!.pid.toString!
+		fs.open path.join("pids.d",pid),"w"
+
+	config = exports.config = base.merge appDir: appDir
+	
+	exports.mvc = {# so the app can use them
+		list: require("./mvc/list.js"),
+		model: require("./mvc/model.js")
+	};
+	# if the app wants us to fork and this is the master process...
+	if config.cluster and cluster.isMaster then
+		for i til numCPUs then
+			fork!
+
+		hamster <- cluster.on'death'
+		# log the deaths of any child processes
+		console.log 'hamster #{hamster.pid} died'
+		fs.unlink path.join "pids.d",hamster.pid.toString!
+		# and, if the app wants, respawn it
+		fork! if config.respawn
+	else 
+		# this is a child process, or we're not forking
+		# either way, init and run the server
+		require "./server/server.js" .go!
