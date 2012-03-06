@@ -1,93 +1,66 @@
-// renderer.js
-// invokes the template engine, sets up inheritance etc.
-const extensions = require("./template.js"),
-fs = require("fs"),
-pathutil = require("path"),
-tmpl = require("tmpl"),
-Q = require("q"),
-list = require("./list.js"),
-config = require("../main.js").config;
-
-module.exports = function Renderer(path,args,action,layout,ajax) {
-	var resolved = pathutil.join(config.appDir,"app","views",path+".ejs"),
-	old = path,
-	that = this;
-	fs.readFile(resolved,function(err,data) {
-		if(err) throw err;
-		// a raw template was requested, let's oblige them
-		if(ajax) return that.emit("render",data);
-		var comp, output = "";
-		try {
-			comp = tmpl.compile(data.toString(),resolved);
-		} catch(e) {
-			console.log("compilation error",e.stack);
-			that.emit("error",e);
-			return;
-		}
-		var ctx = Object.clone(args,true).merge({
-			$: extensions.merge({
-				action: action,
-				layout: layout,
-				extend: function(daddy) {
-					path = daddy;
-				},
-				set: function(k,v){
-					args[k]=v;
-				},
-				get: function(k,f) {
-					return k in args ? args[k] : f || "";
-				},
-				exists: function(k) {
-					return k in args;
-				},
-				include: function(path,extras) {
-					extras = extras || {};
-					var rend = new Renderer(path,Object.merge(extras,args))
-					.on("error",function(e) {
-						that.emit("error",e);
-					});
-					console.log(rend)
-					return {
-						toString: function() {
-							return rend.output;
-						}
-					}
-				}
-			}),
-			_: list.controllers
-		});
-		Q.all(comp.map(function(promise) {
-				var out;
-				if(promise.call) {
-					out = Q.call(promise,ctx);
-				} else if(promise.runInNewContext) {
-					out = promise.runInNewContext(ctx);
-				} else {
-					out = promise.toString();
-				}
-				return Q.when(out);
-		})).spread(function(){
-			var o = '';
-			for(var i = 0,l = arguments.length; i<l; ++i) {
-				o += arguments[i];
-			}
-			return o;
-		}).then(function(out) {
-			that.emit("render",out);
-		},function error(e){
-			console.log("HELLO",e);
-			that.emit("error",e);
-		}).end();
-		if(old != path) {
-			// $.extend was call, so now we compile that template
-			new Renderer(path,args,action,output,false).on("render",function(output) {
-				that.emit("render",output);
-			}).on("error",function(e){
-				that.emit("error",e);
-			});
-		} else {
-			that.emit("render",output);
-		}
-	});
-};
-module.exports.prototype = new process.EventEmitter();
+(function(){
+  var extentions, list, config, fs, pathutil, tmpl, Renderer;
+  extentions = require("./template.co");
+  list = require("./list.co");
+  config = require("../main.co").config;
+  fs = require('fs');
+  pathutil = require('path');
+  tmpl = require('tmpl');
+  module.exports = Renderer = (function(superclass){
+    Renderer.displayName = 'Renderer';
+    var prototype = __extend(Renderer, superclass).prototype, constructor = Renderer;
+    function Renderer(path, args, action, layout, ajax){
+      var resolved, old;
+      resolved = pathutil.join(config.appDir, 'app', 'views', path + ".ejs");
+      old = path;
+      fs.readFile(resolved, function(err, data){
+        var compiled, ctx, _ref;
+        if (err) {
+          throw err;
+        }
+        if (ajax) {
+          return this.emit('render', data);
+        }
+        try {
+          compiled = tmpl.compile(data.toString(), resolved);
+        } catch (e) {
+          console.error("compilation error", e.stack);
+          return this.emit('error', e);
+        }
+        ctx = (_ref = __clone(args), _ref._ = list.controllers, _ref.$ = (extentions.action = action, extentions.layout = layout, extentions.extend = function(it){
+          var path;
+          return path = it;
+        }, extentions.set = function(k, v){
+          return args[k] = v;
+        }, extentions.get = function(it){
+          return args[it];
+        }, extentions.exists = function(it){
+          return it in args;
+        }, extentions), _ref);
+        return comp.execute(ctx, function(output){
+          var _this = this;
+          if (old !== path) {
+            return new Renderer(path, args, action, output, false).on('render', function(it){
+              return _this.emit('render', it);
+            }).on('error', function(it){
+              return _this.emit('error', it);
+            });
+          } else {
+            return this.emit('render', output);
+          }
+        });
+      });
+    }
+    return Renderer;
+  }(EventEmitter));
+  function __extend(sub, sup){
+    function fun(){} fun.prototype = (sub.superclass = sup).prototype;
+    (sub.prototype = new fun).constructor = sub;
+    if (typeof sup.extended == 'function') sup.extended(sub);
+    return sub;
+  }
+  function __clone(it){
+    function fun(){} fun.prototype = it;
+    return new fun;
+  }
+}).call(this);

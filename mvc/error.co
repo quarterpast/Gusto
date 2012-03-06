@@ -1,0 +1,14 @@
+# error.co
+# renders an error template, gives it pertinent data
+
+util = require \util
+pathutil = require \pathutil
+Renderer = require "./renderer.co"
+
+module.exports = class ErrorHandler extends Renderer
+	(e)->
+		{status ? "error"} = e
+		super status,e
+		@on "error" ->
+			console.error "WE'RE DOOMED!"
+			throw e

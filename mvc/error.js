@@ -1,19 +1,26 @@
-// error.js
-// renders an error template, gives it pertinent data
-const util = require("util"),
-pathutil = require("path"),
-Renderer = require("../mvc/renderer.js");
-
-module.exports = function ErrorHandler(e) {
-	var that = this, orig = e;
-	new Renderer(
-		"status" in e ? e.status : "error",
-	e).on("render",function(output) {
-		that.emit("render",output);
-	}).on("error",function(e) {
-		// we got an error when rendering the error page
-		console.error("WE'RE DOOMED!");
-		throw orig;
-	});
-};
-module.exports.prototype = new process.EventEmitter();
+(function(){
+  var util, pathutil, Renderer, ErrorHandler;
+  util = require('util');
+  pathutil = require('pathutil');
+  Renderer = require("./renderer.co");
+  module.exports = ErrorHandler = (function(superclass){
+    ErrorHandler.displayName = 'ErrorHandler';
+    var prototype = __extend(ErrorHandler, superclass).prototype, constructor = ErrorHandler;
+    function ErrorHandler(e){
+      var status, _ref;
+      status = (_ref = e.status) != null ? _ref : "error";
+      superclass.call(this, status, e);
+      this.on("error", function(){
+        console.error("WE'RE DOOMED!");
+        throw e;
+      });
+    }
+    return ErrorHandler;
+  }(Renderer));
+  function __extend(sub, sup){
+    function fun(){} fun.prototype = (sub.superclass = sup).prototype;
+    (sub.prototype = new fun).constructor = sub;
+    if (typeof sup.extended == 'function') sup.extended(sub);
+    return sub;
+  }
+}).call(this);
