@@ -42,7 +42,6 @@ module.exports = function(result,base,action) {
 				result.end(output);
 			}).on("error",function(e) {
 				// oh shit!
-				console.log(e.template);
 				new ErrorHandler(e).on("render",function(output) {
 					result.writeHead(501,{"Content-type":"text/html"});
 					result.end(output);

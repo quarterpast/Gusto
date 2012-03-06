@@ -20,12 +20,11 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 		try {
 			comp = tmpl.compile(data.toString(),resolved);
 		} catch(e) {
-			console.log("compilation error");
+			console.log("compilation error",e.stack);
 			that.emit("error",e);
 			return;
 		}
 		var ctx = Object.clone(args,true).merge({
-			message: "here i am!",
 			$: extensions.merge({
 				action: action,
 				layout: layout,
@@ -62,7 +61,6 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 				if(promise.call) {
 					out = Q.call(promise,ctx);
 				} else if(promise.runInNewContext) {
-					console.log(promise)
 					out = promise.runInNewContext(ctx);
 				} else {
 					out = promise.toString();
@@ -77,6 +75,7 @@ module.exports = function Renderer(path,args,action,layout,ajax) {
 		}).then(function(out) {
 			that.emit("render",out);
 		},function error(e){
+			console.log("HELLO",e);
 			that.emit("error",e);
 		}).end();
 		if(old != path) {
