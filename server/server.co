@@ -1,0 +1,96 @@
+# server.co
+# it's a server
+config = require "../main.co" .config
+router = require "./router.co"
+list = require "../mvc/list.co"
+ErrorHandler = require "../mvc/error.co"
+
+http = require \http
+url = require \url
+path = require \path
+querystring = require \querystring
+fs = require \fs
+vm = require \vm
+
+methods = [
+	\*
+	\HEAD
+	\GET
+	\POST
+	\PUT
+	\TRACE
+	\DELETE
+	\OPTIONS
+	\PATCH
+]
+
+data <- fs.readFile path.join config.appDir,"conf","routes.conf"
+routes = data.toString!.split /[\n\r]/ .map (line)->
+	# parse the routes file into an array with vm scripts
+	line .= split "#" .shift!
+	if line then
+		parts = line.split /\s+/
+		if parts.length > 2
+			if parts[0] not of methods then
+				throw new SyntaxError "Invalid HTTP method #{parts[0]}"
+			parts[2] = vm.createScript parts[2],parts[1]
+			parts
+.compact!
+
+req,res <- server = http.createServer
+# yay! we got a request
+# start timing
+timerId = "#{process.pid} #{req.connection.remoteAddress} #{req.url}"
+console.time timerId
+body = new Buffer req.headers['content-length'] or 0
+off = 0
+match = []
+if req.method == "POST"
+	# snarf the request body
+	chunk <-! req.on "data"
+	off = body.write chunk,off
+
+try 
+	# route the request
+	match = routes.map router.fill req,res .compact!
+catch
+	#@TODO: better handling of this
+	console.log e.stack
+
+req.on "end", ->
+	# request's finished, do our thing
+	post = {}
+	get = url.parse req.url,true .query
+
+		# we snarfed some post data, parse it
+	post = querystring.parse body.toString! if off
+	res.params = get <<< post
+	if match.length
+		# there's a match!
+		finish = res.end
+		res.end = ->
+			# done timing
+			console.timeEnd timerId
+			finish.apply res,arguments
+
+		match[0] match[0].params <<< res.params
+	else
+		err = new ErrorHandler status:404,path:req.url
+		out <- err.on \render
+		res.writeHead 404,"#{req.url} not found"
+		res.end out
+	
+port = config.port or 8000;
+exports.go = ->
+	if \address in config
+		server.listen port, config.address, console.log.fill do
+			"%d listening on %s:%d",
+			process.pid,
+			config.address,
+			port
+	else
+		server.listen port, console.log.fill do
+			"%d listening on *:%d",
+			process.pid,
+			config.address,
+			port

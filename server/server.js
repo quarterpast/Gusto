@@ -1,103 +1,94 @@
-// server.js
-// it's a server
-const config = require("../main.js").config,
-http = require("http"),
-router = require("./router.js"),
-list = require("../mvc/list.js"),
-static = require("./static.js"),
-ErrorHandler = require("../mvc/error.js"),
-url = require("url"),
-path = require("path"),
-querystring = require("querystring"),
-fs = require("fs"),
-vm = require("vm"),
-
-data = fs.readFileSync(path.join(config.appDir,"conf","routes.conf")).toString(),
-routes = data.split(/[\n\r]/).map(function(line) {
-	// parse the routes file into an array with vm scripts
-	line = line.split("#").shift();
-	if(!line) return;
-	var parts = line.split(/\s+/);
-	if(parts.length < 2) return;
-	if(!["*","HEAD","GET","POST","PUT","TRACE","DELETE","OPTIONS","PATCH"].some(parts[0]))
-		throw new SyntaxError("Invalid HTTP method "+parts[0]);
-	parts[2] = vm.createScript(parts[2],parts[1]);
-	return parts;
-}).compact();
-
-const server = http.createServer(function Listen(req,res) {
-	// yay! we got a request
-	// start timing
-	console.time(process.pid+" "+req.connection.remoteAddress+" "+req.url);
-	var body = new Buffer(req.headers['content-length'] || 0),
-	off = 0,
-	match = [];
-	if(req.method == "POST") {
-		// snarf the request body
-		req.on("data",function(chunk) {
-			off = body.write(chunk,off);
-		});
-	}
-	try {
-		// route the request
-		match = routes.map(
-		                require("./router.js")
-		                .bind(null,req,res)
-		              ).compact();
-	} catch(e) {
-		//@TODO: better handling of this
-		console.log(e.stack);
-	}
-	req.on("end", function() {
-		// request's finished, do our thing
-		var post = {}, get = url.parse(req.url,true).query;
-		if(off) {
-			// we snarfed some post data, parse it
-			post = querystring.parse(body.toString());
-		}
-		res.params = get.merge(post);
-		if(match.length) {
-			// there's a match!
-			var finish = res.end;
-			res.end = function() {
-				// done timing
-				console.timeEnd(process.pid+" "+req.connection.remoteAddress+" "+req.url);
-				finish.apply(res,arguments);
-			};
-			match[0](match[0].params.merge(get).merge(post));
-		} else {
-			new ErrorHandler({
-				status:404,
-				path:req.url
-			}).on("render",function(out){
-				res.writeHead(404,req.url+" not found");
-				res.end(out);
-			});
-		
-		}
-	});
-}),
-port = config.port || 8000;
-exports.go = function() {
-	if("address" in config) {
-		server.listen(
-			port,
-			config.address,
-			console.log.bind(null,
-				"%d listening on %s:%d",
-				process.pid,
-				config.address,
-				port
-			)
-		);
-	} else {
-		server.listen(
-			port,
-			console.log.bind(null,
-				"%d listening on *:%d",
-				process.pid,
-				port
-			)
-		);
-	}
-};
+(function(){
+  var config, router, list, ErrorHandler, http, url, path, querystring, fs, vm, methods;
+  config = require("../main.co").config;
+  router = require("./router.co");
+  list = require("../mvc/list.co");
+  ErrorHandler = require("../mvc/error.co");
+  http = require('http');
+  url = require('url');
+  path = require('path');
+  querystring = require('querystring');
+  fs = require('fs');
+  vm = require('vm');
+  methods = ['*', 'HEAD', 'GET', 'POST', 'PUT', 'TRACE', 'DELETE', 'OPTIONS', 'PATCH'];
+  fs.readFile(path.join(config.appDir, "conf", "routes.conf"), function(data){
+    var routes, server;
+    routes = data.toString().split(/[\n\r]/).map(function(line){
+      var parts;
+      line = line.split("#").shift();
+      if (line) {
+        parts = line.split(/\s+/);
+        if (parts.length > 2) {
+          if (!__of(parts[0], methods)) {
+            throw new SyntaxError("Invalid HTTP method " + parts[0]);
+          }
+          parts[2] = vm.createScript(parts[2], parts[1]);
+          return parts;
+        }
+      }
+    }).compact();
+    return (server = http.createServer)(function(req, res){
+      var timerId, body, off, match, port;
+      timerId = process.pid + " " + req.connection.remoteAddress + " " + req.url;
+      console.time(timerId);
+      body = new Buffer(req.headers['content-length']) || 0;
+      off = 0;
+      match = [];
+      if (req.method == "POST") {
+        req.on("data", function(chunk){
+          var off;
+          off = body.write(chunk, off);
+        });
+      }
+      try {
+        match = routes.map(router.fill(req, res)).compact();
+      } catch (e) {
+        console.log(e.stack);
+      }
+      req.on("end", function(){
+        var post, get, finish, err;
+        post = {};
+        get = url.parse(req.url, true).query;
+        if (off) {
+          post = querystring.parse(body.toString());
+        }
+        res.params = __import(get, post);
+        if (match.length) {
+          finish = res.end;
+          res.end = function(){
+            console.timeEnd(timerId);
+            return finish.apply(res, arguments);
+          };
+          return match[0](__import(match[0].params, res.params));
+        } else {
+          err = new ErrorHandler({
+            status: 404,
+            path: req.url
+          });
+          return err.on('render', function(out){
+            res.writeHead(404, req.url + " not found");
+            return res.end(out);
+          });
+        }
+      });
+      port = config.port || 8000;
+      return exports.go = function(){
+        if ('address' in config) {
+          return server.listen(port, config.address, console.log.fill("%d listening on %s:%d", process.pid, config.address, port));
+        } else {
+          return server.listen(port, console.log.fill("%d listening on *:%d", process.pid, config.address, port));
+        }
+      };
+    });
+  });
+  function __of(x, arr){
+    var i = 0, l = arr.length >>> 0;
+    while (i < l) if (x === arr[i++]) return true;
+    return false;
+  }
+  function __import(obj, src){
+    var own = {}.hasOwnProperty;
+    for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+    return obj;
+  }
+}).call(this);
