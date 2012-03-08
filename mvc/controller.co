@@ -5,13 +5,13 @@ class exports.Controller
 		@subclasses.push it
 	render:->
 
-class namespace
+class exports.Namespace
 	@instances = {}
 	glom: ->
 		it.id.unshift i for i of @id.inner or @id
 	add: (...things)->
 		for thing of things then
-			if thing instanceof namespace then
+			if thing instanceof exports.Namespace then
 				@[thing.id.0] = thing
 				@glom thing
 			else
@@ -24,7 +24,7 @@ class namespace
 				@inner = [id]
 			unshift: ->
 				for thing of things
-					if thing instanceof namespace then
+					if thing instanceof exports.Namespace then
 						thing.id.unshift it
 					else klass.id.unshift it for _,klass in thing
 				@inner.unshift it
@@ -37,20 +37,3 @@ class namespace
 			@add(...things)
 			..instances.(id) = this
 
-namespace \ns,
-	Thing: class extends exports.Controller
-		index: ->
-	namespace \sub,
-		News: class extends exports.Controller
-			index: ->
-				@render hello:\there
-		Other: class extends exports.Controller
-			index: ->
-				@render hello:\there
-		namespace \nest,
-			Bird: class extends exports.Controller
-				index: ->
-
-console.log namespace \ns,
-	Whatever: class extends exports.Controller
-		->
