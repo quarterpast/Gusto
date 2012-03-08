@@ -1,19 +1,12 @@
 class exports.Controller
 	@subclasses = []
-	# @collect = ->
-	# 	out = {}
-	# 	for klass of @subclasses
-	# 		c = out
-	# 		for i of klass.id
-	# 			c.[i]
 	@extended = -> 
 		it.id = [it.displayName]
 		@subclasses.push it
 	render:->
 
-global = this
-
 class namespace
+	@instances = {}
 	glom: ->
 		it.id.unshift i for i of @id.inner or @id
 	add: (...things)->
@@ -37,9 +30,11 @@ class namespace
 			toString: ->@inner.toString!
 			0: id
 		kids = {}
-		@add(...things)
-
-		global import (id):this
+		if id in ..instances
+			..instances[id].add(...things)
+		else 
+			@add(...things)
+			..instances.(id) = this
 
 namespace \ns,
 	Thing: class extends exports.Controller
