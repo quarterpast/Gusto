@@ -17,6 +17,7 @@ class namespace
 			else
 				import thing
 				@glom klass for _,klass in thing
+		return this
 	(id,...things)~>
 		@id = new class
 			->
@@ -31,7 +32,7 @@ class namespace
 			0: id
 		kids = {}
 		if id in ..instances
-			..instances[id].add(...things)
+			return ..instances[id].add(...things)
 		else 
 			@add(...things)
 			..instances.(id) = this
@@ -50,8 +51,6 @@ namespace \ns,
 			Bird: class extends exports.Controller
 				index: ->
 
-@ns.add do
-	Whatever: class
+console.log namespace \ns,
+	Whatever: class extends exports.Controller
 		->
-
-console.log @ns.sub.nest.Bird.id
