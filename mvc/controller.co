@@ -1,0 +1,62 @@
+class exports.Controller
+	@subclasses = []
+	# @collect = ->
+	# 	out = {}
+	# 	for klass of @subclasses
+	# 		c = out
+	# 		for i of klass.id
+	# 			c.[i]
+	@extended = -> 
+		it.id = [it.displayName]
+		@subclasses.push it
+	render:->
+
+global = this
+
+class namespace
+	glom: ->
+		it.id.unshift i for i of @id.inner or @id
+	add: (...things)->
+		for thing of things then
+			if thing instanceof namespace then
+				@[thing.id.0] = thing
+				@glom thing
+			else
+				import thing
+				@glom klass for _,klass in thing
+	(id,...things)~>
+		@id = new class
+			->
+				@inner = [id]
+			unshift: ->
+				for thing of things
+					if thing instanceof namespace then
+						thing.id.unshift it
+					else klass.id.unshift it for _,klass in thing
+				@inner.unshift it
+			toString: ->@inner.toString!
+			0: id
+		kids = {}
+		@add(...things)
+
+		global import (id):this
+
+namespace \ns,
+	Thing: class extends exports.Controller
+		index: ->
+	namespace \sub,
+		News: class extends exports.Controller
+			index: ->
+				@render hello:\there
+		Other: class extends exports.Controller
+			index: ->
+				@render hello:\there
+		namespace \nest,
+			Bird: class extends exports.Controller
+				index: ->
+
+@ns.add do
+	Whatever: class
+		->
+
+console.log @ns.sub.nest.Bird.id
