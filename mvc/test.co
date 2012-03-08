@@ -1,0 +1,3 @@
+{Controller,Namespace} = require "./controller.co"
+class Test extends Controller
+	index:->
