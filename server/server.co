@@ -1,7 +1,23 @@
-{Gusto} = require.main.exports
+{Gusto,config} = require.main.exports
 http = require \q-http
 url = require \url
 querystring = require \querystring
+vm = require \vm
+fs = require \fs
+require \sugar
+
+methods = [
+	\*
+	\HEAD
+	\GET
+	\POST
+	\PUT
+	\TRACE
+	\DELETE
+	\OPTIONS
+	\PATCH
+]
+
 
 class Session
 	(@request,@routes)~>
@@ -18,7 +34,7 @@ class Session
 		body <- @request.body.read!.then
 		post = querystring.parse body if off
 		res.params = get <<< post
-		
+
 		# there's a match!
 		finish = res.end
 		res.end = ->
@@ -31,7 +47,8 @@ class Session
 class Gusto.Server
 	compiledRoutes: []
 	->
-		data <- fs.readFile path.join config.appDir,"conf","routes.conf"
+		err, data <- fs.readFile config.routes
+		throw that if err
 		@compiledRoutes = data.toString!.split /[\n\r]/ .map (line)->
 			# parse the routes file into an array with vm scripts
 			line .= split "#" .shift!
