@@ -1,0 +1,48 @@
+{Gusto} = require.main.exports
+http = require \q-http
+url = require \url
+querystring = require \querystring
+
+class Session
+	(@request,@routes)~>
+		return @serve!
+	route: (url)->
+		router = new Router this
+		return that if match for match in router.filter url
+	serve: ->
+		# request's finished, do our thing
+		post = {}
+		get = url.parse @request.url,true .query
+
+		# we snarfed some post data, parse it
+		body <- @request.body.read!.then
+		post = querystring.parse body if off
+		res.params = get <<< post
+		
+		# there's a match!
+		finish = res.end
+		res.end = ->
+			# done timing
+			console.timeEnd timerId
+			finish.apply res,arguments
+
+		match[0] match[0].params <<< res.params
+
+class Gusto.Server
+	compiledRoutes: []
+	->
+		data <- fs.readFile path.join config.appDir,"conf","routes.conf"
+		@compiledRoutes = data.toString!.split /[\n\r]/ .map (line)->
+			# parse the routes file into an array with vm scripts
+			line .= split "#" .shift!
+			if line then
+				parts = line.split /\s+/
+				if parts.length > 2
+					if parts[0] not of methods then
+						throw new SyntaxError "Invalid HTTP method #{parts[0]}"
+					parts[2] = vm.createScript parts[2],parts[1]
+					parts
+		.compact!
+		@server = http.Server Session
+	go: (port,host)->
+		@server.listen port,host
