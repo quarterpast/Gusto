@@ -1,7 +1,0 @@
-# redirect.co
-# have a guess what it does. go on.
-module.exports = (req,res,path)->
-	res.writeHead 302, Location:path
-	res.end!
-
-module.exports.id = \redirect

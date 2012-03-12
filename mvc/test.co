@@ -1,5 +1,0 @@
-{Controller,Namespace} = require "./controller.co"
-class Test extends Controller
-	index:->
-
-console.log Controller.byId "test"
