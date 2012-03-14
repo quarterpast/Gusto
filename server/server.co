@@ -1,3 +1,6 @@
+# server.co
+# it's a server
+
 {Gusto,config} = require.main.exports
 http = require \q-http
 url = require \url
