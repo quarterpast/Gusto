@@ -1,11 +1,23 @@
 # router.co
 {Gusto,config} = require.main.exports
+{Controller} = require "../mvc/controller.co"
 url = require \url
 #instance = require "../mvc/instance.co"
 staticRoute = require "./static.co"
 redirect = require "./redirect.co"
 
-class Gusto.Router
+class Script
+	(@text)->
+		console.log @text
+		@script = vm.createScript @compiled = Coco.compile @text
+	runInNewContext: (...args)->
+		@script.~runInNewContext ...args
+	runInContext: (...args)->
+		@script.~runInContext ...args
+	runInThisContext: (...args)->
+		@script.~runInThisContext ...args
+
+class exports.Router
 	compiled: []
 	->
 		err, data <- fs.readFile config.routes
@@ -19,7 +31,8 @@ class Gusto.Router
 					if parts[0] not of methods then
 						throw new SyntaxError "Invalid HTTP method #{parts[0]}"
 					parts[\method,\path,\id,...\args] = parts
-					parts.args = Coco.compile parts.args
+					parts.id = new Script parts.id
+					parts.args = new Script parts.args
 					return parts
 			return {}
 
@@ -32,7 +45,7 @@ class Gusto.Router
 				# build a regexp from the placeholders in the url
 				"^"+route.path
 				.replace do
-					/\{([\w]+?)(\|[\s\S]+?)?(\/)?\}/g,
+					/#\{([\w]+?)(\|[\s\S]+?)?(\/)?\}/g,
 					(m,key,sub,slash) ->
 						keys.push key
 						if sub # route specifies its own regexp
@@ -48,33 +61,10 @@ class Gusto.Router
 					for key,i of keys then
 						params[key] = vals[i]
 
-				env = ^list.controllers <<< params <<< static: staticRoute,redirect: redirect
-
-				try
-					# evaluate the action id
-					action = route[2].runInNewContext env
-				catch
-					if e.name is \"TypeError"
-						return # doesn't exist
-					else throw e
-
-				return null unless action
-				id = action.id
-				bits = id.split '.'
-
-				run = if id of [# give it the right context
-					"static.file",
-					"static.dir",
-					"static.url",
-					"static.template",
-					"redirect"
-				] then
-					action.fill req,res,route[3]
-				else
-					methods = instance res,bits[0],bits.path
-					action.bind action.context <<< methods
-
-				{
-
+				# evaluate the action id
+				return unless id = route.id.runInNewContext params
+				return unless action = Controller.action id
+				return {
+					action
 					params
 				}
