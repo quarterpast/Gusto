@@ -7,6 +7,7 @@ url = require \url
 querystring = require \querystring
 vm = require \vm
 fs = require \fs
+util = require \util
 
 methods = [
 	\*
@@ -20,6 +21,13 @@ methods = [
 	\PATCH
 ]
 
+class Timer
+	(req)->
+		console.time @id="#{process.pid} #{req.connection.remoteAddress} #{req.url}"
+	end: ->
+		console.log @id
+		console.timeEnd @id
+
 
 class Gusto.Server
 	@compiledRoutes = false
@@ -27,11 +35,15 @@ class Gusto.Server
 		body <- request.body.read!.then
 		querystring.parse body
 	serve: (request)->
+		time = new Timer request
 		# request's finished, do our thing
 		get = url.parse request.url,true .query
 		post = @readPost request if request.method is \POST
 		
-		console.log request
+
+		body: [util.inspect request]
+		status: 200
+		onclose: time.end
 
 		# there's a match!
 		# finish = res.end
@@ -59,6 +71,6 @@ class Gusto.Server
 		@route! if ..compiledRoute is false
 		@server = http.Server @serve
 
-
 	go: (port,host)->
+		console.log "Listening on %s:%d",(host or "*"),port
 		@server.listen port,host
