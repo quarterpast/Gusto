@@ -18,9 +18,10 @@ class Gusto.Router
 				if parts.length > 2
 					if parts[0] not of methods then
 						throw new SyntaxError "Invalid HTTP method #{parts[0]}"
-					out = {}
-					out[\method,\path,\id,...\args] = parts
-					return out
+					parts[\method,\path,\id,...\args] = parts
+					parts.args = Coco.compile parts.args
+					return parts
+			return {}
 
 		.compact!
 	route: (url)->
