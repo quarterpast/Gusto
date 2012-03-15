@@ -1,0 +1,15 @@
+fs = require \fs
+path = require \path
+
+class exports.Loader
+	(folder)->
+		@traverse folder
+	traverse: (path)->
+		err,files <- fs.readDir path
+		throw err if err
+		for file of files
+			err,stat <- fs.stat file
+			throw err if err
+			if stat.isDirectory!
+				@traverse file
+			else require file
