@@ -9,23 +9,22 @@ class exports.Controller
 			v.id = [k] unless k in exports.Controller.prototype
 	@register = (@result)->
 	@subclasses = []
-	@byId = ->
-		console.log it if it instanceof String
-		console.log it
-		for sub of @subclasses
-			return sub if Object.equal (sub.id.inner or sub.id), it
+	@byId = (id)->
+		if id instanceof String then id /= '.'
+		act = id.pop!
+		@subclasses[id.join '.']@[act]
 	@extended = (sub)-> 
-		sub.id = new class
-			->
-				@inner = [sub.displayName]
-			unshift: ->
-				for name,thing in sub.prototype
-					thing.id.unshift it if thing.id?
-				@inner.unshift it
-			toString: ->@inner.toString!
-			0: sub.displayName
-		@subclasses.push sub
-		new sub
+		sub.id = if sub.id? then
+			if sub.id instanceof String then sub.id / '.'
+			else if sub.id instanceof Array then sub.id
+			else throw new TypeError "How is '#{sub.id}' an id?"
+		else [sub.displayName]
+
+		@subclasses[sub.id.join '.'] = sub
+		sub.actions = {}
+		for k in new sub
+			unless k in Controller.prototype
+				sub.actions[k] = sub.prototype~[k]
 	renderJSON: ->
 		status: 200
 		content-type: "application/json"
