@@ -1,7 +1,7 @@
 path = require \path
 require \sugar
 
-Object.sugar!
+Object.extend!
 
 exports.Gusto = {}
 exports.config = new
