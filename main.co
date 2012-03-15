@@ -12,6 +12,7 @@ exports.Gusto = {}
 exports.config = new
 	@appDir = process.cwd!
 	@routes = path.join @appDir,"conf","routes.conf"
+	@controllerPath = path.join @appDir,"app","controllers"
 
 exports.include "./server/server.co"
 if cluster.isMaster
