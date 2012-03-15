@@ -40,8 +40,9 @@ class Gusto.Server
 		# request's finished, do our thing
 		get = url.parse request.url,true .query
 		post = @readPost request
-		console.log post
-		
+
+		data = post.then (res)->
+			res <<< get
 
 		body: [util.inspect request]
 		status: 200
@@ -71,7 +72,7 @@ class Gusto.Server
 		.compact!
 	->
 		@route! if ..compiledRoutes is false
-		@server = http.Server @.~serve
+		@server = http.Server @~serve
 
 	go: (port,host)->
 		console.log "#{process.pid} listening on %s:%d",(host or "*"),port
