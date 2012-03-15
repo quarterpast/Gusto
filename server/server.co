@@ -72,5 +72,5 @@ class Gusto.Server
 		@server = http.Server @serve
 
 	go: (port,host)->
-		console.log "Listening on %s:%d",(host or "*"),port
+		console.log "#{process.pid} listening on %s:%d",(host or "*"),port
 		@server.listen port,host
