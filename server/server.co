@@ -22,9 +22,8 @@ methods = [
 
 
 class Gusto.Server
-	compiledRoutes: []
-
-	serve = (request)->
+	@compiledRoutes = false
+	serve: (request)->
 		# request's finished, do our thing
 		post = {}
 		get = url.parse request.url,true .query
@@ -45,7 +44,7 @@ class Gusto.Server
 	route: ->
 		err, data <- fs.readFile config.routes
 		throw err if err
-		@compiledRoutes = data.toString!.split /[\n\r]/ .map (line)->
+		..compiledRoutes = data.toString!.split /[\n\r]/ .map (line)->
 			# parse the routes file into an array with vm scripts
 			line .= split "#" .shift!
 			if line then
@@ -57,8 +56,8 @@ class Gusto.Server
 					parts
 		.compact!
 	->
-		@route!
-		@server = http.Server serve
+		@route! if ..compiledRoute is false
+		@server = http.Server @serve
 
 
 	go: (port,host)->
