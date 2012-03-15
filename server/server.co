@@ -23,7 +23,7 @@ methods = [
 
 class Timer
 	(req)->
-		console.time @id="#{process.pid} #{req.connection.remoteAddress} #{req.url}"
+		console.time @id="#{process.pid} #{req.connection.remoteAddress} #{req.path}"
 	end: ->
 		console.timeEnd @id
 
@@ -67,7 +67,7 @@ class Gusto.Server
 					parts
 		.compact!
 	->
-		@route! if ..compiledRoute is false
+		@route! if ..compiledRoutes is false
 		@server = http.Server @serve
 
 	go: (port,host)->
