@@ -2,13 +2,22 @@
 {Gusto,config} = require.main.exports
 {Controller} = require "../mvc/controller.co"
 url = require \url
-#instance = require "../mvc/instance.co"
-staticRoute = require "./static.co"
-redirect = require "./redirect.co"
+vm = require \vm
+
+methods = [
+	\*
+	\HEAD
+	\GET
+	\POST
+	\PUT
+	\TRACE
+	\DELETE
+	\OPTIONS
+	\PATCH
+]
 
 class Script
 	(@text)->
-		console.log @text
 		@script = vm.createScript @compiled = Coco.compile @text
 	runInNewContext: (...args)->
 		@script.~runInNewContext ...args

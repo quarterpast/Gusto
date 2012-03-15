@@ -10,6 +10,8 @@ vm = require \vm
 fs = require \fs
 util = require \util
 
+{Router} = require "./router.co"
+
 methods = [
 	\*
 	\HEAD
@@ -28,7 +30,7 @@ class Timer
 	end: ->
 		console.timeEnd @id
 
-class Gusto.Server
+class exports.Server
 	@router = false
 	readPost: (request)->
 		if request.method is \POST then
@@ -58,7 +60,7 @@ class Gusto.Server
 		# match[0] match[0].params <<< res.params
 	
 	->
-		..router = new Gusto.Router if ..router is false
+		..router = new Router if ..router is false
 		@server = http.Server @~serve
 
 	go: (port,host)->

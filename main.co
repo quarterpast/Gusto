@@ -10,7 +10,7 @@ exports.config = new
 	@appDir = process.cwd!
 	@routes = path.join @appDir,"conf","routes.conf"
 
-require "./server/server.co"
+exports.include "./server/server.co"
 if cluster.isMaster
 	cluster.fork! for p of os.cpus!
-else (new exports.Gusto.Server).go 8001
+else (new exports.Server).go 8001
