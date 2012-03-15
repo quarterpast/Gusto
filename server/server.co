@@ -25,7 +25,6 @@ class Timer
 	(req)->
 		console.time @id="#{process.pid} #{req.connection.remoteAddress} #{req.url}"
 	end: ->
-		console.log @id
 		console.timeEnd @id
 
 
@@ -43,7 +42,7 @@ class Gusto.Server
 
 		body: [util.inspect request]
 		status: 200
-		onclose: time.end
+		onclose: time.~end
 
 		# there's a match!
 		# finish = res.end
