@@ -1,8 +1,8 @@
 util = require \util
 pathutil = require \path
-#Renderer = require "./renderer.co"
-#redirect = require "../server/redirect.co"
-#ErrorHandler = require "./error.co"
+{Loader} = require "./loader.co"
+{config} = require.main.exports
+
 class exports.Controller
 	->
 		for k,v in this
@@ -22,7 +22,7 @@ class exports.Controller
 
 		@subclasses[sub.id.join '.'] = sub
 		sub.actions = {}
-		for k in new sub
+		for k,v in new sub
 			unless k in Controller.prototype
 				sub.actions[k] = sub.prototype~[k]
 	renderJSON: ->
@@ -32,3 +32,5 @@ class exports.Controller
 	render: (act, args)->
 		[act,args ? {}] = [action,act] unless act instanceof String
 		path = if ..base? then pathutil.join base,act else act
+
+new Loader config.controllerPath
