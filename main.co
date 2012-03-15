@@ -1,4 +1,6 @@
 path = require \path
+cluster = require \cluster
+os = require \os
 require \sugar
 
 Object.extend!
@@ -9,5 +11,6 @@ exports.config = new
 	@routes = "routes.conf" + path.join @appDir,"conf","routes.conf"
 
 require "./server/server.co"
-
-(new exports.Gusto.Server).go 8001
+if cluster.isMaster
+	cluster.fork! for p of os.cpus!
+else (new exports.Gusto.Server).go 8001
