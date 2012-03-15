@@ -29,7 +29,7 @@ class Timer
 		console.timeEnd @id
 
 class Gusto.Server
-	@compiledRoutes = false
+	@router = false
 	readPost: (request)->
 		if request.method is \POST then
 			body <- request.body.read!.then
@@ -56,22 +56,9 @@ class Gusto.Server
 		# 	finish.apply res,arguments
 
 		# match[0] match[0].params <<< res.params
-	route: ->
-		err, data <- fs.readFile config.routes
-		throw err if err
-		..compiledRoutes = data.toString!.split /[\n\r]/ .map (line)->
-			# parse the routes file into an array with vm scripts
-			line .= split "#" .shift!
-			if line then
-				parts = line.split /\s+/
-				if parts.length > 2
-					if parts[0] not of methods then
-						throw new SyntaxError "Invalid HTTP method #{parts[0]}"
-					parts[2] = vm.createScript parts[2],parts[1]
-					parts
-		.compact!
+	
 	->
-		@route! if ..compiledRoutes is false
+		..router = new Gusto.Router if ..router is false
 		@server = http.Server @~serve
 
 	go: (port,host)->
