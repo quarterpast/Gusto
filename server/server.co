@@ -2,6 +2,7 @@
 # it's a server
 
 {Gusto,config} = require.main.exports
+Q = require \q
 http = require \q-http
 url = require \url
 querystring = require \querystring
@@ -27,17 +28,19 @@ class Timer
 	end: ->
 		console.timeEnd @id
 
-
 class Gusto.Server
 	@compiledRoutes = false
 	readPost: (request)->
-		body <- request.body.read!.then
-		querystring.parse body
+		if request.method is \POST then
+			body <- request.body.read!.then
+			querystring.parse body
+		else Q.when {}
 	serve: (request)->
 		time = new Timer request
 		# request's finished, do our thing
 		get = url.parse request.url,true .query
-		post = @readPost request if request.method is \POST
+		post = @readPost request
+		console.log post
 		
 
 		body: [util.inspect request]
@@ -68,7 +71,7 @@ class Gusto.Server
 		.compact!
 	->
 		@route! if ..compiledRoutes is false
-		@server = http.Server @serve
+		@server = http.Server @.~serve
 
 	go: (port,host)->
 		console.log "#{process.pid} listening on %s:%d",(host or "*"),port
