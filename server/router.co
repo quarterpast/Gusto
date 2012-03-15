@@ -40,7 +40,7 @@ class exports.Router
 					if parts[0] not of methods then
 						throw new SyntaxError "Invalid HTTP method #{parts[0]}"
 					parts[\method,\path,\id,...\args] = parts
-					parts.id = new Script parts.id
+					parts.id = new Script '"'+parts.id+'"'
 					parts.args = new Script parts.args
 					return parts
 			return {}
