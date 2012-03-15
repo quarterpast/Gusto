@@ -3,13 +3,13 @@ path = require \path
 
 class exports.Loader
 	(folder)->
-		@traverse folder
-	traverse: (path)->
-		err,files <- fs.readDir path
+		@traverse folder,""
+	traverse: (path,rest)->
+		err,files <- fs.readdir path
 		throw err if err
 		for file of files
 			err,stat <- fs.stat file
 			throw err if err
 			if stat.isDirectory!
-				@traverse file
-			else require file
+				@traverse file,path.join rest, path
+			else require path.join rest,file
