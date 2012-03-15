@@ -6,7 +6,7 @@ http = require \q-http
 url = require \url
 querystring = require \querystring
 vm = require \vm
-fs = require \q-fs
+fs = require \fs
 
 methods = [
 	\*
