@@ -23,15 +23,15 @@ methods = [
 
 class Gusto.Server
 	@compiledRoutes = false
+	readPost: (request)->
+		body <- request.body.read!.then
+		querystring.parse body
 	serve: (request)->
 		# request's finished, do our thing
-		post = {}
 		get = url.parse request.url,true .query
 
-		# we snarfed some post data, parse it
-		body <- request.body.read!.then
-		post = querystring.parse body if off
-		res.params = get <<< post
+		post = @readPost request if request.method is \POST
+		
 
 		# there's a match!
 		finish = res.end
