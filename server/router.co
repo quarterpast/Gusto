@@ -56,7 +56,8 @@ class exports.Router
 		.compact!
 	route: (url)->
 		for route of @compiled
-			return unless route.method is "*" or route.method is req.method
+			continue unless route.method is "*" or route.method is req.method
+
 			# method matches
 			reg = new RegExp do
 				# build a regexp from the placeholders in the url
@@ -79,8 +80,8 @@ class exports.Router
 						params[key] = vals[i]
 
 				# evaluate the action id
-				return unless id = route.id.runInNewContext params
-				return unless action = Controller.action id
+				continue unless id = route.id.runInNewContext params
+				continue unless action = Controller.byId id
 				return {
 					action
 					params
