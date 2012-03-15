@@ -41,7 +41,7 @@ class exports.Router
 						throw new SyntaxError "Invalid HTTP method #{parts[0]}"
 					parts[\method,\path,\id,...\args] = parts
 					parts.id = new Script '"'+parts.id+'"'
-					parts.args = new Script parts.args
+					parts.args = new Script parts.args.join " "
 					return parts
 			return {}
 
