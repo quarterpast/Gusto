@@ -12,17 +12,6 @@ util = require \util
 
 {Router} = require "./router.co"
 
-methods = [
-	\*
-	\HEAD
-	\GET
-	\POST
-	\PUT
-	\TRACE
-	\DELETE
-	\OPTIONS
-	\PATCH
-]
 
 class Timer
 	(req)->
@@ -45,6 +34,8 @@ class exports.Server
 
 		data = post.then (res)->
 			res <<< get
+
+		console.log ..router.route request.path
 
 		body: [util.inspect request]
 		status: 200

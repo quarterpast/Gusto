@@ -26,6 +26,14 @@ class Script
 	runInThisContext: (...args)->
 		@script.~runInThisContext ...args
 
+exports.Errors = {}
+class exports.Errors.InvalidMethod extends Error
+	-> super "Invalid HTTP method"
+class exports.Errors.NoAction extends Error
+	-> super "No such action #it"
+class exports.Errors.Generic extends Error
+	-> super "Something went wrong somewhere for some reason. Maybe."
+
 class exports.Router
 	compiled: []
 	->
