@@ -7,7 +7,6 @@ class exports.Controller
 	->
 		for k,v in this
 			v.id = [k] unless k in exports.Controller.prototype
-	@register = (@result)->
 	@subclasses = []
 	@byId = (id)->
 		if id instanceof String then id /= '.'
