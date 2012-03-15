@@ -7,7 +7,6 @@ url = require \url
 querystring = require \querystring
 vm = require \vm
 fs = require \fs
-require \sugar
 
 methods = [
 	\*
@@ -22,19 +21,16 @@ methods = [
 ]
 
 
-class Session
-	(@request,@routes)~>
-		return @serve!
-	route: (url)->
-		router = new Router this
-		return that if match for match in router.filter url
-	serve: ->
+class Gusto.Server
+	compiledRoutes: []
+
+	serve = (request)->
 		# request's finished, do our thing
 		post = {}
-		get = url.parse @request.url,true .query
+		get = url.parse request.url,true .query
 
 		# we snarfed some post data, parse it
-		body <- @request.body.read!.then
+		body <- request.body.read!.then
 		post = querystring.parse body if off
 		res.params = get <<< post
 
@@ -46,12 +42,9 @@ class Session
 			finish.apply res,arguments
 
 		match[0] match[0].params <<< res.params
-
-class Gusto.Server
-	compiledRoutes: []
-	->
+	route: ->
 		err, data <- fs.readFile config.routes
-		throw that if err
+		throw err if err
 		@compiledRoutes = data.toString!.split /[\n\r]/ .map (line)->
 			# parse the routes file into an array with vm scripts
 			line .= split "#" .shift!
@@ -63,6 +56,10 @@ class Gusto.Server
 					parts[2] = vm.createScript parts[2],parts[1]
 					parts
 		.compact!
-		@server = http.Server Session
+	->
+		@route!
+		@server = http.Server serve
+
+
 	go: (port,host)->
 		@server.listen port,host
