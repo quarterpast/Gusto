@@ -6,7 +6,7 @@ Object.sugar!
 exports.Gusto = {}
 exports.config = new
 	@appDir = process.cwd!
-	@routes = "routes.conf" #path.join @appDir,"conf","routes.conf"
+	@routes = "routes.conf" + path.join @appDir,"conf","routes.conf"
 
 require "./server/server.co"
 

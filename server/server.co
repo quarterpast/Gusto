@@ -31,15 +31,16 @@ class Gusto.Server
 		get = url.parse request.url,true .query
 		post = @readPost request if request.method is \POST
 		
+		console.log request
 
 		# there's a match!
-		finish = res.end
-		res.end = ->
-			# done timing
-			console.timeEnd timerId
-			finish.apply res,arguments
+		# finish = res.end
+		# res.end = ->
+		# 	# done timing
+		# 	console.timeEnd timerId
+		# 	finish.apply res,arguments
 
-		match[0] match[0].params <<< res.params
+		# match[0] match[0].params <<< res.params
 	route: ->
 		err, data <- fs.readFile config.routes
 		throw err if err
