@@ -6,7 +6,7 @@ http = require \q-http
 url = require \url
 querystring = require \querystring
 vm = require \vm
-fs = require \fs
+fs = require \q-fs
 
 methods = [
 	\*
@@ -29,7 +29,6 @@ class Gusto.Server
 	serve: (request)->
 		# request's finished, do our thing
 		get = url.parse request.url,true .query
-
 		post = @readPost request if request.method is \POST
 		
 
