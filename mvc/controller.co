@@ -27,8 +27,9 @@ class exports.Controller
 		@subclasses.push sub
 		new sub
 	renderJSON: ->
-		..result.writeHead 200, \content-type: "application/json"
-		..result.end JSON.stringify it
+		status: 200
+		content-type: "application/json"
+		body: [JSON.stringify it]
 	render: (act, args)->
 		[act,args ? {}] = [action,act] unless act instanceof String
 		path = if ..base? then pathutil.join base,act else act
