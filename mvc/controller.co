@@ -1,0 +1,34 @@
+util = require \util
+pathutil = require \path
+#Renderer = require "./renderer.co"
+#redirect = require "../server/redirect.co"
+#ErrorHandler = require "./error.co"
+class exports.Controller
+	->
+		for k,v in this
+			v.id = [k] unless k in exports.Controller.prototype
+	@register = (@result)->
+	@subclasses = []
+	@byId = ->
+		console.log it if it instanceof String
+		console.log it
+		for sub of @subclasses
+			return sub if Object.equal (sub.id.inner or sub.id), it
+	@extended = (sub)-> 
+		sub.id = new class
+			->
+				@inner = [sub.displayName]
+			unshift: ->
+				for name,thing in sub.prototype
+					thing.id.unshift it if thing.id?
+				@inner.unshift it
+			toString: ->@inner.toString!
+			0: sub.displayName
+		@subclasses.push sub
+		new sub
+	renderJSON: ->
+		..result.writeHead 200, \content-type: "application/json"
+		..result.end JSON.stringify it
+	render: (act, args)->
+		[act,args ? {}] = [action,act] unless act instanceof String
+		path = if ..base? then pathutil.join base,act else act
