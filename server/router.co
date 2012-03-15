@@ -43,10 +43,10 @@ class Gusto.Router
 				+"$"
 
 			if reg.test uri.pathname
-				uri.pathname.replace reg,(m)->
+				uri.pathname.replace reg,(m,...vals)->
 					# grab variables from the url
-					for i from 1 to keys.length then
-						params[keys[i-1]] = arguments[i]
+					for key,i of keys then
+						params[key] = vals[i]
 
 				env = ^list.controllers <<< params <<< static: staticRoute,redirect: redirect
 
@@ -74,4 +74,7 @@ class Gusto.Router
 					methods = instance res,bits[0],bits.path
 					action.bind action.context <<< methods
 
-				run <<< {params}
+				{
+
+					params
+				}
