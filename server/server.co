@@ -10,7 +10,7 @@ vm = require \vm
 fs = require \fs
 util = require \util
 
-{Router} = require "./router.co"
+{Router,Errors} = require "./router.co"
 
 
 class Timer
@@ -35,8 +35,9 @@ class exports.Server
 		data = post.then (res)->
 			res <<< get
 
-		console.log ..router.route request.path
-
+		try
+			console.log ..router.route request.path
+			
 		body: [util.inspect request]
 		status: 200
 		onclose: time.~end
