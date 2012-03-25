@@ -36,7 +36,7 @@ exports.config = new
 	@appDir = process.cwd!
 	@routes = path.join @appDir,"conf","routes.conf"
 	@controllerPath = path.join @appDir,"app","controllers"
-	@logLevel = 0
+	@logLevel = 1
 
 Logger.setLevel exports.config.logLevel
 exports.include "./server/server.co"
