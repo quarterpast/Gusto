@@ -1,7 +1,9 @@
 fs = require \fs
 path = require \path
+{signal} = require "./signal.co"
 
 class exports.Loader
+	done: signal!
 	(dir)->
 		function down file
 			err,stat <- fs.stat path.join dir,file

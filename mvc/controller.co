@@ -33,3 +33,5 @@ class exports.Controller
 		path = if ..base? then pathutil.join base,act else act
 
 new Loader config.controllerPath unless Controller.subclasses.length > 0
+
+console.log Controller.subclasses
