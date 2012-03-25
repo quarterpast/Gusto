@@ -57,10 +57,8 @@ class exports.Router
 					parts
 
 	route: (req)->
-		Gusto.log req
 		uri = url.parse req.path
 
-		Gusto.warn @compiled
 		for route of @compiled
 			continue unless route.method is "*" or route.method is req.method
 			# method matches
@@ -76,6 +74,7 @@ class exports.Router
 			reg = //^#{pieces}$//
 
 			if reg.test uri.pathname
+				params = {}
 				uri.pathname.replace reg,(m,...vals)->
 					# grab variables from the url
 					for key,i of keys then
