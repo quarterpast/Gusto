@@ -44,15 +44,6 @@ class exports.Server
 		body: action data
 		status: 200
 		onclose: time.~end
-
-		# there's a match!
-		# finish = res.end
-		# res.end = ->
-		# 	# done timing
-		# 	console.timeEnd timerId
-		# 	finish.apply res,arguments
-
-		# match[0] match[0].params <<< res.params
 	
 	->
 		..router = new Router if ..router is false
