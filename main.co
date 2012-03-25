@@ -26,10 +26,10 @@ class Logger
 			@stream.write @id + "\t" + util.format ...
 
 exports.Gusto =
-	debug: Logger 0,\DEBUG
-	log: Logger 1,\LOG
-	warn: Logger 2,\WARN,process.stderr
-	error: Logger 3,\ERROR,process.stderr
+	debug: Logger 0,\DEBUG .~print
+	log: Logger 1,\LOG .~print
+	warn: Logger 2,\WARN,process.stderr .~print
+	error: Logger 3,\ERROR,process.stderr .~print
 
 exports.config = new
 	@appDir = process.cwd!
