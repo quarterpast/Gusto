@@ -26,7 +26,6 @@ class Reloader
 class exports.Loader
 	done: signal!
 	(@dir)->
-		console.log @traverse!
 	next: (file)->
 		Q.ncall fs.stat, fs, path.join @dir,file
 		.then (stat)->
@@ -42,4 +41,3 @@ class exports.Loader
 		Q.ncall fs.readdir, fs, @dir
 		.then (files)~>
 			Q.all(@next file for file of files)
-		.end!

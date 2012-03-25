@@ -33,6 +33,4 @@ class exports.Controller
 		path = if ..base? then pathutil.join base,act else act
 
 l = new Loader config.controllerPath unless Controller.subclasses.length > 0
-
-l.done.connect ->
-	console.log Controller.subclasses
+l.traverse!.then console.log
