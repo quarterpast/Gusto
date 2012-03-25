@@ -2,7 +2,7 @@ util = require \util
 pathutil = require \path
 {Loader} = require "./loader.co"
 {config} = require.main.exports
-
+Q = require \q
 class exports.Controller
 	->
 		for k,v in this
@@ -10,14 +10,14 @@ class exports.Controller
 	@subclasses = []
 	@byId = (id)->
 		unless id instanceof Array then id /= '.'
-		act = id.pop!
+		action = id.pop!
 		cont = @subclasses[id.join '.']
-		if act in cont.prototype and act not in Controller.prototype
-			return (new cont)~[act]
+		if action in cont.prototype and action not in Controller.prototype
+			return (new cont <<< {action, id})~[action]
 	@extended = (sub)-> 
 		sub.id = if sub.id? then
-			if sub.id instanceof String then sub.id / '.'
-			else if sub.id instanceof Array then sub.id
+			if Object.isString sub.id then sub.id / '.'
+			else if Object.isArray sub.id then sub.id
 			else throw new TypeError "How is '#{sub.id}' an id?"
 		else [sub.displayName]
 		@subclasses[sub.id.join '.'] = sub
@@ -25,7 +25,7 @@ class exports.Controller
 		status: 200
 		\content-type : "application/json"
 		body: [JSON.stringify it]
-	render: (act, args)->
-		[act,args ? {}] = [action,act] unless act instanceof String
-		path = if ..base? then pathutil.join base,act else act
-
+	render: (action, args)->
+		[action, args ? {}] = [@action,action] unless Object.isString action
+		path = (@id + [action]).join "/"
+		return [path]
