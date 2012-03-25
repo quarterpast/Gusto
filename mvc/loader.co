@@ -16,7 +16,7 @@ class Reloader
 		try
 			fs.watch file,cb
 		catch
-			Gusto.warn "Can't use fs.watch for some reason. Falling back on fs.watchFile for #{file}"
+			Gusto.debug "Can't use fs.watch for some reason.\n\tFalling back on fs.watchFile for #{path.basename file}"
 			curr,prev <- fs.watchFile file
 			if curr.mtime is not prev.mtime
 				cb "change",file
