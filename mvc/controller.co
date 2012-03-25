@@ -11,14 +11,14 @@ class exports.Controller
 	@byId = (id)->
 		unless id instanceof Array then id /= '.'
 		act = id.pop!
-		@subclasses[id.join '.'][act]
+		@subclasses[id.join '.'].actions[act]
 	@extended = (sub)-> 
 		sub.id = if sub.id? then
 			if sub.id instanceof String then sub.id / '.'
 			else if sub.id instanceof Array then sub.id
 			else throw new TypeError "How is '#{sub.id}' an id?"
 		else [sub.displayName]
-
+		#console.log sub.prototype
 		@subclasses[sub.id.join '.'] = sub
 		sub.actions = {}
 		for k,v in new sub

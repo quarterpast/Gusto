@@ -37,9 +37,10 @@ exports.config = new
 	@routes = path.join @appDir,"conf","routes.conf"
 	@controllerPath = path.join @appDir,"app","controllers"
 	@logLevel = 1
+	@fork = true
 
 Logger.setLevel exports.config.logLevel
-exports.include "./server/server.co"
-if cluster.isMaster
+{Server} = require "./server/server.co"
+if cluster.isMaster and exports.config.fork
 	cluster.fork! for p of os.cpus!
-else (new exports.Server).go 8001
+else (new Server).go 8001

@@ -23,6 +23,7 @@ class Timer
 
 class exports.Server
 	@router = false
+	@instances = 0
 	readPost: (request)->
 		if request.method is \POST then
 			body <- request.body.read!.then
@@ -38,9 +39,8 @@ class exports.Server
 			res <<< get
 
 		try
-			Loaders.controllers.traverse!.then ->
-				Gusto.debug require("../mvc/controller.co").Controller.subclasses
-				Gusto.debug ..router.route request
+			..contPr.then ->
+				Gusto.log ..router.route request
 			.end!
 			
 		body: [util.inspect request]
@@ -57,7 +57,10 @@ class exports.Server
 		# match[0] match[0].params <<< res.params
 	
 	->
+		..instances++
+		console.log ..instances
 		..router = new Router if ..router is false
+		..contPr = Loaders.controllers.traverse!
 		@server = http.Server @~serve
 
 	go: (port,host)->
