@@ -32,7 +32,7 @@ class Script
 
 exports.Errors = {}
 class exports.Errors.InvalidMethod extends Error
-	-> super "Invalid HTTP method"
+	(m)-> super "Invalid HTTP method #m"
 class exports.Errors.NoAction extends Error
 	-> super "No such action #it"
 class exports.Errors.Generic extends Error
@@ -41,7 +41,7 @@ class exports.Errors.Generic extends Error
 class exports.Router
 	compiled: []
 	->
-		err, data <- fs.readFile config.routes
+		err, data <~ fs.readFile config.routes
 		throw err if err
 		@compiled = data.toString!.split /[\n\r]/ .map (line)->
 			# parse the routes file into an array with vm scripts
@@ -50,7 +50,7 @@ class exports.Router
 				parts = line.split /\s+/
 				if parts.length > 2
 					if parts[0] not of methods then
-						throw new SyntaxError "Invalid HTTP method #{parts[0]}"
+						throw new exports.Errors.InvalidMethod parts[0]
 					parts[\method,\path,\id,...\args] = parts
 					parts.id = new Script '"'+parts.id+'"'
 					parts.args = new Script parts.args.join " "
@@ -58,7 +58,8 @@ class exports.Router
 			return {}
 
 		.compact!
-	route: (url)->
+	route: (req)->
+		url = req.path
 		for route of @compiled
 			continue unless route.method is "*" or route.method is req.method
 
