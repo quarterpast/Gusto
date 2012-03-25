@@ -1,7 +1,7 @@
 util = require \util
 pathutil = require \path
 {Loader} = require "./loader.co"
-{Gusto,config} = require.main.exports
+{config} = require.main.exports
 
 class exports.Controller
 	->
@@ -9,11 +9,9 @@ class exports.Controller
 			v.id = [k] unless k in exports.Controller.prototype
 	@subclasses = []
 	@byId = (id)->
-		if id instanceof String then
-			Gusto.log id
-			id /= '.'
+		unless id instanceof Array then id /= '.'
 		act = id.pop!
-		@subclasses[id.join '.']@[act]
+		@subclasses[id.join '.'][act]
 	@extended = (sub)-> 
 		sub.id = if sub.id? then
 			if sub.id instanceof String then sub.id / '.'
