@@ -57,25 +57,23 @@ class exports.Router
 					parts
 
 	route: (req)->
-		url = req.path
+		Gusto.log req
+		uri = url.parse req.path
+
 		Gusto.warn @compiled
 		for route of @compiled
 			continue unless route.method is "*" or route.method is req.method
-
 			# method matches
-			reg = new RegExp do
-				# build a regexp from the placeholders in the url
-				"^"+route.path
-				.replace do
-					/#\{([\w]+?)(\|[\s\S]+?)?(\/)?\}/g,
-					(m,key,sub,slash) ->
-						keys.push key
-						if sub # route specifies its own regexp
-							sub.substr(1);
-						else if slash is '/'
-							"((/?[^/?*:;{}\\\\]+)+)"
-						else "([\\w0-9.-]+)"
-				+"$"
+			pieces = route.path.replace do
+				/#\{([\w]+?)(\|[\s\S]+?)?(\/)?\}/g,
+				(m,key,sub,slash) ->
+					keys.push key
+					if sub # route specifies its own regexp
+						sub.substr(1);
+					else if slash is '/'
+						"((/?[^/?*:;{}\\\\]+)+)"
+					else "([\\w0-9.-]+)"
+			reg = //^#{pieces}$//
 
 			if reg.test uri.pathname
 				uri.pathname.replace reg,(m,...vals)->

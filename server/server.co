@@ -40,7 +40,7 @@ class exports.Server
 		try
 			Loaders.controllers.traverse!.then ->
 				Gusto.debug require("../mvc/controller.co").Controller.subclasses
-				Gusto.debug ..router.route request.path
+				Gusto.debug ..router.route request
 			.end!
 			
 		body: [util.inspect request]
