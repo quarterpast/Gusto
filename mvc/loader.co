@@ -1,19 +1,45 @@
 fs = require \fs
 path = require \path
+Q = require \q
 {signal} = require "./signal.co"
+
+class Reloader
+	loaded: signal!
+	(@file)->
+		ev,name <~ @watch file
+		name ?= file
+		name = with path
+			@join @dirname(file), @basename(name)
+		@load name
+	watch: (file,cb)->
+		try
+			fs.watch file,cb
+		catch
+			console.warn "Can't use fs.watch for some reason. Falling back on fs.watchFile for #{file}"
+			curr,prev <- fs.watchFile file
+			if curr.mtime is not prev.mtime
+				cb "change",file
+	load: (name)->
+		delete require.cache[path.join __dirname,name]
+		loaded.fire require name
 
 class exports.Loader
 	done: signal!
-	(dir)->
-		function down file
-			err,stat <- fs.stat path.join dir,file
-			throw err if err
-			console.log file
+	(@dir)->
+		console.log @traverse!
+	next: (file)->
+		Q.ncall fs.stat, fs, path.join @dir,file
+		.then (stat)->
 			if stat.isDirectory!
-				@traverse path.join dir,file
+				@traverse path.join @dir,file
 			else
-				require path.join dir,file
-
-		err,files <- fs.readdir dir
-		throw err if err
-		down file for file of files
+				def = Q.defer!
+				rl = new Reloader path.join @dir,file
+				rl.loaded.connect def.resolve
+				return def.promise
+		.end!
+	traverse: ->
+		Q.ncall fs.readdir, fs, @dir
+		.then (files)~>
+			Q.all(@next file for file of files)
+		.end!

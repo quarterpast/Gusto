@@ -1,8 +1,8 @@
 class exports.signal
 	$callbacks: []
 	(def)~>
-		@$callbacks[0] = def
+		@$callbacks[0] = def if def?
 	connect: (cb)->
-		@$callbacks += cb
-	fire: (...args,that)->
-		cb.apply that,args for cb of $callbacks
+		@$callbacks.push cb
+	fire: ->
+		cb ... for cb of @$callbacks
