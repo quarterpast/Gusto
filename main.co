@@ -4,9 +4,26 @@ exports.include = ->
 path = require \path
 cluster = require \cluster
 os = require \os
+util = require \util
 require \sugar
 
 Object.extend!
+
+class Logger
+	@levels = []
+	function @setLevel level
+		for i,lvl of levels
+			log.silent = i<=level for log of lvl
+
+	silent: false
+	(@level,@id,@stream=process.stdout)->
+		if ..levels.?[level]
+			..levels[level].push this
+		else
+			..levels[level] = [this]
+	print: ->
+		unless @silent
+			@stream.write @id + "\t" + util.format ...
 
 exports.Gusto = {}
 exports.config = new
