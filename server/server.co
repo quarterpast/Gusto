@@ -2,7 +2,6 @@
 # it's a server
 
 {Gusto,config} = require.main.exports
-require.main.exports.test++
 Q = require \q
 http = require \q-http
 url = require \url
