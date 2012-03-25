@@ -19,7 +19,7 @@ class Timer
 		@start = new Date
 	end: ->
 		@finish = new Date
-		Gusto.debug @id+": "+(@start-@finish)+"ms"
+		Gusto.debug @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
 	@router = false
