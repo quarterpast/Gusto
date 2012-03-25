@@ -13,7 +13,7 @@ class Logger
 	@levels = []
 	@setLevel = (level)->
 		for lvl,i of @levels
-			log.silent = i<=level for log of lvl
+			log.silent = i<level for log of lvl
 
 	silent: false
 	(@level,@id,@stream=process.stdout)~>
@@ -24,6 +24,7 @@ class Logger
 	print: ->
 		unless @silent
 			@stream.write @id + "\t" + (util.format ...) + "\n"
+
 
 exports.Gusto =
 	debug: Logger 0,\DEBUG .~print
