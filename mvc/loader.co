@@ -6,9 +6,8 @@ Q = require \q
 class Reloader
 	loaded: signal!
 	(@file)->
-		@load file
-		ev,name <~ @watch file
-		name ?= file
+		@load file,true
+		ev,name=file <~ @watch file
 		name = with path
 			@join @dirname(file), @basename(name)
 		@load name
@@ -16,13 +15,13 @@ class Reloader
 		try
 			fs.watch file,cb
 		catch
-			#console.warn "Can't use fs.watch for some reason. Falling back on fs.watchFile for #{file}"
+			console.warn "Can't use fs.watch for some reason. Falling back on fs.watchFile for #{file}"
 			curr,prev <- fs.watchFile file
 			if curr.mtime is not prev.mtime
 				cb "change",file
-	load: (name)->
+	load: (name,initial = false)->
 		delete require.cache[path.join __dirname,name]
-		@loaded.fire require name
+		@loaded.fire initial,require name
 
 class exports.Loader
 	done: signal!
