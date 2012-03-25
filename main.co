@@ -9,6 +9,8 @@ require \sugar
 
 Object.extend!
 
+exports.test = 0
+
 class Logger
 	@levels = []
 	@setLevel = (level)->
@@ -44,3 +46,5 @@ Logger.setLevel exports.config.logLevel
 if cluster.isMaster and exports.config.fork
 	cluster.fork! for p of os.cpus!
 else (new Server).go 8001
+
+console.log exports.test

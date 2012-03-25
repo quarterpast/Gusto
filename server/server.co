@@ -2,6 +2,7 @@
 # it's a server
 
 {Gusto,config} = require.main.exports
+require.main.exports.test++
 Q = require \q
 http = require \q-http
 url = require \url
@@ -23,7 +24,7 @@ class Timer
 
 class exports.Server
 	@router = false
-	@instances = 0
+	@contPr = false
 	readPost: (request)->
 		if request.method is \POST then
 			body <- request.body.read!.then
@@ -57,10 +58,8 @@ class exports.Server
 		# match[0] match[0].params <<< res.params
 	
 	->
-		..instances++
-		console.log ..instances
 		..router = new Router if ..router is false
-		..contPr = Loaders.controllers.traverse!
+		..contPr = Loaders.controllers.traverse! if ..contPr is false
 		@server = http.Server @~serve
 
 	go: (port,host)->
