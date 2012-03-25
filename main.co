@@ -11,13 +11,13 @@ Object.extend!
 
 class Logger
 	@levels = []
-	function @setLevel level
-		for i,lvl of levels
+	@setLevel (level)->
+		for lvl,i of levels
 			log.silent = i<=level for log of lvl
 
 	silent: false
 	(@level,@id,@stream=process.stdout)->
-		if ..levels.?[level]
+		if ..levels[level]?
 			..levels[level].push this
 		else
 			..levels[level] = [this]
