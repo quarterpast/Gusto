@@ -13,7 +13,7 @@ class exports.Controller
 		act = id.pop!
 		cont = @subclasses[id.join '.']
 		if act in cont.prototype and act not in Controller.prototype
-			return (new cont)[act]
+			return (new cont)~[act]
 	@extended = (sub)-> 
 		sub.id = if sub.id? then
 			if sub.id instanceof String then sub.id / '.'
