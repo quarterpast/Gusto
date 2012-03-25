@@ -2,15 +2,16 @@ fs = require \fs
 path = require \path
 
 class exports.Loader
-	(folder)->
-		@traverse folder,""
-	traverse: (dir)->
-		err,files <- fs.readdir dir
-		throw err if err
-		for file of files
+	(dir)->
+		function down file
 			err,stat <- fs.stat path.join dir,file
 			throw err if err
+			console.log file
 			if stat.isDirectory!
-				@traverse file
+				@traverse path.join dir,file
 			else
-				require path.join dir,file 
+				require path.join dir,file
+
+		err,files <- fs.readdir dir
+		throw err if err
+		down file for file of files

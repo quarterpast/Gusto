@@ -32,4 +32,4 @@ class exports.Controller
 		[act,args ? {}] = [action,act] unless act instanceof String
 		path = if ..base? then pathutil.join base,act else act
 
-new Loader config.controllerPath
+new Loader config.controllerPath unless Controller.subclasses.length > 0
