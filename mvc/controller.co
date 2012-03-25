@@ -11,7 +11,9 @@ class exports.Controller
 	@byId = (id)->
 		unless id instanceof Array then id /= '.'
 		act = id.pop!
-		@subclasses[id.join '.'].actions[act]
+
+		unless act in Controller.prototype
+			@subclasses[id.join '.'].actions[act]
 	@extended = (sub)-> 
 		sub.id = if sub.id? then
 			if sub.id instanceof String then sub.id / '.'
@@ -20,11 +22,7 @@ class exports.Controller
 		else [sub.displayName]
 		#console.log sub.prototype
 		@subclasses[sub.id.join '.'] = sub
-		sub.actions = {}
-		for k,v in new sub
-			console.log k
-			unless k in Controller.prototype
-				sub.actions[k] = sub.prototype~[k]
+		sub.actions = sub.prototype
 	renderJSON: ->
 		status: 200
 		\content-type : "application/json"
