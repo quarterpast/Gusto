@@ -1,7 +1,7 @@
 class exports.signal
 	$callbacks: []
-	(default)~>
-		$callbacks[0] = default
+	(def)~>
+		$callbacks[0] = def
 	connect: (cb)->
 		$callbacks += cb
 	fire: (...args,that)->
