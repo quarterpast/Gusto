@@ -34,7 +34,8 @@ class exports.Loader
 			else
 				def = Q.defer!
 				rl = new Reloader path.join @dir,file
-				rl.loaded.connect def.resolve
+				rl.loaded.connect (initial,mod)->
+					def.resolve mod if initial
 				return def.promise
 		.end!
 	traverse: ->
