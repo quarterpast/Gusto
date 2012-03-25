@@ -35,16 +35,13 @@ class exports.Server
 		get = url.parse request.url,true .query
 		post = @readPost request
 
-		data = post.then (res)->
-			res <<< get
-
-		
 		<- ..contPr.then
-		try
-			..router.route request
+		{action,params} = ..router.route request
 		
-			
-		body: [util.inspect request]
+		data = post.then (res)->
+			res <<< get <<< params
+
+		body: action data
 		status: 200
 		onclose: time.~end
 
