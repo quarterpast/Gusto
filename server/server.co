@@ -10,7 +10,7 @@ vm = require \vm
 fs = require \fs
 util = require \util
 
-{Router,Errors} = require "./router.co"
+{Router,Errors,Loaders} = require "./router.co"
 
 
 class Timer
@@ -36,7 +36,9 @@ class exports.Server
 			res <<< get
 
 		try
-			console.log ..router.route request.path
+			Loaders.controllers.traverse!.then ->
+				console.log ..router.route request.path
+			.end!	
 			
 		body: [util.inspect request]
 		status: 200

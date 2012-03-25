@@ -4,6 +4,9 @@
 url = require \url
 vm = require \vm
 
+exports.loaders = 
+	controllers: new Loader config.controllerPath
+
 methods = [
 	\*
 	\HEAD
