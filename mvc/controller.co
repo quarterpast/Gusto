@@ -22,11 +22,12 @@ class exports.Controller
 		@subclasses[sub.id.join '.'] = sub
 		sub.actions = {}
 		for k,v in new sub
+			console.log k
 			unless k in Controller.prototype
 				sub.actions[k] = sub.prototype~[k]
 	renderJSON: ->
 		status: 200
-		content-type: "application/json"
+		\content-type : "application/json"
 		body: [JSON.stringify it]
 	render: (act, args)->
 		[act,args ? {}] = [action,act] unless act instanceof String
