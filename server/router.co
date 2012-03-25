@@ -22,7 +22,7 @@ methods = [
 
 class Script
 	(@text)->
-		@script = vm.createScript @compiled = Coco.compile @text
+		@script = vm.createScript @compiled = Coco.compile @text,{+bare}
 	runInNewContext: (...args)->
 		@script.~runInNewContext ...args
 	runInContext: (...args)->
@@ -43,23 +43,22 @@ class exports.Router
 	->
 		err, data <~ fs.readFile config.routes
 		throw err if err
-		@compiled = data.toString!.split /[\n\r]/ .map (line)->
+		@compiled = for line of data.toString!.split /[\n\r]/
 			# parse the routes file into an array with vm scripts
 			line .= split "#" .shift! # remove "comments"
 			if line then
 				parts = line.split /\s+/
 				if parts.length > 2
-					if parts[0] not of methods then
+					if parts[0] not of methods
 						throw new exports.Errors.InvalidMethod parts[0]
 					parts[\method,\path,\id,...\args] = parts
 					parts.id = new Script '"'+parts.id+'"'
 					parts.args = new Script parts.args.join " "
-					return parts
-			return {}
+					parts
 
-		.compact!
 	route: (req)->
 		url = req.path
+		Gusto.warn @compiled
 		for route of @compiled
 			continue unless route.method is "*" or route.method is req.method
 
