@@ -38,10 +38,11 @@ class exports.Server
 		data = post.then (res)->
 			res <<< get
 
+		
+		<- ..contPr.then
 		try
-			..contPr.then ->
-				Gusto.log ..router.route request
-			.end!
+			..router.route request
+		
 			
 		body: [util.inspect request]
 		status: 200
