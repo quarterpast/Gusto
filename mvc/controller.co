@@ -11,18 +11,16 @@ class exports.Controller
 	@byId = (id)->
 		unless id instanceof Array then id /= '.'
 		act = id.pop!
-
-		unless act in Controller.prototype
-			@subclasses[id.join '.'].actions[act]
+		cont = @subclasses[id.join '.']
+		if act in cont.prototype and act not in Controller.prototype
+			return (new cont)[act]
 	@extended = (sub)-> 
 		sub.id = if sub.id? then
 			if sub.id instanceof String then sub.id / '.'
 			else if sub.id instanceof Array then sub.id
 			else throw new TypeError "How is '#{sub.id}' an id?"
 		else [sub.displayName]
-		#console.log sub.prototype
 		@subclasses[sub.id.join '.'] = sub
-		sub.actions = sub.prototype
 	renderJSON: ->
 		status: 200
 		\content-type : "application/json"
