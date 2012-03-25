@@ -11,8 +11,8 @@ Object.extend!
 
 class Logger
 	@levels = []
-	@setLevel (level)->
-		for lvl,i of levels
+	@setLevel = (level)->
+		for lvl,i of @levels
 			log.silent = i<=level for log of lvl
 
 	silent: false
