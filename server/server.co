@@ -15,9 +15,11 @@ util = require \util
 
 class Timer
 	(req)->
-		console.time @id="#{process.pid} #{req.connection.remoteAddress} #{req.path}"
+		@id="#{process.pid} #{req.connection.remoteAddress} #{req.path}"
+		@start = new Date
 	end: ->
-		console.timeEnd @id
+		@finish = new Date
+		Gusto.debug @id+": "+(@start-@finish)+"ms"
 
 class exports.Server
 	@router = false
