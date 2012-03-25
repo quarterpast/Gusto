@@ -16,7 +16,7 @@ class Logger
 			log.silent = i<=level for log of lvl
 
 	silent: false
-	(@level,@id,@stream=process.stdout)->
+	(@level,@id,@stream=process.stdout)~>
 		if ..levels[level]?
 			..levels[level].push this
 		else
@@ -25,7 +25,12 @@ class Logger
 		unless @silent
 			@stream.write @id + "\t" + util.format ...
 
-exports.Gusto = {}
+exports.Gusto =
+	debug: Logger 0,\DEBUG
+	log: Logger 1,\LOG
+	warn: Logger 2,\WARN,process.stderr
+	error: Logger 3,\ERROR,process.stderr
+
 exports.config = new
 	@appDir = process.cwd!
 	@routes = path.join @appDir,"conf","routes.conf"
