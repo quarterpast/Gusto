@@ -23,7 +23,7 @@ class Logger
 			..levels[level] = [this]
 	print: ->
 		unless @silent
-			@stream.write @id + "\t" + util.format ...
+			@stream.write @id + "\t" + (util.format ...) + "\n"
 
 exports.Gusto =
 	debug: Logger 0,\DEBUG .~print

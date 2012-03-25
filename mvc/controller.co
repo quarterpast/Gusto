@@ -32,6 +32,3 @@ class exports.Controller
 		[act,args ? {}] = [action,act] unless act instanceof String
 		path = if ..base? then pathutil.join base,act else act
 
-l = new Loader config.controllerPath unless Controller.subclasses.length > 0
-l.traverse!.then ->
-	console.log Controller.subclasses

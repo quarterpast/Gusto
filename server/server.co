@@ -37,7 +37,7 @@ class exports.Server
 
 		try
 			Loaders.controllers.traverse!.then ->
-				console.log ..router.route request.path
+				Gusto.debug ..router.route request.path
 			.end!
 			
 		body: [util.inspect request]
@@ -58,5 +58,5 @@ class exports.Server
 		@server = http.Server @~serve
 
 	go: (port,host)->
-		console.log "#{process.pid} listening on %s:#port",(host or "*")
+		Gusto.log "#{process.pid} listening on %s:#port",(host or "*")
 		@server.listen port,host
