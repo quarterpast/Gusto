@@ -23,7 +23,7 @@ class Logger
 			..levels[level] = [this]
 	print: ->
 		unless @silent
-			@stream.write @id + "\t" + (util.format ...) + "\n"
+			@stream.write "#{@id}\t#{process.pid}\t" + (util.format ...) + "\n"
 
 
 exports.Gusto =

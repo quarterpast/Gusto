@@ -15,7 +15,7 @@ util = require \util
 
 class Timer
 	(req)->
-		@id="#{process.pid} #{req.connection.remoteAddress} #{req.path}"
+		@id="#{req.connection.remoteAddress} #{req.path}"
 		@start = new Date
 	end: ->
 		@finish = new Date
@@ -39,6 +39,7 @@ class exports.Server
 
 		try
 			Loaders.controllers.traverse!.then ->
+				Gusto.log require("../mvc/controller.co").Controller.subclasses
 				Gusto.debug ..router.route request.path
 			.end!
 			
@@ -60,5 +61,5 @@ class exports.Server
 		@server = http.Server @~serve
 
 	go: (port,host)->
-		Gusto.log "#{process.pid} listening on %s:#port",(host or "*")
+		Gusto.log "listening on %s:#port",(host or "*")
 		@server.listen port,host
