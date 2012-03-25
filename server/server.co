@@ -38,7 +38,7 @@ class exports.Server
 		try
 			Loaders.controllers.traverse!.then ->
 				console.log ..router.route request.path
-			.end!	
+			.end!
 			
 		body: [util.inspect request]
 		status: 200
@@ -58,5 +58,5 @@ class exports.Server
 		@server = http.Server @~serve
 
 	go: (port,host)->
-		console.log "#{process.pid} listening on %s:%d",(host or "*"),port
+		console.log "#{process.pid} listening on %s:#port",(host or "*")
 		@server.listen port,host

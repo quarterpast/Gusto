@@ -1,10 +1,11 @@
 # router.co
 {Gusto,config} = require.main.exports
 {Controller} = require "../mvc/controller.co"
+{Loader} = require "../mvc/loader.co"
 url = require \url
 vm = require \vm
 
-exports.loaders = 
+exports.Loaders = 
 	controllers: new Loader config.controllerPath
 
 methods = [
