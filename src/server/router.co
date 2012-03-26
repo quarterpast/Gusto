@@ -4,17 +4,7 @@
 url = require \url
 vm = require \vm
 
-methods = [
-	\*
-	\HEAD
-	\GET
-	\POST
-	\PUT
-	\TRACE
-	\DELETE
-	\OPTIONS
-	\PATCH
-]
+methods = <[ * HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
 
 class Script
 	(@text)->
