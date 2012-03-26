@@ -4,16 +4,4 @@ Q = require \q
 
 class Renderer
 	(file)->
-		[@] = for ext,eng in Config.engines
-			filename = path.join Config.templatePath,"#file.#ext"
-			exists <- Q.ncall do
-				path.exists
-				path
-				filename
-			.then
-			if exists
-				data <- Q.ncall do
-					fs.readFile
-					fs
-					filename
-				.then
+		
