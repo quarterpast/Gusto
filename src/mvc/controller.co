@@ -15,7 +15,7 @@ class exports.Controller
 			return (new cont <<< {action, id})~[action]
 	@extended = (sub)-> 
 		sub.id = if sub.id? then
-			if typeof action is \string sub.id then sub.id / '.'
+			if typeof sub.id is \string then sub.id / '.'
 			else if sub.id instanceof Array then sub.id
 			else throw new TypeError "How is '#{sub.id}' an id?"
 		else [sub.displayName]
