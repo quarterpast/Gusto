@@ -14,7 +14,7 @@ class exports.Controller
 		action = id.pop!
 		cont = @subclasses[id.join '.']
 		if action in cont.prototype and action not in Controller.prototype
-			return new cont![action].bind {action, id}
+			return new cont![action]
 	@prepare = ->
 		for sub of @subclasses
 			#inst = new sub
