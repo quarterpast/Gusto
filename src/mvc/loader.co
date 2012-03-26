@@ -26,7 +26,8 @@ class Reloader
 
 class exports.Loader
 	done: signal!
-	(@dir)->
+	(@dir,cb)->
+		@done.connect cb if cb?
 	next: (file)->
 		Q.ncall fs.stat, fs, path.join @dir,file
 		.then (stat)~>
@@ -42,4 +43,5 @@ class exports.Loader
 	traverse: ->
 		Q.ncall fs.readdir, fs, @dir
 		.then (files)~>
+			@done.fire files
 			Q.all(@next file for file of files)

@@ -6,7 +6,7 @@ url = require \url
 vm = require \vm
 
 exports.Loaders = 
-	controllers: new Loader Config.controllerPath
+	controllers: new Loader Config.controllerPath,Controller.~prepare
 
 methods = [
 	\*
@@ -23,12 +23,12 @@ methods = [
 class Script
 	(@text)->
 		@script = vm.createScript @compiled = Coco.compile @text,{+bare}
-	runInNewContext: (...args)->
-		@script.~runInNewContext ...args
-	runInContext: (...args)->
-		@script.~runInContext ...args
-	runInThisContext: (...args)->
-		@script.~runInThisContext ...args
+	runInNewContext: ->
+		@script.~runInNewContext ...
+	runInContext: ->
+		@script.~runInContext ...
+	runInThisContext: ->
+		@script.~runInThisContext ...
 
 exports.Errors = {}
 class exports.Errors.InvalidMethod extends Error
