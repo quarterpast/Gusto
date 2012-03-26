@@ -2,7 +2,7 @@ fs = require \fs
 path = require \path
 Q = require \q
 {signal} = require "./signal"
-{Log} = require.main.exports
+{Log} = require "../main"
 
 class Reloader
 	loaded: signal!

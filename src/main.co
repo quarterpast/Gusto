@@ -3,9 +3,6 @@ cluster = require \cluster
 os = require \os
 fs = require \fs
 util = require \util
-#require \sugar
-
-#Object.extend!
 
 exports.Config = new
 	@appDir = process.cwd!
@@ -22,7 +19,6 @@ exports.loadConfig = (conf)->
 		throw err if err
 		exports.Config <<< JSON.parse json
 	else exports.Config <<< conf
-
 
 if cluster.isMaster and exports.Config.fork
 	exports.run = ->

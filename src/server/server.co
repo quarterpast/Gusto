@@ -1,7 +1,7 @@
 # server.co
 # it's a server
 
-{Config} = require.main.exports
+{Config,Log} = require "../main"
 Q = require \q
 http = require \q-http
 url = require \url
@@ -19,7 +19,7 @@ class Timer
 		@start = new Date
 	end: ->
 		@finish = new Date
-		Gusto.log @id+": "+(@finish-@start)+"ms"
+		Log.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
 	readPost: (request)->
@@ -47,5 +47,5 @@ class exports.Server
 		@router = new Router
 		@contPr = Loaders.controllers.traverse!
 		@server = http.Server @~serve
-		Gusto.log "listening on %s:#port",(host or "*")
+		Log.log "listening on %s:#port",(host or "*")
 		@server.listen port,host
