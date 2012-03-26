@@ -1,7 +1,6 @@
 util = require \util
 pathutil = require \path
 {Loader} = require "./loader.co"
-{config} = require.main.exports
 Q = require \q
 class exports.Controller
 	->

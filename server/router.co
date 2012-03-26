@@ -1,12 +1,12 @@
 # router.co
-{Gusto,config} = require.main.exports
+{Config} = require.main.exports
 {Controller} = require "../mvc/controller.co"
 {Loader} = require "../mvc/loader.co"
 url = require \url
 vm = require \vm
 
 exports.Loaders = 
-	controllers: new Loader config.controllerPath
+	controllers: new Loader Config.controllerPath
 
 methods = [
 	\*
@@ -41,7 +41,7 @@ class exports.Errors.Generic extends Error
 class exports.Router
 	compiled: []
 	->
-		err, data <~ fs.readFile config.routes
+		err, data <~ fs.readFile Config.routes
 		throw err if err
 		@compiled = for line of data.toString!.split /[\n\r]/
 			# parse the routes file into an array with vm scripts

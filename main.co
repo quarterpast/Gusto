@@ -6,7 +6,7 @@ util = require \util
 
 #Object.extend!
 
-exports.config = new
+exports.Config = new
 	@appDir = process.cwd!
 	@routes = path.join @appDir,"conf","routes.conf"
 	@controllerPath = path.join @appDir,"app","controllers"
@@ -16,10 +16,10 @@ exports.config = new
 	@fork = true
 
 exports.loadConfig = (obj)->
-	exports.config <<< obj
+	exports.Config <<< obj
 
 
-if cluster.isMaster and exports.config.fork
+if cluster.isMaster and exports.Config.fork
 	cluster.fork! for p of os.cpus!
 else 
 	class Logger
@@ -38,14 +38,14 @@ else
 			unless @silent
 				@stream.write "#{@id}\t#{process.pid}\t#{util.format ...}\n"
 
-	exports.Gusto =
+	exports.Log =
 		debug: Logger 0,\DEBUG .~print
 		log: Logger 1,\LOG .~print
 		warn: Logger 2,\WARN,process.stderr .~print
 		error: Logger 3,\ERROR,process.stderr .~print
 	
-	Logger.setLevel exports.config.logLevel
+	Logger.setLevel exports.Config.logLevel
 
 	{Server} = require "./server/server.co"
 
-	exports.Gusto.server = new Server exports.config.port,exports.config.host
+	exports.Server = new Server exports.Config.port,exports.Config.host

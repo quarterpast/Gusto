@@ -1,7 +1,7 @@
 # server.co
 # it's a server
 
-{Gusto,config} = require.main.exports
+{Config} = require.main.exports
 Q = require \q
 http = require \q-http
 url = require \url

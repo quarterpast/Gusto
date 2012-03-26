@@ -2,7 +2,7 @@ fs = require \fs
 path = require \path
 Q = require \q
 {signal} = require "./signal.co"
-{Gusto} = require.main.exports
+{Log} = require.main.exports
 
 class Reloader
 	loaded: signal!
@@ -16,7 +16,7 @@ class Reloader
 		try
 			fs.watch file,cb
 		catch
-			Gusto.debug "Can't use fs.watch for some reason.\n\tFalling back on fs.watchFile for #{path.basename file}"
+			Log.debug "Can't use fs.watch for some reason.\n\tFalling back on fs.watchFile for #{path.basename file}"
 			curr,prev <- fs.watchFile file
 			if curr.mtime is not prev.mtime
 				cb "change",file
