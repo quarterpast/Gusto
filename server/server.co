@@ -22,8 +22,6 @@ class Timer
 		Gusto.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
-	@router = false
-	@contPr = false
 	readPost: (request)->
 		if request.method is \POST then
 			body <- request.body.read!.then
@@ -35,7 +33,7 @@ class exports.Server
 		get = url.parse request.url,true .query
 		post = @readPost request
 
-		<- ..contPr.then
+		<- @contPr.then
 		{action,params} = ..router.route request
 		
 		data = post.then (res)->
@@ -46,8 +44,8 @@ class exports.Server
 		onclose: time.~end
 	
 	->
-		..router = new Router if ..router is false
-		..contPr = Loaders.controllers.traverse! if ..contPr is false
+		@router = new Router
+		@contPr = Loaders.controllers.traverse!
 		@server = http.Server @~serve
 
 	go: (port,host)->
