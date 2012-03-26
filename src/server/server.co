@@ -10,7 +10,7 @@ vm = require \vm
 fs = require \fs
 util = require \util
 
-{Router,Errors,Loaders} = require "./router.co"
+{Router,Errors,Loaders} = require "./router"
 
 
 class Timer

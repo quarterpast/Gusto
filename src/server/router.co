@@ -1,7 +1,7 @@
 # router.co
 {Config} = require.main.exports
-{Controller} = require "../mvc/controller.co"
-{Loader} = require "../mvc/loader.co"
+{Controller} = require "../mvc/controller"
+{Loader} = require "../mvc/loader"
 url = require \url
 vm = require \vm
 

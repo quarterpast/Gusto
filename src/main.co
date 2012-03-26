@@ -53,6 +53,6 @@ else
 		
 		Logger.setLevel exports.Config.logLevel
 
-		{Server} = require "./server/server.co"
+		{Server} = require "./server/server"
 
 		exports.Server = new Server exports.Config.port,exports.Config.host
