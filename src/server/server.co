@@ -10,7 +10,9 @@ vm = require \vm
 fs = require \fs
 util = require \util
 
-{Router,Errors,Loaders} = require "./router"
+{Router,Errors} = require "./router"
+{Loader} = require "../mvc/loader"
+{Controller} = require "../mvc/controller"
 
 
 class Timer
@@ -45,7 +47,10 @@ class exports.Server
 	
 	(port,host)->
 		@router = new Router
-		@contPr = Loaders.controllers.traverse!
+		@controllers = new Loader do
+			Config.controllerPath,
+			Controller.~prepare
+		@contPr = @controllers.traverse!
 		@server = http.Server @~serve
 		Log.log "listening on %s:#port",(host or "*")
 		@server.listen port,host

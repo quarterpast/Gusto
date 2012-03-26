@@ -1,12 +1,8 @@
 # router.co
 {Config} = require "../main"
 {Controller} = require "../mvc/controller"
-{Loader} = require "../mvc/loader"
 url = require \url
 vm = require \vm
-
-exports.Loaders = 
-	controllers: new Loader Config.controllerPath,Controller.~prepare
 
 methods = [
 	\*
