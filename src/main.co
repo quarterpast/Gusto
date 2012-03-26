@@ -46,6 +46,9 @@ else
 			log: Logger 1,\LOG .~print
 			warn: Logger 2,\WARN,process.stderr .~print
 			error: Logger 3,\ERROR,process.stderr .~print
+
+		exports.Config.engines =
+			eco: new ->
 		
 		Logger.setLevel exports.Config.logLevel
 

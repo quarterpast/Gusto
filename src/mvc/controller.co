@@ -2,6 +2,7 @@ util = require \util
 pathutil = require \path
 {Loader} = require "./loader"
 {Log} = require "../main"
+{Renderer} = require "./renderer"
 Q = require \q
 
 class exports.Controller
@@ -38,5 +39,5 @@ class exports.Controller
 	render: (action, args)->
 		$ = arguments.callee.caller
 		[action, args ? {}] = [$.action,action] unless typeof action is \string
-		path = ($.id + [action]).join "/"
-		return [path]
+		console.log new Renderer
+		return ["hello"]

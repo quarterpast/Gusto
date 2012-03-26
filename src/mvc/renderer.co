@@ -1,7 +1,12 @@
 {Config} = require "../main"
+{signal} = require "./signal"
 path = require \path
 Q = require \q
 
-class Renderer
+class exports.Renderer extends Q.makePromise
 	(file)->
-		
+		for ext,eng in Config.engines
+			filename = path.join Config.templatePath,"#file.#ext"
+			exists <- path.exists filename
+			if exists
+				eng.compile filename
