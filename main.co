@@ -2,15 +2,17 @@ path = require \path
 cluster = require \cluster
 os = require \os
 util = require \util
-require \sugar
+#require \sugar
 
-Object.extend!
+#Object.extend!
 
 exports.config = new
 	@appDir = process.cwd!
 	@routes = path.join @appDir,"conf","routes.conf"
 	@controllerPath = path.join @appDir,"app","controllers"
 	@logLevel = 1
+	@port = 8001
+	@host = null
 	@fork = true
 
 exports.loadConfig = (obj)->
@@ -46,4 +48,4 @@ else
 
 	{Server} = require "./server/server.co"
 
-	exports.Gusto.server = new Server 8001
+	exports.Gusto.server = new Server exports.config.port,exports.config.host

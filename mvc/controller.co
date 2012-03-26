@@ -26,6 +26,6 @@ class exports.Controller
 		\content-type : "application/json"
 		body: [JSON.stringify it]
 	render: (action, args)->
-		[action, args ? {}] = [@action,action] unless Object.isString action
+		[action, args ? {}] = [@action,action] unless typeof action is \string
 		path = (@id + [action]).join "/"
 		return [path]

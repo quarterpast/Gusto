@@ -62,6 +62,7 @@ class exports.Router
 		for route of @compiled
 			continue unless route.method is "*" or route.method is req.method
 			# method matches
+			keys = []
 			pieces = route.path.replace do
 				/#\{([\w]+?)(\|[\s\S]+?)?(\/)?\}/g,
 				(m,key,sub,slash) ->
