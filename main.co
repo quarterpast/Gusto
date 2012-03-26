@@ -1,6 +1,7 @@
 path = require \path
 cluster = require \cluster
 os = require \os
+fs = require \fs
 util = require \util
 #require \sugar
 
@@ -15,10 +16,14 @@ exports.Config = new
 	@host = null
 	@fork = true
 
-exports.loadConfig = (obj)->
-	exports.Config <<< obj
+exports.loadConfig = (conf)->
+	if typeof conf is \string
+		err,json <- fs.readFile conf
+		throw err if err
+		exports.Config <<< JSON.parse json
+	else exports.Config <<< conf
 
-
+exports.
 if cluster.isMaster and exports.Config.fork
 	cluster.fork! for p of os.cpus!
 else 
