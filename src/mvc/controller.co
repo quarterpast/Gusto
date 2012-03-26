@@ -14,14 +14,16 @@ class exports.Controller
 		action = id.pop!
 		cont = @subclasses[id.join '.']
 		if action in cont.prototype and action not in Controller.prototype
-			return new cont![action]
+			return new cont!~[action]
 	@prepare = ->
-		for sub of @subclasses
-			#inst = new sub
-			Log.warn "rdfnhtiershdriesnatdhrieht"
-			# for action,fn in sub
-			# 	if action in sub.prototype and action not in Controller.prototype then
-			# 		sub.prototype[action].id = action
+		for id,sub in @subclasses
+			for action,fn in new sub
+				if action in sub.prototype and action not in Controller.prototype
+					fn <<< {
+						action
+						id: id / '.'
+					}
+
 	@extended = (sub)-> 
 		sub.id = if sub.id? then
 			if typeof sub.id is \string then sub.id / '.'
@@ -34,6 +36,7 @@ class exports.Controller
 		\content-type : "application/json"
 		body: [JSON.stringify it]
 	render: (action, args)->
-		[action, args ? {}] = [@action,action] unless typeof action is \string
-		path = (@id + [action]).join "/"
+		$ = arguments.callee.caller
+		[action, args ? {}] = [$.action,action] unless typeof action is \string
+		path = ($.id + [action]).join "/"
 		return [path]
