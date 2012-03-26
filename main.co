@@ -1,6 +1,3 @@
-exports.include = ->
-	this import require it
-
 path = require \path
 cluster = require \cluster
 os = require \os
@@ -39,8 +36,13 @@ exports.config = new
 	@logLevel = 1
 	@fork = true
 
+exports.loadConfig = (obj)->
+	exports.config <<< obj
+
 Logger.setLevel exports.config.logLevel
 {Server} = require "./server/server.co"
+
+exports
 if cluster.isMaster and exports.config.fork
 	cluster.fork! for p of os.cpus!
-else (new Server).go 8001
+else new Server 8001

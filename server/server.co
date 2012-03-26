@@ -33,8 +33,8 @@ class exports.Server
 		get = url.parse request.url,true .query
 		post = @readPost request
 
-		<- @contPr.then
-		{action,params} = ..router.route request
+		<~ @contPr.then
+		{action,params} = @router.route request
 		
 		data = post.then (res)->
 			res <<< get <<< params
@@ -43,11 +43,9 @@ class exports.Server
 		status: 200
 		onclose: time.~end
 	
-	->
+	(port,host)->
 		@router = new Router
 		@contPr = Loaders.controllers.traverse!
 		@server = http.Server @~serve
-
-	go: (port,host)->
 		Gusto.log "listening on %s:#port",(host or "*")
 		@server.listen port,host
