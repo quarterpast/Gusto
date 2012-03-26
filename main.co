@@ -6,29 +6,6 @@ require \sugar
 
 Object.extend!
 
-class Logger
-	@levels = []
-	@setLevel = (level)->
-		for lvl,i of @levels
-			log.silent = i<level for log of lvl
-
-	silent: false
-	(@level,@id,@stream=process.stdout)~>
-		if ..levels[level]?
-			..levels[level].push this
-		else
-			..levels[level] = [this]
-	print: ->
-		unless @silent
-			@stream.write "#{@id}\t#{process.pid}\t#{util.format ...}\n"
-
-
-exports.Gusto =
-	debug: Logger 0,\DEBUG .~print
-	log: Logger 1,\LOG .~print
-	warn: Logger 2,\WARN,process.stderr .~print
-	error: Logger 3,\ERROR,process.stderr .~print
-
 exports.config = new
 	@appDir = process.cwd!
 	@routes = path.join @appDir,"conf","routes.conf"
@@ -39,10 +16,34 @@ exports.config = new
 exports.loadConfig = (obj)->
 	exports.config <<< obj
 
-Logger.setLevel exports.config.logLevel
-{Server} = require "./server/server.co"
 
-exports
 if cluster.isMaster and exports.config.fork
 	cluster.fork! for p of os.cpus!
-else new Server 8001
+else 
+	class Logger
+		@levels = []
+		@setLevel = (level)->
+			for lvl,i of @levels
+				log.silent = i<level for log of lvl
+
+		silent: false
+		(@level,@id,@stream=process.stdout)~>
+			if ..levels[level]?
+				..levels[level].push this
+			else
+				..levels[level] = [this]
+		print: ->
+			unless @silent
+				@stream.write "#{@id}\t#{process.pid}\t#{util.format ...}\n"
+
+	exports.Gusto =
+		debug: Logger 0,\DEBUG .~print
+		log: Logger 1,\LOG .~print
+		warn: Logger 2,\WARN,process.stderr .~print
+		error: Logger 3,\ERROR,process.stderr .~print
+	
+	Logger.setLevel exports.config.logLevel
+
+	{Server} = require "./server/server.co"
+
+	exports.Gusto.server = new Server 8001
