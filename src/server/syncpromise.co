@@ -1,0 +1,3 @@
+{async} = require "../main"
+exports.SyncPromise = async function SyncPromise pr
+	return pr.then.sync pr
