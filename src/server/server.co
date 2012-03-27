@@ -9,6 +9,7 @@ querystring = require \querystring
 vm = require \vm
 fs = require \fs
 util = require \util
+Sync = require \sync
 
 {Router,Errors} = require "./router"
 {Loader} = require "../mvc/loader"
@@ -24,7 +25,7 @@ class Timer
 		Log.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
-	serve: (request)->
+	serve: async (request)->
 		time = new Timer request
 		# request's finished, do our thing
 		get = url.parse request.url,true .query
@@ -40,7 +41,7 @@ class exports.Server
 		status: 200
 		onclose: time.~end
 	
-	(port,host)-> Sync ->
+	(port,host)-> Sync ~>
 		@router = new Router
 		Loader Config.controllerPath
 
