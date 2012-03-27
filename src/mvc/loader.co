@@ -20,9 +20,9 @@ class Reloader
 			curr,prev <- fs.watchFile file
 			if curr.mtime is not prev.mtime
 				cb "change",file
-	load: async (name,initial = false)->
+	load: async (name)->
 		delete require.cache[path.join __dirname,name]
-		return [initial,require name]
+		return require name
 
 exports.Loader = async class Loader
 	(dir,cb)~>
