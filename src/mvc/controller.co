@@ -11,6 +11,7 @@ class exports.Controller
 	@byId = (id)->
 		unless id instanceof Array then id /= '.'
 		action = id.pop!
+		return unless id.join('.') in subclasses
 		cont = @subclasses[id.join '.']
 		if action in cont.prototype and action not in prototype
 			return new cont!~[action]
@@ -37,4 +38,4 @@ class exports.Controller
 	render: (action, args)->
 		$ = arguments.callee.caller
 		[action, args ? {}] = [$.action,action] unless typeof action is \string
-		return ["hello"]
+		return [JSON.stringify args]

@@ -29,14 +29,17 @@ class exports.Server
 		time = new Timer request
 		# request's finished, do our thing
 		get = url.parse request.url,true .query
-		post = if request.method is \POST and request.header."content-length" then
+		post = if request.method is \POST and request.headers."content-length" then
 			querystring.parse SyncPromise request.body.read!
 		else {}
 
-		{action,params} = @router.route request
+		route = @router.route request
+		return status: 404,onclose: time.~end unless route
+
+		{action,params} = route
 		
 		data = post <<< get <<< params
-		
+
 		body: action data
 		status: 200
 		onclose: time.~end
