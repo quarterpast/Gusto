@@ -3,7 +3,6 @@ pathutil = require \path
 {Loader} = require "./loader"
 {Log} = require "../main"
 {Renderer} = require "./renderer"
-Q = require \q
 
 class exports.Controller
 	->
