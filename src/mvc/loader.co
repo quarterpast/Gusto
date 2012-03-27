@@ -20,20 +20,17 @@ class Reloader
 			curr,prev <- fs.watchFile file
 			if curr.mtime is not prev.mtime
 				cb "change",file
-	load: async (name)->
+	load: async (name = @file)->
 		delete require.cache[path.join __dirname,name]
 		return require name
 
-exports.Loader = async class Loader
-	(dir,cb)~>
-		files = fs.readdir.sync null, dir
-		for file of files
-			stat = fs.stat.sync null, path.join dir,file
-		
-			if stat.isDirectory!
-				@traverse path.join dir,file
-			else
-				rl = new Reloader path.join dir,file
-				rl.loaded.connect (initial,mod)->
-					def.resolve mod if initial
-				return def.promise
+exports.Loader = async function Loader (dir,cb)
+	files = fs.readdir.sync null, dir
+	for file of files
+		stat = fs.stat.sync null, path.join dir,file
+	
+		if stat.isDirectory!
+			Loader path.join dir,file
+		else
+			rl = new Reloader path.join dir,file
+			mod = rl.load!
