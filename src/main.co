@@ -6,6 +6,7 @@ util = require \util
 Sync = require \sync
 
 exports.async = -> it.async!
+exports.future = -> it.future!
 
 exports.Config = new
 	@appDir = process.cwd!

@@ -24,33 +24,26 @@ class Timer
 		Log.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
-	readPost: async (request)->
-		if request.method is \POST then
-			body = request.body.read.sync request.body
-			querystring.parse body
-		else {}
 	serve: (request,response)->
 		time = new Timer request
 		# request's finished, do our thing
 		get = url.parse request.url,true .query
-		post = FutureStream this,request.header."content-length" .out!
+		post = if request.method is \POST and request.header."content-length" then
+			FutureStream this,request.header."content-length" .out!
+		else {}
 
-		<~ @contPr.then
 		{action,params} = @router.route request
 		
-		data = post.then (res)->
-			res <<< get <<< params
+		data = post <<< get <<< params
 
-		body: action data
+		body: action
 		status: 200
 		onclose: time.~end
 	
-	(port,host)->
+	(port,host)-> Sync ->
 		@router = new Router
-		@controllers = new Loader do
-			Config.controllerPath,
-			Controller.~prepare
-		@contPr = @controllers.traverse!
+		Loader Config.controllerPath
+
 		@server = http.Server @~serve
 		Log.log "listening on %s:#port",(host or "*")
 		@server.listen port,host
