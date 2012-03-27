@@ -13,7 +13,7 @@ util = require \util
 {Router,Errors} = require "./router"
 {Loader} = require "../mvc/loader"
 {Controller} = require "../mvc/controller"
-{FutureStream} = require "./syncstream"
+{SyncPromise} = require "./syncpromise"
 
 class Timer
 	(req)->
@@ -24,19 +24,19 @@ class Timer
 		Log.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
-	serve: (request,response)->
+	serve: (request)->
 		time = new Timer request
 		# request's finished, do our thing
 		get = url.parse request.url,true .query
 		post = if request.method is \POST and request.header."content-length" then
-			FutureStream this,request.header."content-length" .out!
+			querystring.parse SyncPromise request.body.read!
 		else {}
 
 		{action,params} = @router.route request
 		
 		data = post <<< get <<< params
 
-		body: action
+		body: action data
 		status: 200
 		onclose: time.~end
 	
