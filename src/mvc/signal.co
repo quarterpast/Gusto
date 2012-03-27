@@ -1,8 +1,12 @@
 class exports.signal
 	$callbacks: []
+	$queue: []
 	(def)~>
 		@$callbacks[0] = def if def?
 	connect: (cb)->
+		cb.apply this,@$queue.shift! if @$queue.length
 		@$callbacks.push cb
 	fire: ->
-		cb ... for cb of @$callbacks
+		for cb of @$callbacks
+			cb ... 
+		else @$queue.push arguments
