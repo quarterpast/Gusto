@@ -21,6 +21,14 @@
           "version": "0.2.0"
         }
       }
+    },
+    "sync": {
+      "version": "0.2.0",
+      "dependencies": {
+        "fibers": {
+          "version": "0.6.5"
+        }
+      }
     }
   }
 }
