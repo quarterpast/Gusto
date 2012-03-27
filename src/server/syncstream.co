@@ -2,7 +2,7 @@
 
 class SyncStream
 	$buffer: new Buffer 1024
-	(@read)->
+	(@read)~>
 		off = 0
 		@read.on \error, (e)-> throw e
 		@read.on \data, (chunk)->
@@ -17,4 +17,3 @@ class SyncStream
 	out: async ->
 		@read.on.sync @read,"end"
 		return @$buffer
-
