@@ -1,6 +1,6 @@
 {async} = require "../main"
 
-class SyncStream
+class exports.SyncStream
 	$buffer: new Buffer 1024
 	(@read)~>
 		off = 0
