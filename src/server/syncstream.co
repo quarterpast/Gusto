@@ -18,3 +18,8 @@ class exports.SyncStream
 	out: async ->
 		@read.on.sync @read,"end"
 		return @$buffer
+
+class exports.FutureStream extends SyncStream
+	-> super ...
+	out: ->
+		super.future this

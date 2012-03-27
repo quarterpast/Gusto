@@ -1,7 +1,7 @@
 # server.co
 # it's a server
 
-{Config,Log} = require "../main"
+{Config,Log,async} = require "../main"
 Q = require \q
 http = require \q-http
 url = require \url
@@ -13,7 +13,7 @@ util = require \util
 {Router,Errors} = require "./router"
 {Loader} = require "../mvc/loader"
 {Controller} = require "../mvc/controller"
-
+{FutureStream} = require "./syncstream"
 
 class Timer
 	(req)->
@@ -24,16 +24,16 @@ class Timer
 		Log.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
-	readPost: (request)->
+	readPost: async (request)->
 		if request.method is \POST then
-			body <- request.body.read!.then
+			body = request.body.read.sync request.body
 			querystring.parse body
-		else Q.when {}
-	serve: (request)->
+		else {}
+	serve: (request,response)->
 		time = new Timer request
 		# request's finished, do our thing
 		get = url.parse request.url,true .query
-		post = @readPost request
+		post = FutureStream this,request.header."content-length" .out!
 
 		<~ @contPr.then
 		{action,params} = @router.route request
