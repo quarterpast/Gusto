@@ -1,0 +1,20 @@
+{async} = require "../main"
+
+class SyncStream
+	$buffer: new Buffer 1024
+	(@read)->
+		off = 0
+		@read.on \error, (e)-> throw e
+		@read.on \data, (chunk)->
+			if chunk.length > @$buffer.length-off
+				bigger = new Buffer @$buffer.length+1024
+				@$buffer.copy bigger
+				@$buffer = bigger
+			
+			chunk.copy @$buffer,off
+			off += chunk.length
+
+	out: async ->
+		@read.on.sync @read,"end"
+		return @$buffer
+
