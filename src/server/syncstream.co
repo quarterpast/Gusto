@@ -5,7 +5,7 @@ class exports.SyncStream
 	(@read)~>
 		off = 0
 		@read.on \error, (e)-> throw e
-		@read.on \data, (chunk)->
+		@read.on \data, (chunk)~>
 			if chunk.length > @$buffer.length-off
 				bigger = new Buffer @$buffer.length+1024
 				@$buffer.copy bigger
