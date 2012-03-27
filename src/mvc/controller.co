@@ -12,12 +12,12 @@ class exports.Controller
 		unless id instanceof Array then id /= '.'
 		action = id.pop!
 		cont = @subclasses[id.join '.']
-		if action in cont.prototype and action not in Controller.prototype
+		if action in cont.prototype and action not in prototype
 			return new cont!~[action]
 	@prepare = ->
 		for id,sub in @subclasses
 			for action,fn in new sub
-				if action in sub.prototype and action not in Controller.prototype
+				if action in sub.prototype and action not in prototype
 					fn <<< {
 						action
 						id: id / '.'
@@ -37,5 +37,4 @@ class exports.Controller
 	render: (action, args)->
 		$ = arguments.callee.caller
 		[action, args ? {}] = [$.action,action] unless typeof action is \string
-		console.log new Renderer
 		return ["hello"]

@@ -25,7 +25,7 @@ class Timer
 		Log.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
-	serve: async (request)->
+	serve: (request)->
 		time = new Timer request
 		# request's finished, do our thing
 		get = url.parse request.url,true .query
@@ -36,7 +36,7 @@ class exports.Server
 		{action,params} = @router.route request
 		
 		data = post <<< get <<< params
-
+		
 		body: action data
 		status: 200
 		onclose: time.~end
