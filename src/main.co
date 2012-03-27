@@ -3,6 +3,9 @@ cluster = require \cluster
 os = require \os
 fs = require \fs
 util = require \util
+Sync = require \sync
+
+exports.async = -> it.async!
 
 exports.Config = new
 	@appDir = process.cwd!

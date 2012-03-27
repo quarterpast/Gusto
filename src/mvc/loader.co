@@ -1,8 +1,9 @@
 fs = require \fs
 path = require \path
-Q = require \q
+Sync = require \sync
 {signal} = require "./signal"
-{Log} = require "../main"
+{Log,async} = require "../main"
+
 
 class Reloader
 	loaded: signal!
@@ -25,23 +26,22 @@ class Reloader
 		@loaded.fire initial,require name
 
 class exports.Loader
-	done: signal!
 	(@dir,cb)->
 		@done.connect cb if cb?
-	next: (file)->
-		Q.ncall fs.stat, fs, path.join @dir,file
-		.then (stat)~>
-			if stat.isDirectory!
-				@traverse path.join @dir,file
-			else
-				def = Q.defer!
-				rl = new Reloader path.join @dir,file
-				rl.loaded.connect (initial,mod)->
-					def.resolve mod if initial
-				return def.promise
-		.end!
-	traverse: ->
+	next: async (file)->
+		stat = fs.stat.sync null, path.join @dir,file
+		
+		if stat.isDirectory!
+			@traverse path.join @dir,file
+		else
+			rl = new Reloader path.join @dir,file
+			rl.loaded.connect (initial,mod)->
+				def.resolve mod if initial
+			return def.promise
+
+	traverse: async ->
 		Q.ncall fs.readdir, fs, @dir
 		.then (files)~>
 			@done.fire files
 			Q.all(@next file for file of files)
+	
