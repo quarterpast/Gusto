@@ -6,13 +6,12 @@ Sync = require \sync
 
 
 class Reloader
-	loaded: signal!
+	reload: signal!
 	(@file)->
-		@load file,true
-		ev,name=file <~ @watch file
-		name = with path
-			@join @dirname(file), @basename(name)
-		@load name
+		@watch file, (ev,name=file)~>
+			name = with path
+				@join @dirname(file), @basename(name)
+			@load name,@reload.fire
 	watch: (file,cb)->
 		try
 			fs.watch file,cb
@@ -21,27 +20,20 @@ class Reloader
 			curr,prev <- fs.watchFile file
 			if curr.mtime is not prev.mtime
 				cb "change",file
-	load: (name,initial = false)->
+	load: async (name,initial = false)->
 		delete require.cache[path.join __dirname,name]
-		@loaded.fire initial,require name
+		return [initial,require name]
 
-class exports.Loader
-	(@dir,cb)->
-		@done.connect cb if cb?
-	next: async (file)->
-		stat = fs.stat.sync null, path.join @dir,file
+exports.Loader = async class Loader
+	(dir,cb)~>
+		files = fs.readdir.sync null, dir
+		for file of files
+			stat = fs.stat.sync null, path.join dir,file
 		
-		if stat.isDirectory!
-			@traverse path.join @dir,file
-		else
-			rl = new Reloader path.join @dir,file
-			rl.loaded.connect (initial,mod)->
-				def.resolve mod if initial
-			return def.promise
-
-	traverse: async ->
-		Q.ncall fs.readdir, fs, @dir
-		.then (files)~>
-			@done.fire files
-			Q.all(@next file for file of files)
-	
+			if stat.isDirectory!
+				@traverse path.join dir,file
+			else
+				rl = new Reloader path.join dir,file
+				rl.loaded.connect (initial,mod)->
+					def.resolve mod if initial
+				return def.promise

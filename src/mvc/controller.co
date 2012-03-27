@@ -1,6 +1,5 @@
 util = require \util
 pathutil = require \path
-{Loader} = require "./loader"
 {Log} = require "../main"
 {Renderer} = require "./renderer"
 
