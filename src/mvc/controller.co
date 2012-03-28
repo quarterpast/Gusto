@@ -15,24 +15,35 @@ class exports.Controller
 		cont = @subclasses[id.join '.']
 		if action in cont.prototype and action not in prototype
 			return new cont!~[action]
-	@prepare = ->
-		for id,sub in @subclasses
-			for action,fn in new sub
-				if action in sub.prototype and action not in prototype
-					path = (id,action)-> ((id / '.') + [action]).join '/'
-					fn <<< {
-						id
-						path
-						renderer: Renderer path id,action
-					}
+	@prepareAll = ->
+		@prepare id for id in @subclasses
+	@prepare = (id)->
+		sub = @subclasses[id]
+		for action,fn in new sub
+			if action in sub.prototype and action not in prototype
+				path = (id,action)-> ((id / '.') + [action]).join '/'
+				fn <<< {
+					id
+					path
+					renderer: Renderer path id,action
+				}
 
 	@extended = (sub)-> 
+	console.log sub.id
 		sub.id = if sub.id? then
 			if typeof sub.id is \string then sub.id / '.'
 			else if sub.id instanceof Array then sub.id
 			else throw new TypeError "How is '#{sub.id}' an id?"
 		else [sub.displayName]
-		@subclasses[sub.id.join '.'] = sub
+		@subclasses <<< do ~>
+			inner = sub
+			{
+				(sub.id.join '.'):~ ->inner
+				(sub.id.join '.'):~ (next)~>
+					Log.warn "#{sub.id.join '.'} has been set"
+					inner := next
+					@prepare sub.id.join '.'
+			}
 	renderJSON: ->
 		status: 200
 		\content-type : "application/json"

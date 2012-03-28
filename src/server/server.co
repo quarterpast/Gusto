@@ -53,7 +53,7 @@ class exports.Server
 		@router = new Router
 
 		Loader Config.controllerPath
-		Controller.prepare!
+		Controller.prepareAll!
 
 		@server = http.Server @~serve
 		Log.log "listening on %s:#port",(host or "*")
