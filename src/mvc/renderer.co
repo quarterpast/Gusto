@@ -5,4 +5,4 @@ exports.Renderer = async function Renderer file
 	for ext,eng in Config.engines
 		filename = path.join Config.templatePath,"#file.#ext"
 		if path.exists.sync null, filename
-			eng.compile filename
+			return eng.compile filename

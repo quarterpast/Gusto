@@ -41,6 +41,8 @@ class exports.Controller
 		$ = arguments.callee.caller
 		renderer = if typeof action is \string then
 			Renderer $.path $.id, action
-		else $.renderer
+		else
+			args = action
+			$.renderer
 		console.log renderer
 		return [JSON.stringify args]
