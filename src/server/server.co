@@ -1,5 +1,10 @@
 # server.co
 # it's a server
+Array::flatten = (deep=false)->
+	@reduce (a,i)->
+		i = i.flatten true if deep and i instanceof Array
+		a.concat i
+	,[]
 
 {Config,Log,async} = require "../main"
 Q = require \q
@@ -49,12 +54,12 @@ class exports.Server
 			body: res
 		else res
 	
-	(port,host)-> Sync ~>
+	(port,host)-> 
 		@router = new Router
-
-		Loader Config.controllerPath
-		Controller.prepareAll!
-
-		@server = http.Server @~serve
-		Log.log "listening on %s:#port",(host or "*")
-		@server.listen port,host
+		Sync ~>
+			controllers = Loader Config.controllerPath .flatten true
+			Controller.prepareAll!
+		Sync ~>
+			@server = http.Server @~serve
+			Log.log "listening on %s:#port",(host or "*")
+			@server.listen port,host

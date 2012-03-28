@@ -22,11 +22,13 @@ class exports.Controller
 		for action,fn in new sub
 			if action in sub.prototype and action not in prototype
 				path = (id,action)-> ((id / '.') + [action]).join '/'
+				console.log path id,action
 				fn <<< {
 					id
 					path
 					renderer: Renderer path id,action
 				}
+				console.log fn.renderer
 
 	@extended = (sub)->
 		sub.id = if sub.id? then
