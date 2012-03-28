@@ -28,22 +28,14 @@ class exports.Controller
 					renderer: Renderer path id,action
 				}
 
-	@extended = (sub)-> 
-	console.log sub.id
+	@extended = (sub)->
 		sub.id = if sub.id? then
 			if typeof sub.id is \string then sub.id / '.'
 			else if sub.id instanceof Array then sub.id
 			else throw new TypeError "How is '#{sub.id}' an id?"
 		else [sub.displayName]
-		@subclasses <<< do ~>
-			inner = sub
-			{
-				(sub.id.join '.'):~ ->inner
-				(sub.id.join '.'):~ (next)~>
-					Log.warn "#{sub.id.join '.'} has been set"
-					inner := next
-					@prepare sub.id.join '.'
-			}
+		@prepare sub.id.join '.' if (sub.id.join '.') in @subclasses
+		@subclasses[sub.id.join '.'] = sub
 	renderJSON: ->
 		status: 200
 		\content-type : "application/json"

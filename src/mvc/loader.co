@@ -21,10 +21,10 @@ class Reloader
 			if curr.mtime is not prev.mtime
 				cb "change",file
 	load: async (name = @file)->
-		delete require.cache[path.join __dirname,name]
+		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-exports.Loader = async function Loader dir
+exports.Loader = async function Loader dir,cb
 	files = fs.readdir.sync null, dir
 	for file of files
 		stat = fs.stat.sync null, path.join dir,file
