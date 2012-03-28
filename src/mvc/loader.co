@@ -11,7 +11,7 @@ class Reloader
 		@watch file, (ev,name=file)~>
 			name = with path
 				@join @dirname(file), @basename(name)
-			@load name,@reload.fire
+			@load name,@reload.~fire
 	watch: (file,cb)->
 		try
 			fs.watch file,cb
