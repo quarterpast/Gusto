@@ -38,4 +38,5 @@ class exports.Controller
 	render: (action, args)->
 		$ = arguments.callee.caller
 		[action, args ? {}] = [$.action,action] unless typeof action is \string
+		console.log action
 		return [JSON.stringify args]

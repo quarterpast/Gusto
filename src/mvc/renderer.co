@@ -1,5 +1,4 @@
-{Config} = require "../main"
-{signal} = require "./signal"
+{Config,async} = require "../main"
 path = require \path
 
 exports.Renderer = async function Renderer file
