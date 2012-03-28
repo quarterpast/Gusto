@@ -13,22 +13,20 @@ class exports.Controller
 		action = id.pop!
 		return unless id.join('.') in @subclasses
 		cont = @subclasses[id.join '.']
-		if action in cont.prototype and action not in prototype
+		if action in cont.prototype and action not in @prototype
 			return new cont!~[action]
 	@prepareAll = ->
 		@prepare id for id in @subclasses
 	@prepare = (id)->
 		sub = @subclasses[id]
 		for action,fn in new sub
-			if action in sub.prototype and action not in prototype
+			if action in sub.prototype and action not in @prototype
 				path = (id,action)-> ((id / '.') + [action]).join '/'
-				console.log path id,action
 				fn <<< {
 					id
 					path
 					renderer: Renderer path id,action
 				}
-				console.log fn.renderer
 
 	@extended = (sub)->
 		sub.id = if sub.id? then

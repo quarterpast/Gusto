@@ -24,7 +24,7 @@ class Reloader
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-exports.Loader = async function Loader dir,cb
+exports.Loader = async function Loader dir
 	files = fs.readdir.sync null, dir
 	for file of files
 		stat = fs.stat.sync null, path.join dir,file

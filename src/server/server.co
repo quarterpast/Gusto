@@ -1,11 +1,5 @@
 # server.co
 # it's a server
-Array::flatten = (deep=false)->
-	@reduce (a,i)->
-		i = i.flatten true if deep and i instanceof Array
-		a.concat i
-	,[]
-
 {Config,Log,async} = require "../main"
 Q = require \q
 http = require \q-http
@@ -57,7 +51,7 @@ class exports.Server
 	(port,host)-> 
 		@router = new Router
 		Sync ~>
-			controllers = Loader Config.controllerPath .flatten true
+			controllers = Loader Config.controllerPath
 			Controller.prepareAll!
 		Sync ~>
 			@server = http.Server @~serve
