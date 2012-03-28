@@ -40,13 +40,18 @@ class exports.Server
 		
 		data = post <<< get <<< params
 
-		body: action data
-		status: 200
-		onclose: time.~end
+		res = action data
+
+		{
+			status: 200
+			onclose: time.~end
+		} <<< if \forEach in res then
+			body: res
+		else res
 	
 	(port,host)-> Sync ~>
 		@router = new Router
-		
+
 		Loader Config.controllerPath
 		Controller.prepare!
 
