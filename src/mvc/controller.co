@@ -19,9 +19,11 @@ class exports.Controller
 		for id,sub in @subclasses
 			for action,fn in new sub
 				if action in sub.prototype and action not in prototype
+					path = (id,action)-> ((id / '.') + [action]).join '/'
 					fn <<< {
-						action
-						id: id / '.'
+						id
+						path
+						renderer: Renderer path id,action
 					}
 
 	@extended = (sub)-> 
@@ -37,6 +39,8 @@ class exports.Controller
 		body: [JSON.stringify it]
 	render: (action, args)->
 		$ = arguments.callee.caller
-		[action, args ? {}] = [$.action,action] unless typeof action is \string
-		console.log action
+		renderer = if typeof action is \string then
+			Renderer $.path $.id, action
+		else $.renderer
+		console.log renderer
 		return [JSON.stringify args]
