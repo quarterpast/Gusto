@@ -1,8 +1,10 @@
 {Config,async} = require "../main"
 path = require \path
+exists = (p,cb)->
+	path.exists p,(e)->cb null,e
 
 exports.Renderer = async function Renderer file
 	for ext,eng in Config.engines
 		filename = path.join Config.templatePath,"#file.#ext"
-		if path.exists.sync null, filename
-			return eng.compile filename
+		if exists.sync null, filename
+			return eng.compile.sync eng, filename
