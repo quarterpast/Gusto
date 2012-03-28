@@ -1,12 +1,9 @@
 {Config} = require "../main"
 {signal} = require "./signal"
 path = require \path
-Q = require \q
 
-class exports.Renderer extends Q.makePromise
-	(file)->
-		for ext,eng in Config.engines
-			filename = path.join Config.templatePath,"#file.#ext"
-			exists <- path.exists filename
-			if exists
-				eng.compile filename
+exports.Renderer = async function Renderer file
+	for ext,eng in Config.engines
+		filename = path.join Config.templatePath,"#file.#ext"
+		if path.exists.sync null, filename
+			eng.compile filename
