@@ -46,7 +46,9 @@ class exports.Server
 	
 	(port,host)-> Sync ~>
 		@router = new Router
+		
 		Loader Config.controllerPath
+		Controller.prepare!
 
 		@server = http.Server @~serve
 		Log.log "listening on %s:#port",(host or "*")
