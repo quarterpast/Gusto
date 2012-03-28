@@ -1,6 +1,6 @@
 util = require \util
 pathutil = require \path
-{Log} = require "../main"
+{Log,async} = require "../main"
 {Renderer} = require "./renderer"
 
 class exports.Controller
@@ -39,10 +39,9 @@ class exports.Controller
 		body: [JSON.stringify it]
 	render: (action, args)->
 		$ = arguments.callee.caller
-		renderer = if typeof action is \string then
+		rendered = if typeof action is \string then
 			Renderer $.path $.id, action
 		else
 			args = action
 			$.renderer
-		console.log renderer
-		return [JSON.stringify args]
+		return [rendered.runInNewContext args]
