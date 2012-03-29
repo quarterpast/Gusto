@@ -4,6 +4,9 @@ exists = (p,cb)->
 	path.exists p,(e)->cb null,e
 
 class exports.Renderer
+	@subclasses = {}
+	@extended = (sub)->
+		@subclasses[sub.displayName.toLowerCase!] = sub
 	@resolve = async (file)->
 		for ext,eng in Config.engines
 			filename = path.join Config.templatePath,"#file.#ext"
@@ -13,3 +16,4 @@ class exports.Renderer
 			if exists.sync null, filename
 				return eng.compile.sync eng, filename
 		throw new Error "No template for #file"
+	partial
