@@ -31,6 +31,7 @@ if cluster.isMaster and exports.Config.fork
 else 
 	exports.run = ->
 		class Logger
+			@red = "\x1b[31m"
 			@levels = []
 			@setLevel = (level)->
 				for lvl,i of @levels
@@ -44,7 +45,7 @@ else
 					..levels[level] = [this]
 			print: ->
 				unless @silent
-					@stream.write "#{@id}\t#{process.pid}\t#{util.format ...}\n"
+					@stream.write "#{@id}\x1b[0m\t#{process.pid}\t#{util.format ...}\n"
 
 		vm = require \vm
 
@@ -52,7 +53,7 @@ else
 			debug: Logger 0,\DEBUG .~print
 			log: Logger 1,\LOG .~print
 			warn: Logger 2,\WARN,process.stderr .~print
-			error: Logger 3,\ERROR,process.stderr .~print
+			error: Logger 3,"#{Logger.red}ERROR",process.stderr .~print
 
 		exports.Config.engines =
 			eco:

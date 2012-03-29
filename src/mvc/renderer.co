@@ -3,8 +3,13 @@ path = require \path
 exists = (p,cb)->
 	path.exists p,(e)->cb null,e
 
-exports.Renderer = async function Renderer file
-	for ext,eng in Config.engines
-		filename = path.join Config.templatePath,"#file.#ext"
-		if exists.sync null, filename
-			return eng.compile.sync eng, filename
+class exports.Renderer
+	@resolve = async (file)->
+		for ext,eng in Config.engines
+			filename = path.join Config.templatePath,"#file.#ext"
+			if exists.sync null, filename
+				return eng.compile.sync eng, filename
+			filename = path.join Config.templatePath,"#file","index.#ext"
+			if exists.sync null, filename
+				return eng.compile.sync eng, filename
+		throw new Error "No template for #file"

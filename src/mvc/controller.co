@@ -36,6 +36,7 @@ class exports.Controller
 		else [sub.displayName]
 		@prepare sub.id.join '.' if (sub.id.join '.') in @subclasses
 		@subclasses[sub.id.join '.'] = sub
+
 	renderJSON: ->
 		status: 200
 		\content-type : "application/json"
