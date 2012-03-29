@@ -8,11 +8,11 @@ class exports.Renderer
 	@extended = (sub)->
 		@subclasses[sub.displayName.toLowerCase!] = sub
 	@resolve = async (file)->
+		if ext = path.extname file
+			return @subclasses[ext] or throw new Error "No template for #file"
 		for ext,eng in @subclasses
-			filename = path.join Config.templatePath,"#file.#ext"
-			if exists.sync null, filename
-				return eng.compile.sync eng, filename
-			filename = path.join Config.templatePath,"#file","index.#ext"
+			filenames = for f of ["#file/index.#ext" "#file.#ext"]
+				path.join Config.templatePath,f
 			if exists.sync null, filename
 				return eng.compile.sync eng, filename
 		throw new Error "No template for #file"
