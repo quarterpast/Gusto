@@ -9,16 +9,17 @@ class exports.Renderer
 		@subclasses[sub.displayName.toLowerCase!] = sub
 	@resolve = async (file)->
 		if ext = path.extname file
-			return @subclasses[ext] or throw new Error "No template for #file"
+			return @subclasses[ext]
+				or throw Error "No template for #file"
 		for ext,eng in @subclasses
 			filenames = for f of ["#file/index.#ext" "#file.#ext"]
 				path.join Config.templatePath,f
 			if exists.sync null, filename
 				return eng.compile.sync eng, filename
-		throw new Error "No template for #file"
+		throw Error "No template for #file"
 	@register = (ext,thing)->
 		unless thing.compile instanceof Function
-			throw new TypeError "#thing is not anything like a renderer"
+			throw TypeError "#thing has no compile method"
 		return class extends Renderer
 			@displayName = ext
 			prototype import thing
