@@ -12,10 +12,10 @@ class exports.Renderer
 			return @subclasses[ext]
 				or throw Error "No template for #file"
 		for ext,eng in @subclasses
-			filenames = for f of ["#file/index.#ext" "#file.#ext"]
-				path.join Config.templatePath,f
-			if exists.sync null, filename
-				return eng.compile.sync eng, filename
+			for f of ["#file/index.#ext" "#file.#ext"]
+				filename = path.join Config.templatePath,f
+				if exists.sync null, filename
+					return eng.compile.sync eng, filename
 		throw Error "No template for #file"
 	@register = (ext,thing)->
 		unless thing.compile instanceof Function
@@ -25,6 +25,7 @@ class exports.Renderer
 			prototype import thing
 			-> super ...
 
-	config: (@file)->
+	compile: (@file)->
 	partial: (part)->
-		rel = path.resolve @file,
+		Renderer.resolve path.resolve @file,part
+		
