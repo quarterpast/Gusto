@@ -39,7 +39,7 @@ class exports.Controller
 		\content-type : "application/json"
 		body: [JSON.stringify it]
 	render: (action, args)->
-		$ = arguments.callee.caller
+		$ = @@callee.caller
 		rendered = if typeof action is \string then
 			Renderer $.path $.id, action
 		else
