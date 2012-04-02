@@ -20,10 +20,7 @@ class exports.Controller
 	->
 		for k,v in this
 			v.id = [k] unless k in exports.Controller.prototype
-	@subclasses = {}
-	@prepareAll = ->
-		@prepare id for id in @subclasses
-	@prepare = (id)->
+	@register = (id)->
 		sub = @subclasses[id]
 		for action,fn in new sub
 			if action in sub.prototype and action not in @prototype
