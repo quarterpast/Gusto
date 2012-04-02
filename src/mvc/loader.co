@@ -26,11 +26,11 @@ class Reloader
 
 class exports.Loader
 	# recursively merge two objects
-	# e.g. add({a:{b:1}},{a:{c:2}}) -> {a:{b:1,c:2}}
-	function add dest,src
+	# e.g. merge({a:{b:1}},{a:{c:2}}) -> {a:{b:1,c:2}}
+	function merge dest,src
 		for k,v in src
 			if (typeof[dest[k],v]).every(->it is "object")
-				add dest[k],v
+				merge dest[k],v
 			else
 				dest[k] = v
 		return dest
@@ -41,13 +41,13 @@ class exports.Loader
 			res = path.join dir,file
 			stat = fs.stat.sync null, res
 		
-			add this,if stat.isDirectory!
+			merge this,if stat.isDirectory!
 				Loader res,cb
 			else
 				rl=Reloader res
 				rl.reload.connect (e,mod)~>
 					cb.call this if cb?
-					add this,mod
+					merge this,mod
 				rl.load!
 
 			cb.call this if cb?
