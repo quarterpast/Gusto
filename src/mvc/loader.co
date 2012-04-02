@@ -7,7 +7,7 @@ Sync = require \sync
 
 class Reloader
 	reload: signal!
-	(@file)->
+	(@file)~>
 		@watch file, (ev,name=file)~>
 			name = with path
 				@join @dirname(file), @basename(name)
@@ -24,13 +24,22 @@ class Reloader
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-exports.Loader = async function Loader dir
-	files = fs.readdir.sync null, dir
-	for file of files
-		stat = fs.stat.sync null, path.join dir,file
-	
-		if stat.isDirectory!
-			Loader path.join dir,file
-		else
-			rl = new Reloader path.join dir,file
-			mod = rl.load!
+class exports.Loader
+	function add dest,src
+		for k,v in src
+			if (typeof[dest[k],v]).every(->it is "object")
+				add dest[k],v
+			else
+				dest[k] = v
+		return dest
+
+	(dir)~>
+		files = fs.readdir.sync null, dir
+		for file of files
+			res = path.join dir,file
+			stat = fs.stat.sync null, res
+		
+			add @,if stat.isDirectory!
+				Loader res
+			else
+				Reloader res .load!
