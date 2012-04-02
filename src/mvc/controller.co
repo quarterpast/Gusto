@@ -13,8 +13,8 @@ exports.Controllers = new class Controllers extends Loader
 		else
 			@@callee.call @[part],id
 	->
-		super Config.controllerPath, (contrlrs)->
-			p contrlrs
+		super Config.controllerPath, (ctrlrs)->
+			p ctrlrs
 
 class exports.Controller
 	->
@@ -33,15 +33,6 @@ class exports.Controller
 					path
 					renderer: Renderer path id,action
 				}
-
-	@extended = (sub)->
-		sub.id = if sub.id? then
-			if typeof sub.id is \string then sub.id / '.'
-			else if sub.id instanceof Array then sub.id
-			else throw new TypeError "How is '#{sub.id}' an id?"
-		else [sub.displayName]
-		@prepare sub.id.join '.' if (sub.id.join '.') in @subclasses
-		@subclasses[sub.id.join '.'] = sub
 
 	renderJSON: ->
 		status: 200
