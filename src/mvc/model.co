@@ -1,0 +1,30 @@
+util = require \util
+pathutil = require \path
+{Loader} = require "./loader"
+{Config,Log,async} = require "../main"
+{Renderer} = require "./renderer"
+
+class exports.Models extends Loader
+	byId: (id)->
+		unless id instanceof Array then id /= '.'
+		part = id.shift!
+		if id.length is 0 and @[part] instanceof Function
+			@~[part] 
+		else
+			@@callee.call @[part],id
+
+	@register = (klass)->
+		...
+
+	function walk obj,cb
+		for k,v in obj
+			if typeof v is \object
+				walk v,cb
+			else
+				cb v,k
+	->
+		super Config.modelPath, (mdls)->
+			walk mdls, Model.register
+
+class exports.Model
+	save: ->
