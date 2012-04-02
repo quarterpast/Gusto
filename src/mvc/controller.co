@@ -1,24 +1,26 @@
 util = require \util
 pathutil = require \path
 {Loader} = require "./loader"
-{Log,async} = require "../main"
+{Config,Log,async} = require "../main"
 {Renderer} = require "./renderer"
 
 exports.Controllers = new class Controllers extends Loader
-	-> super ...
+	byId: (id)->
+		unless id instanceof Array then id /= '.'
+		part = id.shift!
+		if id.length is 0 and @[part] instanceof Function
+			@~[part] 
+		else
+			@@callee.call @[part],id
+	->
+		super Config.controllerPath, (contrlrs)->
+			p contrlrs
 
 class exports.Controller
 	->
 		for k,v in this
 			v.id = [k] unless k in exports.Controller.prototype
 	@subclasses = {}
-	@byId = (id)->
-		unless id instanceof Array then id /= '.'
-		action = id.pop!
-		return unless id.join('.') in @subclasses
-		cont = @subclasses[id.join '.']
-		if action in cont.prototype and action not in @prototype
-			return new cont!~[action]
 	@prepareAll = ->
 		@prepare id for id in @subclasses
 	@prepare = (id)->
