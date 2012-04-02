@@ -25,6 +25,8 @@ class Reloader
 		return require name
 
 class exports.Loader
+	# recursively merge two objects
+	#
 	function add dest,src
 		for k,v in src
 			if (typeof[dest[k],v]).every(->it is "object")
@@ -33,13 +35,19 @@ class exports.Loader
 				dest[k] = v
 		return dest
 
-	(dir)~>
+	(dir,cb)~>
 		files = fs.readdir.sync null, dir
 		for file of files
 			res = path.join dir,file
 			stat = fs.stat.sync null, res
 		
-			add @,if stat.isDirectory!
-				Loader res
+			add this,if stat.isDirectory!
+				Loader res,cb
 			else
-				Reloader res .load!
+				rl=Reloader res
+				rl.reload.connect (e,mod)~>
+					cb.call this if cb?
+					add this,mod
+				rl.load!
+
+			cb.call this if cb?
