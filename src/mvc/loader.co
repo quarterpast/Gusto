@@ -26,7 +26,7 @@ class Reloader
 
 class exports.Loader
 	# recursively merge two objects
-	#
+	# e.g. add({a:{b:1}},{a:{c:2}}) -> {a:{b:1,c:2}}
 	function add dest,src
 		for k,v in src
 			if (typeof[dest[k],v]).every(->it is "object")
