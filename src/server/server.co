@@ -12,7 +12,7 @@ Sync = require \sync
 
 {Router,Errors} = require "./router"
 {Loader} = require "../mvc/loader"
-{Controller} = require "../mvc/controller"
+{Controller,Controllers} = require "../mvc/controller"
 {SyncPromise} = require "./syncpromise"
 
 class Timer
@@ -51,10 +51,7 @@ class exports.Server
 		Log.error e.message if e
 	(port,host)-> 
 		@router = new Router
-		Sync ~>
-			controllers = Loader Config.controllerPath
-			Controller.prepareAll!
-		, @~error
+		Sync (~>controllers = new Controllers), @~error
 		Sync ~>
 			@server = http.Server @~serve
 			Log.log "listening on %s:#port",(host or "*")
