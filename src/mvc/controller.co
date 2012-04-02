@@ -12,18 +12,23 @@ exports.Controllers = new class Controllers extends Loader
 			@~[part] 
 		else
 			@@callee.call @[part],id
+	function walk obj,cb
+		for k,v in obj
+			if typeof v is \object
+				walk v,cb
+			else
+				cb v,k
 	->
 		super Config.controllerPath, (ctrlrs)->
-			p ctrlrs
+			walk ctrlrs, Controller.register
 
 class exports.Controller
 	->
 		for k,v in this
 			v.id = [k] unless k in exports.Controller.prototype
-	@register = (id)->
-		sub = @subclasses[id]
-		for action,fn in new sub
-			if action in sub.prototype and action not in @prototype
+	@register = (klass)->
+		for action,fn in new klass
+			if action in klass.prototype and action not in @prototype
 				path = (id,action)-> ((id / '.') + [action]).join '/'
 				fn <<< {
 					id
