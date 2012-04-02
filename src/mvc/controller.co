@@ -4,7 +4,7 @@ pathutil = require \path
 {Config,Log,async} = require "../main"
 {Renderer} = require "./renderer"
 
-exports.Controllers = new class Controllers extends Loader
+class exports.Controllers extends Loader
 	byId: (id)->
 		unless id instanceof Array then id /= '.'
 		part = id.shift!
@@ -12,6 +12,17 @@ exports.Controllers = new class Controllers extends Loader
 			@~[part] 
 		else
 			@@callee.call @[part],id
+
+	@register = (klass)->
+		for action,fn in new klass
+			if action in klass.prototype and action not in @prototype
+				path = (id,action)-> ((id / '.') + [action]).join '/'
+				fn <<< {
+					id
+					path
+					renderer: Renderer path id,action
+				}
+
 	function walk obj,cb
 		for k,v in obj
 			if typeof v is \object
@@ -23,19 +34,6 @@ exports.Controllers = new class Controllers extends Loader
 			walk ctrlrs, Controller.register
 
 class exports.Controller
-	->
-		for k,v in this
-			v.id = [k] unless k in exports.Controller.prototype
-	@register = (klass)->
-		for action,fn in new klass
-			if action in klass.prototype and action not in @prototype
-				path = (id,action)-> ((id / '.') + [action]).join '/'
-				fn <<< {
-					id
-					path
-					renderer: Renderer path id,action
-				}
-
 	renderJSON: ->
 		status: 200
 		\content-type : "application/json"
