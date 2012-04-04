@@ -5,6 +5,20 @@ pathutil = require \path
 {Renderer} = require "./renderer"
 Sync = require \sync
 
+class exports.Controller
+	renderJSON: ->
+		status: 200
+		\content-type : "application/json"
+		body: [JSON.stringify it]
+	render: (action, args)->
+		$ = @@callee.caller
+		rendered = if typeof action is \string then
+			Renderer $.path $.id, action
+		else
+			args = action
+			$.renderer
+		return [rendered.toString!]
+
 exports.Controllers = new class Controllers extends Loader
 	byId: (id)->
 		obj = @out
@@ -19,7 +33,7 @@ exports.Controllers = new class Controllers extends Loader
 	@register = (klass)->
 		out = new klass
 		for action,fn in out
-			if action in klass.prototype and action not in @prototype
+			if action in klass.prototype and action not in Controller.prototype
 				path = (id,action)-> ((id / '.') + [action]).join '/'
 				fn <<< {
 					id
@@ -37,17 +51,3 @@ exports.Controllers = new class Controllers extends Loader
 	~> super (ctrlrs)->
 		walk ctrlrs, Controllers.register
 	run: ->super Config.controllerPath
-
-class exports.Controller
-	renderJSON: ->
-		status: 200
-		\content-type : "application/json"
-		body: [JSON.stringify it]
-	render: (action, args)->
-		$ = @@callee.caller
-		rendered = if typeof action is \string then
-			Renderer $.path $.id, action
-		else
-			args = action
-			$.renderer
-		return [rendered.runInNewContext args]

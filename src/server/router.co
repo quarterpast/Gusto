@@ -41,7 +41,7 @@ class exports.Router
 					parts[\method,\path,\id,...\args] = parts
 					parts.id = new Script '"'+parts.id+'"'
 					parts.args = new Script parts.args.join " "
-					return parts
+					parts
 
 	route: (req)->
 		uri = url.parse req.path
