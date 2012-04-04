@@ -22,15 +22,14 @@ class exports.Controller
 exports.Controllers = new class Controllers extends Loader
 	byId: (id)->
 		obj = @out
-		console.log obj
 		unless id instanceof Array then id /= '.'
-		while part = id.shift!
-			#obj = new obj if id.length is 0
+		last = id.pop!
+		for part of id
 			obj = obj@[part]
-		return obj if obj instanceof Function
+		act = (new obj)~[last]
+		return act if act instanceof Function
 
-
-	@register = (klass)->
+	@register = (klass,id)->
 		out = new klass
 		for action,fn in out
 			if action in klass.prototype and action not in Controller.prototype
@@ -42,12 +41,5 @@ exports.Controllers = new class Controllers extends Loader
 				}
 		return out
 
-	function walk obj,cb
-		for k,v in obj
-			if typeof v is \object
-				walk v,cb
-			else
-				cb v,k
-	~> super (ctrlrs)->
-		walk ctrlrs, Controllers.register
+	~> super Controllers.register
 	run: ->super Config.controllerPath

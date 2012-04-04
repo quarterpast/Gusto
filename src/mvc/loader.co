@@ -27,23 +27,26 @@ class Reloader
 class exports.Loader
 	# recursively merge two objects
 	# e.g. merge({a:{b:1}},{a:{c:2}}) -> {a:{b:1,c:2}}
-	function merge dest,src
+	function merge (dest,src,cb,acc="")
 		for k,v in src
+			d = if acc.length then "#acc.#k" else k
 			if (typeof[dest[k],v]).every(->it is "object")
-				merge dest[k],v
+				merge dest[k],v,cb,d
 			else
-				dest[k] = v
+				dest[k] = if cb? then cb v,d else v
 		return dest
 	load: signal!
 	out: {}
-	(@cb)~> @load.connect cb if cb?
+	(@cb)->
 	run: async (dir)->
 		files = fs.readdir.sync null, dir
 		for file of files
 			res = path.join dir,file
 			stat = fs.stat.sync null, res
 			merge @out,if stat.isDirectory!
-				Loader @cb .run res
+				l = new Loader @cb
+				l.load.connect ~> @load ...
+				l.run res
 			else
 				rl = Reloader res
 				rl.reload.connect (e,mod)~>
@@ -51,6 +54,6 @@ class exports.Loader
 					merge this,mod
 				@load.fire @out
 				rl.load!
-
+			, @cb
 			cb.call this if cb?
 		return @out
