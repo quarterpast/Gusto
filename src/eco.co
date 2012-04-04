@@ -1,0 +1,10 @@
+{async} = require \gusto
+{Engine} = require "gusto/lib/mvc/renderer"
+
+class exports.Eco extends Renderer
+	-> super ...
+	precompile: (text)->
+		text.replace />\{([^\{])\}/g,(m,path)~>
+			
+
+	compile: exports (async)->
