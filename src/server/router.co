@@ -1,6 +1,6 @@
 # router.co
 {Config} = require "../main"
-{Controller} = require "../mvc/controller"
+{Controllers} = require "../mvc/controller"
 url = require \url
 vm = require \vm
 
@@ -69,7 +69,7 @@ class exports.Router
 
 				# evaluate the action id
 				continue unless id = route.id.runInNewContext params
-				continue unless action = Controller.byId id
+				continue unless action = Controllers.byId id
 				return {
 					action
 					params
