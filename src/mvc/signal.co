@@ -2,7 +2,7 @@ exports.signal = function signal def
 	$callbacks = []
 	$queue = []
 	$callbacks[0] = def if def?
-	return {
+	return
 		connect: (cb)->
 			cb.apply this,$queue.shift! if $queue.length
 			$callbacks.push cb
@@ -10,4 +10,3 @@ exports.signal = function signal def
 			for cb of $callbacks
 				cb ... 
 			else $queue.push arguments
-	}
