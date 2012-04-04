@@ -27,8 +27,9 @@ class exports.Errors.Generic extends Error
 class exports.Router
 	compiled: []
 	->
-		err, data <~ fs.readFile Config.routes
-		throw err if err
+		@controllers = Controllers.run!
+		data = fs.readFile.sync fs,Config.routes
+
 		@compiled = for line of data.toString!.split /[\n\r]/
 			# parse the routes file into an array with vm scripts
 			line .= split "#" .shift! # remove "comments"
@@ -40,7 +41,7 @@ class exports.Router
 					parts[\method,\path,\id,...\args] = parts
 					parts.id = new Script '"'+parts.id+'"'
 					parts.args = new Script parts.args.join " "
-					parts
+					return parts
 
 	route: (req)->
 		uri = url.parse req.path

@@ -5,17 +5,20 @@ pathutil = require \path
 {Renderer} = require "./renderer"
 Sync = require \sync
 
-class Controllers extends Loader
+exports.Controllers = new class Controllers extends Loader
 	byId: (id)->
+		obj = @out
+		console.log obj
 		unless id instanceof Array then id /= '.'
-		part = id.shift!
-		if id.length is 0 and @[part] instanceof Function
-			@~[part] 
-		else
-			@@callee.call @[part],id
+		while part = id.shift!
+			#obj = new obj if id.length is 0
+			obj = obj@[part]
+		return obj if obj instanceof Function
+
 
 	@register = (klass)->
-		for action,fn in new klass
+		out = new klass
+		for action,fn in out
 			if action in klass.prototype and action not in @prototype
 				path = (id,action)-> ((id / '.') + [action]).join '/'
 				fn <<< {
@@ -23,6 +26,7 @@ class Controllers extends Loader
 					path
 					renderer: Renderer path id,action
 				}
+		return out
 
 	function walk obj,cb
 		for k,v in obj
@@ -30,12 +34,9 @@ class Controllers extends Loader
 				walk v,cb
 			else
 				cb v,k
-	->
-		Sync ~>
-			super Config.controllerPath, (ctrlrs)->
-				walk ctrlrs, Controllers.register
-
-exports.Controllers = new Controllers
+	~> super (ctrlrs)->
+		walk ctrlrs, Controllers.register
+	run: ->super Config.controllerPath
 
 class exports.Controller
 	renderJSON: ->

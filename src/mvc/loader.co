@@ -34,20 +34,22 @@ class exports.Loader
 			else
 				dest[k] = v
 		return dest
-
-	(dir,cb)~>
+	load: signal!
+	out: {}
+	(@cb)~> @load.connect cb if cb?
+	run: async (dir)->
 		files = fs.readdir.sync null, dir
 		for file of files
 			res = path.join dir,file
 			stat = fs.stat.sync null, res
-		
-			merge this,if stat.isDirectory!
-				Loader res,cb
+			merge @out,if stat.isDirectory!
+				Loader @cb .run res
 			else
-				rl=Reloader res
+				rl = Reloader res
 				rl.reload.connect (e,mod)~>
-					cb.call this if cb?
+					@load.fire @out
 					merge this,mod
 				rl.load!
 
 			cb.call this if cb?
+		return @out
