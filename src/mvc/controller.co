@@ -26,7 +26,7 @@ exports.Controllers = new class Controllers extends Loader
 		last = id.pop!
 		for part of id
 			obj = obj@[part]
-		act = (new obj)~[last]
+		act = obj~[last]
 		return act if act instanceof Function
 
 	@register = (klass,id)->
