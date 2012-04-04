@@ -49,7 +49,7 @@ class exports.Server
 	error: (e,r)->
 		Log.error e.message if e
 	(port,host)->
-	@router = new Router
+		@router = new Router
 		Sync ~>
 			@server = http.Server @~serve
 			Log.log "listening on %s:#port",(host or "*")
