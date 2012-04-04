@@ -49,6 +49,7 @@ class exports.Loader
 				rl.reload.connect (e,mod)~>
 					@load.fire @out
 					merge this,mod
+				@load.fire @out
 				rl.load!
 
 			cb.call this if cb?
