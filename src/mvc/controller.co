@@ -3,8 +3,9 @@ pathutil = require \path
 {Loader} = require "./loader"
 {Config,Log,async} = require "../main"
 {Renderer} = require "./renderer"
+Sync = require \sync
 
-class exports.Controllers extends Loader
+class Controllers extends Loader
 	byId: (id)->
 		unless id instanceof Array then id /= '.'
 		part = id.shift!
@@ -30,8 +31,11 @@ class exports.Controllers extends Loader
 			else
 				cb v,k
 	->
-		super Config.controllerPath, (ctrlrs)->
-			walk ctrlrs, Controller.register
+		Sync ~>
+			super Config.controllerPath, (ctrlrs)->
+				walk ctrlrs, Controllers.register
+
+exports.Controllers = new Controllers
 
 class exports.Controller
 	renderJSON: ->
