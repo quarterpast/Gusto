@@ -13,7 +13,7 @@ class exports.Controller
 	render: (action, args)->
 		$ = @@callee.caller
 		rendered = if typeof action is \string then
-			Renderer $.path $.id, action
+			Renderer.resolve $.path $.id, action
 		else
 			args = action
 			$.renderer
@@ -37,7 +37,7 @@ exports.Controllers = new class Controllers extends Loader
 				fn <<< {
 					id
 					path
-					renderer: Renderer path id,action
+					renderer: Renderer.resolve path id,action
 				}
 		return out
 
