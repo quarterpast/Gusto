@@ -18,7 +18,9 @@ class Script
 
 exports.Errors = {}
 class exports.Errors.InvalidMethod extends Error
-	(m)-> super "Invalid HTTP method #m"
+	-> super "Invalid HTTP method #it"
+class exports.Errors.NotFound extends Error
+	-> super "Could not route #it"
 class exports.Errors.NoAction extends Error
 	-> super "No such action #it"
 class exports.Errors.Generic extends Error
@@ -47,7 +49,9 @@ class exports.Router
 		uri = url.parse req.path
 
 		for route of @compiled
-			continue unless route.method is "*" or route.method is req.method
+			errors = []
+			unless route.method is "*" or route.method is req.method
+				errors.push new InvalidMethod route.method
 			# method matches
 			keys = []
 			pieces = route.path.replace do
@@ -69,9 +73,13 @@ class exports.Router
 						params[key] = vals[i]
 
 				# evaluate the action id
-				continue unless id = route.id.runInNewContext params
-				continue unless action = Controllers.byId id
+				unless id = route.id.runInNewContext params
+					errors.push new NoAction id
+				else unless action = Controllers.byId id
+					errors.push new NoAction id
 				return {
 					action
 					params
 				}
+			else
+				errors.push new NotFound uri.pathname
