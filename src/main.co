@@ -55,8 +55,7 @@ else
 			debug: Logger 0,\DEBUG .~print
 			log: Logger 1,\LOG .~print
 			warn: Logger 2,\WARN,process.stderr .~print
-			error: Logger 3,
-				"#{Logger.colours.red}ERROR#{Logger.colours.reset}",process.stderr .~print
+			error: Logger 3,"#{Logger.colours.red}ERROR#{Logger.colours.reset}",process.stderr .~print
 
 		exports.Config.engines =
 			eco:
