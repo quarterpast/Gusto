@@ -4,12 +4,8 @@ url = require \url
 
 methods = <[ * HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
 
-class exports@Errors.InvalidMethod extends Error
-	-> super "Invalid HTTP method #it"
-class exports@Errors.NotFound extends Error
+class exports.NotFound extends Error
 	-> super "Could not route #it"
-class exports@Errors.Generic extends Error
-	-> super "Something went wrong somewhere for some reason. Maybe."
 
 class exports.UrlMapper
 	-> 
@@ -19,7 +15,8 @@ class exports.Router
 	@route = (req)->
 		for router of @routers
 			for route of router.routes
-				if route.match
+				route.action if route.match req.url
+
 	routes: []
 	-> ..routers.push @
 	add: (method,path,action)->
