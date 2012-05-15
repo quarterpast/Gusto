@@ -8,7 +8,7 @@ class exports.NotFound extends Error
 	-> super "Could not route #it"
 
 class exports.Route
-	-> 
+	(@method or \GET,@path,@action)->
 
 class exports.Router
 	@routers = []
@@ -28,6 +28,6 @@ class exports.Router
 
 	use: (obj)->
 		for own id, func in obj
-			@add (func.method or \GET), path, func
+			@add func.method, path, func
 
 exports[m] = -> it <<< {method:m.toUpperCase!} for m of methods
