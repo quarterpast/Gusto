@@ -12,4 +12,11 @@ class exports@Errors.Generic extends Error
 	-> super "Something went wrong somewhere for some reason. Maybe."
 
 class exports.Router
+	routes: []
 	->
+	add: (method,path,action)->
+
+	get: ::add.curry \GET
+	post: ::add.curry \POST
+
+	
