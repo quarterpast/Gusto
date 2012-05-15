@@ -12,13 +12,16 @@ class exports@Errors.Generic extends Error
 	-> super "Something went wrong somewhere for some reason. Maybe."
 
 class exports.UrlMapper
-	->
+	-> 
 
 class exports.Router
-	@route = ->
-
+	@routers = []
+	@route = (req)->
+		for router of @routers
+			for route of router.routes
+				if route.match
 	routes: []
-	->
+	-> ..routers.push @
 	add: (method,path,action)->
 	::[m] = ::add.curry m.toUpperCase! for m of methods
 
