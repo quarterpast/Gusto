@@ -1,85 +1,15 @@
 # router.co
 {Config} = require "../main"
-{Controllers} = require "../mvc/controller"
 url = require \url
-vm = require \vm
 
 methods = <[ * HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
 
-class Script
-	(@text)->
-		@script = vm.createScript @compiled = Coco.compile @text,{+bare}
-	runInNewContext: ->
-		@script.~runInNewContext ...
-	runInContext: ->
-		@script.~runInContext ...
-	runInThisContext: ->
-		@script.~runInThisContext ...
-
-exports.Errors = {}
-class exports.Errors.InvalidMethod extends Error
+class exports@Errors.InvalidMethod extends Error
 	-> super "Invalid HTTP method #it"
-class exports.Errors.NotFound extends Error
+class exports@Errors.NotFound extends Error
 	-> super "Could not route #it"
-class exports.Errors.NoAction extends Error
-	-> super "No such action #it"
-class exports.Errors.Generic extends Error
+class exports@Errors.Generic extends Error
 	-> super "Something went wrong somewhere for some reason. Maybe."
 
 class exports.Router
-	compiled: []
 	->
-		@controllers = Controllers.run!
-		data = fs.readFile.sync fs,Config.routes
-
-		@compiled = for line of data.toString!.split /[\n\r]/
-			# parse the routes file into an array with vm scripts
-			line .= split "#" .shift! # remove "comments"
-			if line then
-				parts = line.split /\s+/
-				if parts.length > 2
-					if parts[0] not of methods
-						throw new exports.Errors.InvalidMethod parts[0]
-					parts[\method,\path,\id,...\args] = parts
-					parts.id = new Script '"'+parts.id+'"'
-					parts.args = new Script parts.args.join " "
-					parts
-
-	route: (req)->
-		uri = url.parse req.path
-
-		for route of @compiled
-			errors = []
-			unless route.method is "*" or route.method is req.method
-				errors.push new InvalidMethod route.method
-			# method matches
-			keys = []
-			pieces = route.path.replace do
-				/#\{([\w]+?)(\|[\s\S]+?)?(\/)?\}/g,
-				(m,key,sub,slash) ->
-					keys.push key
-					if sub # route specifies its own regexp
-						sub.substr 1
-					else if slash is '/'
-						/((\/?[^\/?*:;{}\\]+)+)/$
-					else /([\w0-9.-]+)/$
-			reg = //^#{pieces}$//
-
-			if reg.test uri.pathname
-				params = {}
-				uri.pathname.replace reg,(m,...vals)->
-					# grab variables from the url
-					for key,i of keys then
-						params[key] = vals[i]
-
-				# evaluate the action id
-				unless id = route.id.runInNewContext params
-					errors.push new NoAction id
-				else unless action = Controllers.byId id
-					errors.push new NoAction id
-				return {
-					action
-					params
-				}
-			else
-				errors.push new NotFound uri.pathname
