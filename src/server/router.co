@@ -9,6 +9,10 @@ class exports.NotFound extends Error
 
 class exports.Route
 	(@method or \GET,@path,@action)->
+	match: (uri)->
+		...
+	reverse: (params)->
+		...
 
 class exports.Router
 	@routers = []
