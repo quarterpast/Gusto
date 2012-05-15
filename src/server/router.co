@@ -7,7 +7,7 @@ methods = <[ * HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
 class exports.NotFound extends Error
 	-> super "Could not route #it"
 
-class exports.UrlMapper
+class exports.Route
 	-> 
 
 class exports.Router
@@ -21,6 +21,9 @@ class exports.Router
 	routes: []
 	-> ..routers.push @
 	add: (method,path,action)->
+		@routes.push if method instanceof Route then method
+		else new Route method,path,action
+
 	::[m] = ::add.curry m.toUpperCase! for m of methods
 
 	use: (obj)->
