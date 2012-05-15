@@ -11,12 +11,19 @@ class exports@Errors.NotFound extends Error
 class exports@Errors.Generic extends Error
 	-> super "Something went wrong somewhere for some reason. Maybe."
 
+class exports.UrlMapper
+	->
+
 class exports.Router
+	@route = ->
+
 	routes: []
 	->
 	add: (method,path,action)->
+	::[m] = ::add.curry m.toUpperCase! for m of methods
 
-	get: ::add.curry \GET
-	post: ::add.curry \POST
+	use: (obj)->
+		for own id, func in obj
+			@add (func.method or \GET), path, func
 
-	
+exports[m] = -> it <<< {method:m.toUpperCase!} for m of methods
