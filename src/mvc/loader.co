@@ -55,5 +55,4 @@ class exports.Loader
 				@load.fire @out
 				rl.load!
 			, @cb
-			cb.call this if cb?
 		return @out
