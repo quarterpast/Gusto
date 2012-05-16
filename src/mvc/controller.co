@@ -44,13 +44,15 @@ exports.Controllers = new class Controllers extends Loader
 	~> super Controllers.register
 	run: ->super Config.controllerPath
 
-Function::action = (spec,func)->
+exports.action = (spec,func)->
 	[func,spec] = if spec instanceof Function then [spec,{}] else [func,spec]
 
-	return (...args)->
+	out = (...args)->
 		args .= 0 if @@length is 1 and typeof @@0 is \object
 			
 		for param,type in spec
 			arg = args[param] or args.shift!
 			pass[param] = arg
 		return func.call pass,@super
+
+	out.expects = spec
