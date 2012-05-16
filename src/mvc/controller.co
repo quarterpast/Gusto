@@ -56,3 +56,4 @@ exports.action = (spec,func)->
 		return func.call pass,@super
 
 	out.expects = spec
+	return out
