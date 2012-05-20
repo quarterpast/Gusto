@@ -24,35 +24,23 @@ class Reloader
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-class exports.Loader
-	# recursively merge two objects
-	# e.g. merge({a:{b:1}},{a:{c:2}}) -> {a:{b:1,c:2}}
-	function merge (dest,src,cb,acc="")
-		for k,v in src
-			d = if acc.length then "#acc.#k" else k
-			if (typeof[dest[k],v]).every(->it is "object")
-				merge dest[k],v,cb,d
-			else
-				dest[k] = if cb? then cb v,d else v
-		return dest
-	load: signal!
-	out: {}
-	(@cb)->
-	run: async (dir)->
-		files = fs.readdir.sync null, dir
-		for file of files
-			res = path.join dir,file
-			stat = fs.stat.sync null, res
-			merge @out,if stat.isDirectory!
-				l = new Loader @cb
-				l.load.connect ~> @load ...
-				l.run res
-			else
-				rl = Reloader res
-				rl.reload.connect (e,mod)~>
-					@load.fire @out
-					merge this,mod
+# fuck you, node
+path.separator = (path.join "x","x").1
+
+exports.Loader = async (dir,merge = (obj,add,id)->
+	obj[path.join ...id] = add
+)->
+	out = {}
+	function walk file
+		stat = fs.stat.sync file
+		if stat.isDirectory!
+			files = fs.readdir.sync file
+			walk path.join file,f for f of files
+		else
+			rl = Reloader file
+			rl.reload.connect (e,mod)->
 				@load.fire @out
-				rl.load!
-			, @cb
-		return @out
+				merge obj,mod,file.split path.separator
+			@load.fire @out
+			rl.load!
+	walk dir
