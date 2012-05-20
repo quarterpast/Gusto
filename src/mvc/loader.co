@@ -5,14 +5,8 @@ Sync = require \sync
 {Log,async} = require "../main"
 
 
-class Reloader
-	reload: signal!
-	(@file)~>
-		@watch file, (ev,name=file)~>
-			name = with path
-				@join @dirname(file), @basename(name)
-			@load name,@reload.~fire
-	watch: (file,cb)->
+class Reloader extends process.EventEmitter
+	function watch file,cb
 		try
 			fs.watch file,cb
 		catch
@@ -20,6 +14,11 @@ class Reloader
 			curr,prev <- fs.watchFile file
 			if curr.mtime is not prev.mtime
 				cb "change",file
+	(@file)~>
+		watch file, (ev,name=file)~>
+			name = with path
+				@join @dirname(file), @basename(name)
+			@load name,~> @fire \reload,it
 	load: async (name = @file)->
 		delete require.cache[path.resolve __dirname,name]
 		return require name
@@ -35,9 +34,9 @@ exports.Loader = async (dir,merge = (obj,add,id)->
 			walk path.join file,f for f of files
 		else
 			rl = Reloader file
-			rl.reload.connect (e,mod)->
-				@load.fire @out
+			rl.on \reload, (e,mod)->
 				merge obj,mod,file
 			@load.fire @out
 			rl.load!
 	walk dir
+	return out
