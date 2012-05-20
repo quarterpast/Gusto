@@ -24,11 +24,8 @@ class Reloader
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-# fuck you, node
-path.separator = (path.join "x","x").1
-
 exports.Loader = async (dir,merge = (obj,add,id)->
-	obj[path.join ...id] = add
+	obj[id] = add
 )->
 	out = {}
 	function walk file
@@ -40,7 +37,7 @@ exports.Loader = async (dir,merge = (obj,add,id)->
 			rl = Reloader file
 			rl.reload.connect (e,mod)->
 				@load.fire @out
-				merge obj,mod,file.split path.separator
+				merge obj,mod,file
 			@load.fire @out
 			rl.load!
 	walk dir
