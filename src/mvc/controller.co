@@ -6,8 +6,10 @@ pathutil = require \path
 Sync = require \sync
 
 class ControllerSupport
-	(@actions)->
-
+	@instances = []
+	(@controller,@action)->
+		..instances.push this
+		action.support = this
 	call: (action,args)->
 		...
 	renderJSON: ->
@@ -24,9 +26,12 @@ class ControllerSupport
 		return [rendered.toString!]
 
 class exports.Controller
+	@viewsystem = (sys)->
+		for cs of ControllerSupport.instances
+			cs.viewsystem = sys
 	(@actions)~>
 		for r,action in actions
-			action.bind new ControllerSupport actions
+			action.bind new ControllerSupport this,action
 
 exports.action = (spec,func)->
 	[func,spec] = if spec instanceof Function then [spec,{}] else [func,spec]
