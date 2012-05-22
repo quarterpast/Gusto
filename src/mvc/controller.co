@@ -6,6 +6,10 @@ pathutil = require \path
 Sync = require \sync
 
 class ControllerSupport
+	(@actions)->
+
+	call: (action,args)->
+		...
 	renderJSON: ->
 		status: 200
 		\content-type : "application/json"
@@ -20,33 +24,13 @@ class ControllerSupport
 		return [rendered.toString!]
 
 class exports.Controller
-	(actions)~>
+	(@actions)~>
+		for r,action in actions
+			action.bind new ControllerSupport actions
 
 
-exports.Controllers = new class Controllers extends Loader
-	byId: (id)->
-		obj = @out
-		unless id instanceof Array then id /= '.'
-		last = id.pop!
-		for part of id
-			obj = obj@[part]
-		act = obj~[last]
-		return act if act instanceof Function
-
-	@register = (klass,id)->
-		out = new klass
-		for action,fn in out
-			if action in klass.prototype and action not in Controller.prototype
-				path = (id,action)-> ((id / '.') + [action]).join '/'
-				fn <<< {
-					id
-					path
-					renderer: Renderer.resolve path id,action
-				}
-		return out
-
-	~> super Controllers.register
-	run: ->super ...
+class exports.Controllers extends Loader
+	(path)~> @ <<< superclass path
 
 #exports.Controllers = new class 
 
@@ -59,7 +43,7 @@ exports.action = (spec,func)->
 		for param,type in spec
 			arg = args[param] or args.shift!
 			pass[param] = arg
-		return func.call pass,@super
+		return func.call pass,this
 
 	out.expects = spec
 	return out
