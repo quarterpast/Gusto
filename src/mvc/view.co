@@ -1,4 +1,5 @@
 {Loader,Reloader} = require "./loader"
+{Renderer} = require "./renderer"
 path = require \path
 fs = require \fs
 
@@ -9,5 +10,6 @@ class ViewReloader extends Reloader
 
 class exports.ViewLoader
 	(dir)~>
-		for file,view in Loader dir
-			...
+		for file,view in Loader dir, ViewReloader.asPaths
+			ext = path.extname file
+
