@@ -25,13 +25,14 @@ class ControllerSupport
 			$.renderer
 		return [rendered.toString!]
 
-class exports.Controller
-	@viewsystem = (sys)->
-		for cs of ControllerSupport.instances
-			cs.viewsystem = sys
-	(@actions)~>
-		for r,action in actions
-			action.bind new ControllerSupport this,action
+exports.Controller = (actions)->
+	for r,action in actions
+		action.bind new ControllerSupport this,action
+	return actions
+
+exports.Controller.viewsystem = (sys)->
+	for cs of ControllerSupport.instances
+		cs.viewsystem = sys
 
 exports.action = (spec,func)->
 	[func,spec] = if spec instanceof Function then [spec,{}] else [func,spec]
