@@ -23,10 +23,25 @@ class Reloader extends process.EventEmitter
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-exports.Loader = async (dir,merge = (obj,add,fname)->
-	for route,action in add.routes
-		key = action.id or path.join cont,route
-		obj[key] = action
+exports.Paths = (obj)->
+	acc = {}
+	function inner o,dir = ''
+		for own k,v in o
+			p = path.join dir,k
+			if v instanceof Function
+				acc[p] = v
+			else
+				inner v,p,acc
+	inner obj
+	return acc
+
+exports.Loader = async (dir,load = async (obj,file)->
+	rl = Reloader file
+	rl.on \reload, (e,mod)->
+		for route,action in Paths mod
+			key = action.id or route
+			obj[key] = action
+	rl.load!
 )->
 	out = {}
 	walk = async (file)->
@@ -35,9 +50,6 @@ exports.Loader = async (dir,merge = (obj,add,fname)->
 			files = fs.readdir.sync file
 			walk path.join file,f for f of files
 		else
-			rl = Reloader file
-			rl.on \reload, (e,mod)->
-				merge obj,mod,file
-			rl.load!
+			load out,file
 	walk dir
 	return out
