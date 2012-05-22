@@ -1,0 +1,13 @@
+{Loader,Reloader} = require "./loader"
+path = require \path
+fs = require \fs
+
+class ViewReloader extends Reloader
+	~> super ...
+	load: async (name = @file)->
+		return fs.readFile.sync name
+
+class exports.ViewLoader
+	(dir)~>
+		for file,view in Loader dir
+			...
