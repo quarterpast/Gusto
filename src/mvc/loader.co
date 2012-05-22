@@ -4,8 +4,26 @@ Sync = require \sync
 {signal} = require "./signal"
 {Log,async} = require "../main"
 
+exports.Paths = (obj)->
+	acc = {}
+	function inner o,dir = ''
+		for own k,v in o
+			p = path.join dir,k
+			if v instanceof Function
+				acc[p] = v
+			else
+				inner v,p,acc
+	inner obj
+	return acc
 
 class Reloader extends process.EventEmitter
+	@asPaths = async (obj,file)->
+		rl = .. file
+		rl.on \reload, (e,mod)->
+			for route,action in Paths mod
+				key = action.id or route
+				obj[key] = action
+		rl.load!
 	function watch file,cb
 		try
 			fs.watch file,cb
@@ -23,26 +41,7 @@ class Reloader extends process.EventEmitter
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-exports.Paths = (obj)->
-	acc = {}
-	function inner o,dir = ''
-		for own k,v in o
-			p = path.join dir,k
-			if v instanceof Function
-				acc[p] = v
-			else
-				inner v,p,acc
-	inner obj
-	return acc
-
-exports.Loader = async (dir,load = async (obj,file)->
-	rl = Reloader file
-	rl.on \reload, (e,mod)->
-		for route,action in Paths mod
-			key = action.id or route
-			obj[key] = action
-	rl.load!
-)->
+exports.Loader = async (dir,load = Reloader.asPaths)->
 	out = {}
 	walk = async (file)->
 		stat = fs.stat.sync file
