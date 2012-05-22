@@ -27,7 +27,7 @@ exports.Loader = async (dir,merge = (obj,add,id)->
 	obj[id] = add
 )->
 	out = {}
-	function walk file
+	walk = async (file)->
 		stat = fs.stat.sync file
 		if stat.isDirectory!
 			files = fs.readdir.sync file
@@ -36,7 +36,6 @@ exports.Loader = async (dir,merge = (obj,add,id)->
 			rl = Reloader file
 			rl.on \reload, (e,mod)->
 				merge obj,mod,file
-			@load.fire @out
 			rl.load!
 	walk dir
 	return out
