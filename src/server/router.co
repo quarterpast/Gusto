@@ -8,7 +8,7 @@ class exports.NotFound extends Error
 	-> super "Could not route #it"
 
 class exports.Route
-	(@method or \GET,@path,@action)->
+	(@method or '*',@path,@action)->
 		action.toString = action.route = @~reverse
 	match: (uri)->
 		...
