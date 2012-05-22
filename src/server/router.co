@@ -32,7 +32,7 @@ class exports.Router
 	::[m] = ::add.bind null,m.toUpperCase! for m of methods
 
 	use: (obj)->
-		for own id, func in obj
+		for own path, func in obj
 			@add func.method, path, func
 
 exports[m] = -> it <<< {method:m.toUpperCase!} for m of methods
