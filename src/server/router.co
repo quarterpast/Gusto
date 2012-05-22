@@ -29,7 +29,7 @@ class exports.Router
 		@routes.push if method instanceof Route then method
 		else new Route method,path,action
 
-	::[m] = ::add.curry m.toUpperCase! for m of methods
+	::[m] = ::add.bind this,m.toUpperCase! for m of methods
 
 	use: (obj)->
 		for own id, func in obj

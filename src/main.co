@@ -70,7 +70,3 @@ else
 		{Server} = require "./server/server"
 
 		exports.Server = new Server exports.Config.port,exports.Config.host
-
-Function::curry = (curried)->
-	func = this
-	-> func.apply @, [curried]+@@
