@@ -5,7 +5,7 @@ pathutil = require \path
 {Renderer} = require "./renderer"
 Sync = require \sync
 
-class exports.Controller
+class ControllerSupport
 	renderJSON: ->
 		status: 200
 		\content-type : "application/json"
@@ -18,6 +18,10 @@ class exports.Controller
 			args = action
 			$.renderer
 		return [rendered.toString!]
+
+class exports.Controller
+	(actions)~>
+
 
 exports.Controllers = new class Controllers extends Loader
 	byId: (id)->
@@ -42,7 +46,9 @@ exports.Controllers = new class Controllers extends Loader
 		return out
 
 	~> super Controllers.register
-	run: ->super Config.controllerPath
+	run: ->super ...
+
+#exports.Controllers = new class 
 
 exports.action = (spec,func)->
 	[func,spec] = if spec instanceof Function then [spec,{}] else [func,spec]

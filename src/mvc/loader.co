@@ -23,8 +23,10 @@ class Reloader extends process.EventEmitter
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-exports.Loader = async (dir,merge = (obj,add,id)->
-	obj[id] = add
+exports.Loader = async (dir,merge = (obj,add,fname)->
+	for route,action in add.routes
+		key = action.id or path.join cont,route
+		obj[key] = action
 )->
 	out = {}
 	walk = async (file)->
