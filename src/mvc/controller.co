@@ -28,12 +28,6 @@ class exports.Controller
 		for r,action in actions
 			action.bind new ControllerSupport actions
 
-
-class exports.Controllers extends Loader
-	(path)~> @ <<< superclass path
-
-#exports.Controllers = new class 
-
 exports.action = (spec,func)->
 	[func,spec] = if spec instanceof Function then [spec,{}] else [func,spec]
 
