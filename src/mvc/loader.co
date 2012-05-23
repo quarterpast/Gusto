@@ -17,8 +17,8 @@ exports.Paths = (obj)->
 	return acc
 
 class Reloader extends process.EventEmitter
-	@asPaths = async (obj,file)->
-		rl = .. file
+	@asPaths = (rlclass = this)-> async (obj,file)->
+		rl = rlclass file
 		rl.on \reload, (e,mod)->
 			for route,action in Paths mod
 				key = action.id or route

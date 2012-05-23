@@ -10,6 +10,6 @@ class ViewReloader extends Reloader
 
 class exports.ViewLoader
 	(dir)~>
-		for file,view in Loader dir, ViewReloader.asPaths
+		for file,view in Loader dir, Reloader.asPaths ViewReloader
 			ext = path.extname file
 
