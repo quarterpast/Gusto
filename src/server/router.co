@@ -29,10 +29,12 @@ class exports.Router
 		@routes.push if method instanceof Route then method
 		else new Route method,path,action
 
-	::[m] = ::add.bind null,m.toUpperCase! for m of methods
+	for m of methods
+		::[m] = ::add.bind null,m.toUpperCase!
 
 	use: (obj)->
 		for own path, func in obj
 			@add func.method, path, func
 
-exports[m] = -> it <<< {method:m.toUpperCase!} for m of methods
+for m of methods
+	exports[m] = -> it <<< {method:m.toUpperCase!}
