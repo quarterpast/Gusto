@@ -26,6 +26,7 @@ class exports.Reloader extends process.EventEmitter
 		rl.load!
 	).bind this
 	function watch file,cb
+		console.log file
 		try
 			fs.watch file,cb
 		catch
@@ -44,11 +45,12 @@ class exports.Reloader extends process.EventEmitter
 
 exports.Loader = async (dir,load = Reloader.asPaths)->
 	out = {}
-	walk = async (file)->
-		stat = fs.stat.sync file
+	walk = (file)->
+		stat = fs.stat.sync fs, file
 		if stat.isDirectory!
-			files = fs.readdir.sync file
-			walk path.join file,f for f of files
+			files = fs.readdir.sync fs, file
+			for f of files
+				walk path.join file,f 
 		else
 			load out,file
 	walk dir
