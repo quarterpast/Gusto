@@ -16,7 +16,7 @@ exports.Paths = (obj)->
 	inner obj
 	return acc
 
-class Reloader extends process.EventEmitter
+class exports.Reloader extends process.EventEmitter
 	@asPaths = async (obj,file)->
 		rl = this file
 		rl.on \reload, (e,mod)->
