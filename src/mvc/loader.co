@@ -1,7 +1,7 @@
 fs = require \fs
 path = require \path
 Sync = require \sync
-{async} = require "../main"
+{async} = require "../magic"
 {Log} = require "../log"
 
 exports.Paths = (obj)->

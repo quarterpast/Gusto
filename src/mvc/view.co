@@ -1,5 +1,5 @@
 {Loader,Reloader} = require "./loader"
-{async} = require "../main"
+{async} = require "../magic"
 path = require \path
 Q = require \q
 fs = require \fs

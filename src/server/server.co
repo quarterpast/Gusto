@@ -1,6 +1,5 @@
 # server.co
 # it's a server
-{async} = require "../main"
 Q = require \q
 http = require \q-http
 url = require \url
@@ -12,8 +11,8 @@ Sync = require \sync
 
 {Router,NotFound} = require "./router"
 {Loader} = require "../mvc/loader"
-{SyncPromise} = require "./syncpromise"
 {Log} = require "../log"
+{async,SyncPromise} = require "../magic"
 
 class Timer
 	(req)->
