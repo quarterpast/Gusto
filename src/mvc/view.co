@@ -1,15 +1,27 @@
 {Loader,Reloader} = require "./loader"
-{Renderer} = require "./renderer"
+{async} = require "../main"
 path = require \path
+Q = require \q
 fs = require \fs
 
 class ViewReloader extends Reloader
+	@asPaths = super.asPaths
 	~> super ...
 	load: async (name = @file)->
 		return fs.readFile.sync name
 
+class exports.View
+	@renderers = {}
+	@use = (extra)->@renderers <<< extra
+	@add = (ext,rend)->@renderers[ext] = rend
+	(@path,@compiled)->
+		..[path] = this
+	run: (args)->@compiled args
+
 class exports.ViewLoader
 	(dir)~>
-		for file,view in Loader dir, Reloader.asPaths ViewReloader
+		for file,view in Loader dir, ViewReloader.asPaths
 			ext = path.extname file
-
+			if View.renderers[ext]? then rend = new that view
+			else continue
+			new View file,rend
