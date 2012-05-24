@@ -3,7 +3,6 @@ pathutil = require \path
 {Loader} = require "./loader"
 {async} = require "../magic"
 {Log} = require "../log"
-{Renderer} = require "./renderer"
 Sync = require \sync
 
 class ControllerSupport
@@ -18,13 +17,7 @@ class ControllerSupport
 		\content-type : "application/json"
 		body: [JSON.stringify it]
 	render: (action, args)->
-		$ = @@callee.caller
-		rendered = if typeof action is \string then
-			Renderer.resolve $.path $.id, action
-		else
-			args = action
-			$.renderer
-		return [rendered.toString!]
+		return [\implement!]
 
 exports.Controller = (actions)->
 	for r,action in actions
