@@ -1,9 +1,10 @@
-path = require \path
-cluster = require \cluster
-os = require \os
-fs = require \fs
-util = require \util
 Sync = require \sync
+
+{Router} = require "./server/router"
+{Controller} = require "./mvc/controller"
+{Loader} = require "./mvc/loader"
+{View,ViewLoader} = require "./mvc/view"
+{Server} = require "./server/server"
 
 exports.async = -> it.async!
 exports.future = -> it.future!
@@ -11,11 +12,6 @@ exports.future = -> it.future!
 appDir = process.cwd!
 
 exports.defaults = ->
-	{Router} = require "server/router"
-	{Controller} = require "mvc/controller"
-	{Loader} = require "mvc/loader"
-	{View,ViewLoader} = require "mvc/view"
-	{Server} = require "server/server"
 
 	module.exports = new Server
 
