@@ -18,10 +18,9 @@ class exports.View
 		..[path] = this
 	run: (args)->@compiled args
 
-class exports.ViewLoader
-	(dir)~>
-		for file,view in Loader dir, ViewReloader.asPaths
-			ext = path.extname file
-			if View.renderers[ext]? then rend = new that view
-			else continue
-			new View file,rend
+exports.ViewLoader = (dir)~>
+	for file,view in Loader dir, ViewReloader.asPaths
+		ext = path.extname file
+		if View.renderers[ext]? then rend = new that view
+		else continue
+		new View file,rend
