@@ -20,7 +20,7 @@ class exports.Router
 	@route = (req)->
 		for router of @routers
 			for route of router.routes
-				if route.match req.url then route.action
+				if params = route.match req.url then {route.action,params}
 				else new NotFound req.url
 
 	routes: []

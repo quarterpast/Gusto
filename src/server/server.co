@@ -10,7 +10,7 @@ fs = require \fs
 util = require \util
 Sync = require \sync
 
-{Router,Errors} = require "./router"
+{Router,NotFound} = require "./router"
 {Loader} = require "../mvc/loader"
 {SyncPromise} = require "./syncpromise"
 
@@ -31,11 +31,14 @@ class exports.Server
 			querystring.parse SyncPromise request.body.read!
 		else {}
 
-		route = @router.route request
-		return status: 404,onclose: time.~end unless route
+		found = false
+		for route of Router.route request
+			if route not instanceof NotFound
+				found = true
+				{action,params} = route
+				break
+		return status: 404,onclose: time.~end unless found
 
-		{action,params} = route
-		
 		data = post <<< get <<< params
 
 		res = action data
@@ -53,7 +56,6 @@ class exports.Server
 
 	(port,host)->
 		Sync ~>
-			@router = new Router
 			@server = http.Server @~serve
 			Log.log "listening on %s:#port",(host or "*")
 			@server.listen port,host
