@@ -1,17 +1,16 @@
 Sync = require \sync
 
-{Router} = require "./server/router"
-{Controller} = require "./mvc/controller"
-{Loader} = require "./mvc/loader"
-{View,ViewLoader} = require "./mvc/view"
-{Server} = require "./server/server"
-
 exports.async = -> it.async!
 exports.future = -> it.future!
 
 appDir = process.cwd!
 
 exports.defaults = ->
+	{Router} = require "./server/router"
+	{Controller} = require "./mvc/controller"
+	{Loader} = require "./mvc/loader"
+	{View,ViewLoader} = require "./mvc/view"
+	{Server} = require "./server/server"
 
 	module.exports = new Server
 
