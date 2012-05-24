@@ -1,8 +1,5 @@
 Sync = require \sync
 
-exports.async = -> it.async!
-exports.future = -> it.future!
-
 appDir = process.cwd!
 
 exports.defaults = ->
