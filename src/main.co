@@ -9,7 +9,7 @@ exports.defaults = ->
 	{View,ViewLoader} = require "./mvc/view"
 	{Server} = require "./server/server"
 
-	module.exports = new Server
+	server = new Server
 
 	Sync ->
 		View.add "eco",class Eco
@@ -20,8 +20,8 @@ exports.defaults = ->
 
 		with new Router
 			@use Loader "#appDir/controllers"
-	, module.exports~error
-
+	, server~error
+	return server
 	#TODO: implement static
 	#with new Router
 	#	@get "static",Static.dir

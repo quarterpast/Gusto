@@ -17,13 +17,14 @@ exports.Paths = (obj)->
 	return acc
 
 class exports.Reloader extends process.EventEmitter
-	@asPaths = async (obj,file)->
+	@asPaths = async ((obj,file)->
 		rl = this file
 		rl.on \reload, (e,mod)->
 			for route,action in Paths mod
 				key = action.id or route
 				obj[key] = action
 		rl.load!
+	).bind this
 	function watch file,cb
 		try
 			fs.watch file,cb
