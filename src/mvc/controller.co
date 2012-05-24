@@ -30,9 +30,9 @@ exports.Controller = (actions)->
 		action.bind new ControllerSupport this,action
 	return actions
 
-exports.Controller.viewsystem = (sys)->
+exports.Controller.views = (sys)->
 	for cs of ControllerSupport.instances
-		cs.viewsystem = sys
+		cs.views = sys
 
 exports.action = (spec,func)->
 	[func,spec] = if spec instanceof Function then [spec,{}] else [func,spec]
