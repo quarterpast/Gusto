@@ -54,9 +54,8 @@ class exports.Server
 			Log.error e.message
 			console.log e.stack
 
-	(port,host)->
-		Sync ~>
-			@server = http.Server @~serve
-			Log.log "listening on %s:#port",(host or "*")
-			@server.listen port,host
-		, @~error
+	->
+		@server = http.Server @~serve
+	listen: (port,host)->
+		Log.log "listening on %s:#port",(host or "*")
+		@server.listen port,host
