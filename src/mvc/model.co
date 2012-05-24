@@ -2,7 +2,7 @@ util = require \util
 pathutil = require \path
 {Loader} = require "./loader"
 {async} = require "../main"
-{Log} = require "./log"
+{Log} = require "../log"
 {Renderer} = require "./renderer"
 
 class exports.Models
