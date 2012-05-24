@@ -1,7 +1,8 @@
 util = require \util
 pathutil = require \path
 {Loader} = require "./loader"
-{Config,Log,async} = require "../main"
+{async} = require "../main"
+{Log} = require "./log"
 {Renderer} = require "./renderer"
 Sync = require \sync
 

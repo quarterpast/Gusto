@@ -1,8 +1,8 @@
 fs = require \fs
 path = require \path
 Sync = require \sync
-{signal} = require "./signal"
-{Log,async} = require "../main"
+{async} = require "../main"
+{Log} = require "./log"
 
 exports.Paths = (obj)->
 	acc = {}
