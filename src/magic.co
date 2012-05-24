@@ -1,4 +1,8 @@
-{async} = require "../main"
+exports.async = -> it.async!
+exports.future = -> it.future!
+
+exports.SyncPromise = exports.async function SyncPromise pr
+	return pr.then.sync pr
 
 class exports.SyncStream
 	$buffer: null
@@ -15,7 +19,7 @@ class exports.SyncStream
 			chunk.copy @$buffer,off
 			off += chunk.length
 
-	out: async ->
+	out: exports.async ->
 		@read.on.sync @read,"end"
 		return @$buffer
 
