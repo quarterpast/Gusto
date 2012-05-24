@@ -1,0 +1,8 @@
+{Router} = require "server/router"
+{Controller} = require "mvc/controller"
+{Loader} = require "mvc/loader"
+{View,ViewLoader} = require "mvc/view"
+
+controllers = new Router
+controllers.use Loader "#appDir/controllers"
+
