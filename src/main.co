@@ -25,3 +25,4 @@ exports.defaults = ->
 	#TODO: implement static
 	#with new Router
 	#	@get "static",Static.dir
+
