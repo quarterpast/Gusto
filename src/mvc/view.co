@@ -1,11 +1,10 @@
-{Loader,Reloader} = require "./loader"
+{Loader,Reloader,asPaths} = require "./loader"
 {async} = require "../magic"
 path = require \path
 Q = require \q
 fs = require \fs
 
 class ViewReloader extends Reloader
-	@asPaths = super.asPaths
 	~> super ...
 	load: async (name = @file)->
 		return fs.readFile.sync name
@@ -19,7 +18,7 @@ class exports.View
 
 exports.ViewLoader = (dir)~>
 	out = {}
-	for file,view in Loader dir, ViewReloader.asPaths
+	for file,view in Loader dir, asPaths ViewReloader
 		ext = path.extname file
 		if View.renderers[ext]? then rend = new that view
 		else continue
