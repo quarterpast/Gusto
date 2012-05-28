@@ -17,6 +17,7 @@ exports.Paths = (obj)->
 	return acc
 
 exports.asPaths = (klass)-> async (obj,file)->
+	console.log klass
 	rl = new klass file
 	rl.on \reload, (e,mod)->
 		for route,action in exports.Paths mod
