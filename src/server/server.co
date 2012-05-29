@@ -22,7 +22,7 @@ class Timer
 		@finish = new Date
 		Log.log @id+": "+(@finish-@start)+"ms"
 
-class exports.Server extends http.Server
+class exports.Server
 	serve: (request)->
 		time = new Timer request
 		# request's finished, do our thing
@@ -54,7 +54,8 @@ class exports.Server extends http.Server
 			Log.error e.message
 			console.log e.stack
 
-	-> super @~serve
+	->
+		@server = http.Server @~serve
 	listen: (port,host)->
 		Log.log "listening on %s:#port",(host or "*")
-		super ...
+		@server.listen port,host
