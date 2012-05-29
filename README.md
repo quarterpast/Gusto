@@ -1,6 +1,6 @@
 Struct
 ======
-...is a tiny little MVC framework for Node.js, inspired rather loosely by Play!. It uses [JugglingDB](https://github.com/1602/jugglingdb) for the ORM, a [jQote2](https://github.com/quarterto/jQote2)-based template engine, my very own [hot.js](https://github.com/quarterto/hot.js) for hot module reloading, and finally [Sugar](http://sugarjs.com/) to sweeten up the API.
+...is a tiny little MVC framework for Node.js, inspired rather loosely by Play!. It uses [JugglingDB](https://github.com/1602/jugglingdb) for the ORM, a [jQote2](https://github.com/quarterto/jQote2)-based template engine, my very own [hot.js](https://github.com/quarterto/hot.js) for hot module reloading, and finally [Sugar](http://sugarjs.com/) to sweeten up the API. It's release under the MIT Licence, so hack away.
 
 Let's make a model!
 
