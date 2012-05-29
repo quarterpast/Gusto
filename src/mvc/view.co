@@ -17,7 +17,6 @@ class exports.View
 	run: (args)->@compiled args
 
 exports.ViewLoader = (dir)~>
-	console.log dir
 	out = {}
 	for file,view in Loader dir, asPaths ViewReloader
 		ext = path.extname file

@@ -16,14 +16,16 @@ exports.Paths = (obj)->
 	inner obj
 	return acc
 
-exports.asPaths = (klass)-> async (obj,file)->
-	console.log klass
-	rl = new klass file
-	rl.on \reload, (e,mod)->
-		for route,action in exports.Paths mod
-			key = action.id or route
-			obj[key] = action
-	rl.load!
+exports.asPaths = (klass)->
+	async (obj,file)->
+		rl = new klass file
+		Log.warn @@callee.caller.toString!
+		Log.debug rl.load.toString!
+		rl.on \reload, (e,mod)->
+			for route,action in exports.Paths mod
+				key = action.id or route
+				obj[key] = action
+		rl.load!
 
 class exports.Reloader extends process.EventEmitter	
 	function watch file,cb
@@ -40,7 +42,6 @@ class exports.Reloader extends process.EventEmitter
 				@join @dirname(file), @basename(name)
 			@load name,~> @fire \reload,it
 	load: async (name = @file)->
-		console.log name
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
@@ -50,7 +51,6 @@ exports.Loader = async (dir,load = exports.asPaths Reloader)->
 		stat = fs.statSync file
 		if stat.isDirectory!
 			files = fs.readdirSync file
-			console.log load
 			for f of files
 				walk path.join file,f 
 		else

@@ -16,6 +16,8 @@ exports.defaults = ->
 		View.add "eco",class Eco
 			(file)->
 				vm.createScript Coco.compile '"""'+file+'"""',{+bare}
+		View.add "ejs",class Ejs
+			(file)-> vm.createScript file
 
 		Controller.views ViewLoader path.join appDir,"views"
 
