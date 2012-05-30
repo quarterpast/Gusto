@@ -19,8 +19,6 @@ exports.Paths = (obj)->
 exports.asPaths = (klass)->
 	async (obj,file)->
 		rl = new klass file
-		Log.warn @@callee.caller.toString!
-		Log.debug rl.load.toString!
 		rl.on \reload, (e,mod)->
 			for route,action in exports.Paths mod
 				key = action.id or route
@@ -45,8 +43,8 @@ class exports.Reloader extends process.EventEmitter
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-exports.Walk = async (dir)->
-	walk = (file,acc)->
+exports.Loader = async (fn = Reloader.setup)->
+	function walk file,acc = []
 		stat = fs.stat.sync fs, file
 		if stat.isDirectory!
 			files = fs.readdir.sync fs, file
@@ -55,5 +53,8 @@ exports.Walk = async (dir)->
 		else
 			acc.push file
 		return acc
+	out = {}
+	for k,i of walk dir
+		out[k] = fn k,i,keys
+	return out
 
-	return walk dir, []
