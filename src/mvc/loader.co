@@ -45,15 +45,15 @@ class exports.Reloader extends process.EventEmitter
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-exports.Loader = async (dir,load = exports.asPaths Reloader)->
-	out = {}
-	walk = (file)->
-		stat = fs.statSync file
+exports.Walk = async (dir)->
+	walk = (file,acc)->
+		stat = fs.stat.sync fs, file
 		if stat.isDirectory!
-			files = fs.readdirSync file
+			files = fs.readdir.sync fs, file
 			for f of files
-				walk path.join file,f 
+				acc.concat walk (path.join file,f), acc
 		else
-			load out,file
-	walk dir
-	return out
+			acc.push file
+		return acc
+
+	return walk dir, []
