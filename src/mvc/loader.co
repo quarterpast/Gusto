@@ -31,7 +31,7 @@ class exports.Reloader
 		watch file, (ev,name=file)~>
 			name = with path
 				@join @dirname(file), @basename(name)
-			cb @load name
+			cb @load.sync this, name
 	load: async (name = @file)->
 		delete require.cache[path.resolve __dirname,name]
 		return require name

@@ -25,6 +25,7 @@ exports.ControllerLoader = (dir)->
 		reload: signal!
 	for file of Walk dir
 		Reloader file, (exp)->
+			console.log exp
 			keys = for id,action in Paths exp
 				out[id] = action
 				id
