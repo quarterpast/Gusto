@@ -13,8 +13,8 @@ class exports.Route
 		action.toString = action.route = @~reverse
 	match: (request)->
 		if @method not of ['*',request.method] then return false
-		searchparts = request.path.split '/'
-		reqparts = @path.substr 1 .split '/'
+		reqparts = request.path.substr 1 .split '/'
+		searchparts = @path.split '/'
 		for part,i of reqparts
 			reg = if part.0 is '#'
 				/(%[0-9a-f]{2}|[a-z0-9-_.!~'():@&=+,$]*)(;(%[0-9a-f]{2}|[a-z0-9-_.!~'():@&=+,$])*)*/ #RFC 2396
