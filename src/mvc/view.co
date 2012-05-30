@@ -1,4 +1,4 @@
-{Loader,Reloader,asPaths} = require "./loader"
+{Walk,Reloader} = require "./loader"
 {async} = require "../magic"
 path = require \path
 Q = require \q
@@ -18,8 +18,10 @@ class exports.View
 
 exports.ViewLoader = (dir)~>
 	out = {}
-	for file,view in Loader dir, asPaths ViewReloader
-		ext = path.extname file
-		if View.renderers[ext]? then rend = new that view
-		else continue
-		out[file] = new View rend
+	for file of Walk dir
+		ViewReloader file, (view)->
+			ext = path.extname file
+			if View.renderers[ext]? then rend = new that view
+			else continue
+			out[file] = new View rend
+	return out

@@ -1,6 +1,7 @@
 util = require \util
 pathutil = require \path
-{Loader} = require "./loader"
+{Walk} = require "./loader"
+{signal} = require "./signal"
 {async} = require "../magic"
 {Log} = require "../log"
 Sync = require \sync
@@ -18,6 +19,15 @@ class ControllerSupport
 		body: [JSON.stringify it]
 	render: (action, args)->
 		return [\implement!]
+
+exports.ControllerLoader = (dir)->
+	out = {}
+	for file of Walk dir
+		Reloader file, (exp)->
+			for id,action of Paths exp
+				out[id] = action
+	return out
+
 
 exports.Controller = (actions)->
 	for r,action in actions

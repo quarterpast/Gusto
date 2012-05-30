@@ -1,5 +1,6 @@
 fs = require \fs
 path = require \path
+Q = require \q
 Sync = require \sync
 {async} = require "../magic"
 {Log} = require "../log"
@@ -16,17 +17,9 @@ exports.Paths = (obj)->
 	inner obj
 	return acc
 
-exports.asPaths = (klass)->
-	async (obj,file)->
-		rl = new klass file
-		rl.on \reload, (e,mod)->
-			for route,action in exports.Paths mod
-				key = action.id or route
-				obj[key] = action
-		rl.load!
-
-class exports.Reloader extends process.EventEmitter	
+class exports.Reloader
 	function watch file,cb
+		cb "init",file
 		try
 			fs.watch file,cb
 		catch
@@ -34,27 +27,22 @@ class exports.Reloader extends process.EventEmitter
 			curr,prev <- fs.watchFile file
 			if curr.mtime is not prev.mtime
 				cb "change",file
-	(@file)~>
+	(@file,cb)~>
 		watch file, (ev,name=file)~>
 			name = with path
 				@join @dirname(file), @basename(name)
-			@load name,~> @fire \reload,it
+			cb @load name
 	load: async (name = @file)->
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-exports.Loader = async (fn = Reloader.setup)->
-	function walk file,acc = []
-		stat = fs.stat.sync fs, file
-		if stat.isDirectory!
-			files = fs.readdir.sync fs, file
-			for f of files
-				acc.concat walk (path.join file,f), acc
-		else
-			acc.push file
-		return acc
-	out = {}
-	for k,i of walk dir
-		out[k] = fn k,i,keys
-	return out
+exports.Walk = (file,acc = [])->
+	stat = fs.stat.sync fs, file
+	if stat.isDirectory!
+		files = fs.readdir.sync fs, file
+		for f of files
+			acc.concat walk (path.join file,f), acc
+	else
+		acc.push file
+	return acc
 
