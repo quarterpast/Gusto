@@ -33,7 +33,9 @@ exports.ControllerLoader = (dir)->
 
 exports.Controller = (actions)->
 	for r,action in actions
-		actions[r] = action .= bind new ControllerSupport action
+		props = {}<<<action
+		actions[r] = action.bind new ControllerSupport action
+		actions[r] <<< props
 	return actions
 
 exports.Controller.views = (sys)->

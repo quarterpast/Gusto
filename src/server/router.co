@@ -22,13 +22,13 @@ class exports.Route
 			if part.0 is '#'
 				params[part.substr 1] = reqpart
 			else
-				if not reqpart is part then return false
+				if reqpart is not part then return false
 		if @action.expects?
 			for own param,type in @action.expects
 				val = request.post[param]
 				or    request.get[param]
 				or    params[param]
-				or    reqpart.shift!
+				or    reqparts.shift!
 				params[param] = type val
 		else params <<< request.get <<< request.post
 		return params
