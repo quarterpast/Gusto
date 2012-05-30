@@ -22,6 +22,5 @@ exports.ViewLoader = (dir)~>
 		ViewReloader file, (view)->
 			ext = path.extname file
 			if View.renderers[ext]? then rend = new that view
-			else continue
 			out[file] = new View rend
 	return out
