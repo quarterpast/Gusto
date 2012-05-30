@@ -7,7 +7,7 @@ Sync = require \sync
 
 exports.Paths = (obj)->
 	acc = {}
-	function inner o,dir = '/'
+	function inner o,dir = ''
 		for own k,v in o
 			p = path.join dir,k
 			if v instanceof Function

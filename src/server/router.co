@@ -12,7 +12,16 @@ class exports.Route
 	(@method or '*',@path,@action)->
 		action.toString = action.route = @~reverse
 	match: (request)->
-		
+		if @method not of ['*',request.method] then return false
+		searchparts = request.path.split '/'
+		reqparts = @path.substr 1 .split '/'
+		for part,i of reqparts
+			reg = if part.0 is '#'
+				/(%[0-9a-f]{2}|[a-z0-9-_.!~'():@&=+,$]*)(;(%[0-9a-f]{2}|[a-z0-9-_.!~'():@&=+,$])*)*/ #RFC 2396
+			else //#part//
+			console.log part,searchparts.0
+			if reg.test searchparts.shift! then return false
+
 	reverse: (params)->
 		...
 
