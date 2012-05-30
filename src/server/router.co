@@ -15,12 +15,23 @@ class exports.Route
 		if @method not of ['*',request.method] then return false
 		reqparts = request.path.substr 1 .split '/'
 		searchparts = @path.split '/'
-		for part,i of reqparts
-			reg = if part.0 is '#'
-				/(%[0-9a-f]{2}|[a-z0-9-_.!~'():@&=+,$]*)(;(%[0-9a-f]{2}|[a-z0-9-_.!~'():@&=+,$])*)*/ #RFC 2396
-			else //#part//
-			console.log part,searchparts.0
-			if reg.test searchparts.shift! then return false
+
+		params = {}
+		for part,i of searchparts
+			reqpart = reqparts.shift!
+			if part.0 is '#'
+				params[part.substr 1] = reqpart
+			else
+				if not reqpart is part then return false
+		if @action.expects?
+			for own param,type in @action.expects
+				val = request.post[param]
+				or    request.get[param]
+				or    params[param]
+				or    reqpart.shift!
+				params[param] = type val
+		else params <<< request.get <<< request.post
+		return params
 
 	reverse: (params)->
 		...

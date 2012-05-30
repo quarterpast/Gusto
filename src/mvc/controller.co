@@ -31,7 +31,6 @@ exports.ControllerLoader = (dir)->
 			out.reload.fire keys
 	return out
 
-
 exports.Controller = (actions)->
 	for r,action in actions
 		actions[r] = action .= bind new ControllerSupport action
@@ -45,7 +44,6 @@ exports.action = (spec,func)->
 	[func,spec] = if spec instanceof Function then [spec,{}] else [func,spec]
 
 	out = (...args)->
-		console.log this
 		args .= 0 if @@length is 1 and typeof @@0 is \object
 		pass = {}
 		for param,type in spec
