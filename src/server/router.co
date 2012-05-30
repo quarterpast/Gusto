@@ -11,8 +11,8 @@ class exports.NotFound extends Error
 class exports.Route
 	(@method or '*',@path,@action)->
 		action.toString = action.route = @~reverse
-	match: (uri)->
-		params: id:1
+	match: (request)->
+		
 	reverse: (params)->
 		...
 
@@ -21,7 +21,7 @@ class exports.Router
 	@route = (req)->
 		for router of @routers
 			for route of router.routes
-				if params = route.match req.url then {route.action,params}
+				if params = route.match req then {route.action,params}
 				else new NotFound req.url
 
 	routes: []
