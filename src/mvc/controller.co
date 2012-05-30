@@ -7,10 +7,7 @@ pathutil = require \path
 Sync = require \sync
 
 class ControllerSupport
-	@instances = []
 	(@action)->
-		..instances.push this
-		action.support = this
 	call: (action,args)->
 		...
 	renderJSON: ->
