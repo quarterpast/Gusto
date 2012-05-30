@@ -12,7 +12,7 @@ class exports.Route
 	(@method or '*',@path,@action)->
 		action.toString = action.route = @~reverse
 	match: (uri)->
-		...
+		params: id:1
 	reverse: (params)->
 		...
 
