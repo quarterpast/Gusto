@@ -8,7 +8,7 @@ Sync = require \sync
 
 class ControllerSupport
 	@instances = []
-	(@action)->
+	(@action,@id)->
 		..instances.push this
 		action.support = this
 	call: (action,args)->
@@ -17,8 +17,9 @@ class ControllerSupport
 		status: 200
 		\content-type : "application/json"
 		body: [JSON.stringify it]
-	render: (action, args)->
-		return [\implement!]
+	render: (path, args)->
+		console.log @action.id
+		return [JSON.stringify ..views]
 
 exports.ControllerLoader = (dir)->
 	out = new class
@@ -27,20 +28,19 @@ exports.ControllerLoader = (dir)->
 		Reloader file, (exp)->
 			keys = for id,action in Paths exp
 				out[id] = action
-				id
+				action.id = id
 			out.reload.fire keys
 	return out
 
 exports.Controller = (actions)->
 	for r,action in actions
 		props = {}<<<action
-		actions[r] = action.bind new ControllerSupport action
+		actions[r] = action.bind new ControllerSupport action,r
 		actions[r] <<< props
 	return actions
 
 exports.Controller.views = (sys)->
-	for cs of ControllerSupport.instances
-		cs.views = sys
+	ControllerSupport.views = sys
 
 exports.action = (spec,func)->
 	[func,spec] = if spec instanceof Function then [spec,{}] else [func,spec]

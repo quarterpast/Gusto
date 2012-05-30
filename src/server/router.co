@@ -42,7 +42,7 @@ class exports.Router
 		for router of @routers
 			for route of router.routes
 				if params = route.match req then {route.action,params}
-				else new NotFound req.url
+				else new exports.NotFound req.url
 	routeHash: {}
 	routes:~ -> v for k,v in @routeHash
 	-> ..routers.push @

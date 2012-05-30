@@ -7,7 +7,7 @@ fs = require \fs
 class ViewReloader extends Reloader
 	~> super ...
 	load: async (name = @file)->
-		return fs.readFile.sync name
+		return fs.readFile.sync fs, name
 
 class exports.View
 	@renderers = {}
