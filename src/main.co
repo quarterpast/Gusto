@@ -5,8 +5,7 @@ appDir = process.cwd!
 
 exports.defaults = ->
 	{Router} = require "./server/router"
-	{Controller} = require "./mvc/controller"
-	{Loader} = require "./mvc/loader"
+	{Controller,ControllerLoader} = require "./mvc/controller"
 	{View,ViewLoader} = require "./mvc/view"
 	{Server} = require "./server/server"
 
@@ -22,7 +21,7 @@ exports.defaults = ->
 		Controller.views ViewLoader path.join appDir,"views"
 
 		with new Router
-			@use Loader path.join appDir,"controllers"
+			@use ControllerLoader path.join appDir,"controllers"
 	, server~error
 	return server
 	#TODO: implement static

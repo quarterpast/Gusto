@@ -36,7 +36,7 @@ class exports.Reloader
 		delete require.cache[path.resolve __dirname,name]
 		return require name
 
-exports.Walk = (file,acc = [])->
+exports.Walk = walk = (file,acc = [])->
 	stat = fs.stat.sync fs, file
 	if stat.isDirectory!
 		files = fs.readdir.sync fs, file

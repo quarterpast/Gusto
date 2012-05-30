@@ -1,6 +1,6 @@
 util = require \util
 pathutil = require \path
-{Walk} = require "./loader"
+{Walk,Reloader,Paths} = require "./loader"
 {signal} = require "./signal"
 {async} = require "../magic"
 {Log} = require "../log"
