@@ -21,11 +21,14 @@ class ControllerSupport
 		return [\implement!]
 
 exports.ControllerLoader = (dir)->
-	out = {}
+	out = new class
+		reload: signal!
 	for file of Walk dir
 		Reloader file, (exp)->
-			for id,action of Paths exp
+			keys = for id,action in Paths exp
 				out[id] = action
+				id
+			out.reload.fire keys
 	return out
 
 

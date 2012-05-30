@@ -1,5 +1,6 @@
 # router.co
 {Config} = require "../main"
+{signal} = require "../mvc/signal"
 url = require \url
 
 methods = <[ * HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
@@ -33,6 +34,10 @@ class exports.Router
 		::[m] = ::add.bind null,m.toUpperCase!
 
 	use: (obj)->
+		if obj.reload? then obj.reload.connect (keys)~>
+			for key of keys
+				@add obj[key].method, key, obj[key]
+
 		for own path, func in obj
 			@add func.method, path, func
 
