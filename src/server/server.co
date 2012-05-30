@@ -30,7 +30,7 @@ class exports.Server
 		post = if request.method is \POST and request.headers."content-length" then
 			querystring.parse SyncPromise request.body.read!
 		else {}
-		req <<< {get,post}
+		request <<< {get,post}
 		found = false
 		for route of Router.route request
 			if route not instanceof NotFound
