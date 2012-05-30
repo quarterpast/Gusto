@@ -42,6 +42,7 @@ class exports.Server
 		res = action params
 
 		{
+			headers: "content-type":"text/html"
 			status: 200
 			onclose: time.~end
 		} <<< if \forEach in res then
