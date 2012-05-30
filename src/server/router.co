@@ -9,9 +9,10 @@ class exports.NotFound extends Error
 	-> super "Could not route #it"
 
 class exports.Route
-	(@method or '*',@path,@action)->
+	(@method,@path,@action)->
 		action.toString = action.route = @~reverse
 	match: (request)->
+		console.log @path
 		if @method not of ['*',request.method] then return false
 		reqparts = request.path.substr 1 .split '/'
 		searchparts = @path.split '/'
@@ -43,11 +44,12 @@ class exports.Router
 			for route of router.routes
 				if params = route.match req then {route.action,params}
 				else new NotFound req.url
-
-	routes: []
+	routeHash: {}
+	routes:~ -> v for k,v in @routeHash
 	-> ..routers.push @
-	add: (method,path,action)->
-		@routes.push if method instanceof Route then method
+	add: (method or '*',path,action)->
+		@routeHash["#method #path"] = if method instanceof Route 
+			method
 		else new Route method,path,action
 
 	for m of methods
