@@ -12,7 +12,6 @@ class exports.Route
 	(@method,@path,@action)->
 		action.toString = action.route = @~reverse
 	match: (request)->
-		console.log @path
 		if @method not of ['*',request.method] then return false
 		reqparts = request.path.substr 1 .split '/'
 		searchparts = @path.split '/'
