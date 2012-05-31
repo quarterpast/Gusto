@@ -1,4 +1,5 @@
 Q = require \q
+crypto = require \crypto
 {Log} = require "./log"
 {Server} = require "./server/server"
 
@@ -33,15 +34,12 @@ class exports.FutureStream extends SyncStream
 		super.future this
 
 exports.handle = (func)-> ->
-	fixed = Q.defer!
 	try
 		func ...
-		fixed.resolve!
 	catch
 		Log.error e.message
 		console.log e.stack
-		Server.hijack {
-			fixed.promise
+		Server.hijack id, {
 			body: [e.message]
 			status: 500
 		}
