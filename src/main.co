@@ -10,7 +10,9 @@ exports.defaults = ->
 	{View,ViewLoader} = require "./mvc/view"
 	{Server} = require "./server/server"
 	{Log} = require "./log"
+	prof = require \v8-profiler
 
+	prof.startProfiling \default
 	server = new Server
 
 	Sync ->
@@ -27,7 +29,7 @@ exports.defaults = ->
 			console.log e.stack
 			process.exit (e.code or 1)
 
-
+	prof.stopProfiling \default
 	return server
 	#TODO: implement static
 	#with new Router
