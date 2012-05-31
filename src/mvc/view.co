@@ -9,7 +9,7 @@ fs = require \fs
 class ViewReloader extends Reloader
 	~> super ...
 	load: async handle (name = @file)->
-			fs.readFile.sync fs, name
+		fs.readFile.sync fs, name
 
 class exports.View
 	@renderers = {}
@@ -22,9 +22,9 @@ exports.ViewLoader = (dir)~>
 	out = {}
 	Walk dir .forEach (file)->
 		ViewReloader file, handle (view)->
-				ext = path.extname file .substr 1
-				if View.renderers[ext]? then rend = new that view
-				else return
-				out[path.relative dir,file] = new View rend
+			ext = path.extname file .substr 1
+			if View.renderers[ext]? then rend = new that view
+			else return
+			out[path.relative dir,file] = new View rend
 
 	return out

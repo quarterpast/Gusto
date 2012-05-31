@@ -28,7 +28,7 @@ class ControllerSupport
 exports.ControllerLoader = (dir)->
 	out = new class
 		reload: signal!
-	for file of Walk dir
+	Walk dir .forEach (file)->
 		Reloader file, handle (exp)->
 			keys = for id,action in Paths exp
 				out[id] = action

@@ -48,7 +48,8 @@ class exports.Server
 
 			res = action params
 		catch
-			Log.error e
+			Log.error e.message
+			console.log e.stack
 			res = body: [e.message] status: 500
 		finally
 			return {

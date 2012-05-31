@@ -29,7 +29,7 @@ class exports.Reloader
 			if curr.mtime is not prev.mtime
 				cb "change",file
 	(@file,cb)~>
-		watch file, (ev,name=file)~>
+		watch file, async (ev,name=file)~>
 			name = with path
 				@join @dirname(file), @basename(name)
 			cb @load.sync this, name
