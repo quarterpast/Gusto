@@ -29,40 +29,43 @@ class exports.Server
 		promise.then ~>
 			@error = false
 
-	serve: !(request)->
-		time = new Timer request
-		res = {}
-		try
-			get = url.parse request.url,true .query
-			post = if request.method is \POST and request.headers."content-length" then
-				querystring.parse SyncPromise request.body.read!
-			else {}
-			request <<< {get,post}
-			found = false
-			for route of Router.route request
-				if route not instanceof NotFound
-					found = true
-					{action,params} = route
-					break
-			return status: 404,onclose: time.~end unless found
+	serve: !(request)-> 
+		out = Q.defer!
+		Sync ->
+			time = new Timer request
+			res = {}
+			try
+				get = url.parse request.url,true .query
+				post = if request.method is \POST and request.headers."content-length" then
+					querystring.parse SyncPromise request.body.read!
+				else {}
+				request <<< {get,post}
+				found = false
+				for route of Router.route request
+					if route not instanceof NotFound
+						found = true
+						{action,params} = route
+						break
+				out.resolve status: 404,onclose: time.~end unless found
 
-			res = action params
-		catch
-			Log.error e.message
-			console.log e.stack
-			res = body: [e.message] status: 500
-		finally
-			return {
-				headers: "content-type":"text/html"
-				status: 200
-				onclose: time.~end
-			} <<< if ..error and (
-				"content-type" not in res@headers or
-				res.headers."content-type" is "text/html"
-			) then ..error
-			else if \forEach in res then
-				body: res
-			else res
+				res = action params
+			catch
+				Log.error e.message
+				console.log e.stack
+				res = body: [e.message] status: 500
+			finally
+				out.resolve {
+					headers: "content-type":"text/html"
+					status: 200
+					onclose: time.~end
+				} <<< if ..error and (
+					"content-type" not in res@headers or
+					res.headers."content-type" is "text/html"
+				) then ..error
+				else if \forEach in res then
+					body: res
+				else res
+		return out.promise
 	->
 		@server = http.Server @~serve
 	listen: (port,host)->
