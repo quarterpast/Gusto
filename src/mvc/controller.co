@@ -16,7 +16,7 @@ class ControllerSupport
 		\content-type : "application/json"
 		body: [JSON.stringify it]
 	render: (path, args = {})->
-		if path not instanceof String
+		if (({}).toString.call path) is not "[object String]"
 			[args,path] = [path or args,@id]
 		for vpath,view in ..views
 			base = with dirs
