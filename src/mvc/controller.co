@@ -1,5 +1,5 @@
 util = require \util
-pathutil = require \path
+dirs = require \path
 {Walk,Reloader,Paths} = require "./loader"
 {signal} = require "./signal"
 {async} = require "../magic"
@@ -14,9 +14,15 @@ class ControllerSupport
 		status: 200
 		\content-type : "application/json"
 		body: [JSON.stringify it]
-	render: (path = @id, args)->
-		console.log @id
-		return [JSON.stringify ..views]
+	render: (path, args = {})->
+		if path not instanceof String
+			[args,path] = [path or args,@id]
+		for vpath,view in ..views
+			base = with dirs
+				@join (@dirname vpath),@basename vpath,@extname vpath
+			if base is path
+				return view.run args
+		return [\fail]
 
 exports.ControllerLoader = (dir)->
 	out = new class

@@ -1,5 +1,6 @@
 Sync = require \sync
 path = require \path
+vm = require \vm
 
 appDir = process.cwd!
 
@@ -12,11 +13,8 @@ exports.defaults = ->
 	server = new Server
 
 	Sync ->
-		View.add "eco",class Eco
-			(file)->
-				vm.createScript Coco.compile '"""'+file+'"""',{+bare}
-		View.add "ejs",class Ejs
-			(file)-> vm.createScript file
+		View.add "eco",(file)->vm.createScript Coco.compile '["""'+file+'"""]',{+bare}
+		View.add "ejs",(file)-> vm.createScript file
 
 		Controller.views ViewLoader path.join appDir,"views"
 

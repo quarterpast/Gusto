@@ -14,13 +14,14 @@ class exports.View
 	@use = (extra)->@renderers <<< extra
 	@add = (ext,rend)->@renderers[ext] = rend
 	(@compiled)->
-	run: (args)->@compiled args
+	run: (args)->@compiled.runInNewContext args
 
 exports.ViewLoader = (dir)~>
 	out = {}
-	for file of Walk dir
+	Walk dir .forEach (file)->
 		ViewReloader file, (view)->
-			ext = path.extname file
+			ext = path.extname file .substr 1
 			if View.renderers[ext]? then rend = new that view
-			out[file] = new View rend
+			else return
+			out[path.relative dir,file] = new View rend
 	return out
