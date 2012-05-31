@@ -33,13 +33,20 @@ class exports.FutureStream extends SyncStream
 	out: ->
 		super.future this
 
-exports.handle = (func)-> ->
-	try
-		func ...
-	catch
-		Log.error e.message
-		console.log e.stack
-		Server.hijack id, {
-			body: [e.message]
-			status: 500
-		}
+exports.handle = (func)->
+	trapped = false
+	!->
+		try
+			r = func ...
+			if trapped
+				trapped.resolve!
+				trapped := false
+			return r
+		catch
+			trapped := Q.defer!
+			Log.error e.message
+			console.log e.stack
+			Server.hijack trapped.promise, {
+				body: [e.message]
+				status: 500
+			}

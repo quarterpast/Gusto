@@ -23,18 +23,11 @@ class Timer
 		Log.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
-	@errors = {}
-	@oldErrs = []
-	@displayErr = 0
-	@hijack = (id,err)->
-		@errors[id] = err
-		@oldErrs.push @displayErr
-		@displayErr = id
-		err.promise?.then ~>
-			delete @errors[it]
-			for id,i of @oldErrs
-				if id is it
-					@oldErrs.splice i,1
+	@error = false
+	@hijack = (promise,err)->
+		@error = err
+		promise.then ~>
+			@error = false
 
 	serve: !(request)->
 		time = new Timer request
@@ -62,10 +55,10 @@ class exports.Server
 				headers: "content-type":"text/html"
 				status: 200
 				onclose: time.~end
-			} <<< if ..displayErr and (
+			} <<< if ..error and (
 				"content-type" not in res@headers or
 				res.headers."content-type" is "text/html"
-			) then ..errors[..displayErr]
+			) then ..error
 			else if \forEach in res then
 				body: res
 			else res
