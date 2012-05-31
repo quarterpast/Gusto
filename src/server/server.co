@@ -23,8 +23,15 @@ class Timer
 		Log.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
+	@error
+	@hijack = ->
+		@error = it
+		it.promise.then ~>
+			delete @error
+
 	serve: !(request)->
 		time = new Timer request
+		res = {}
 		try
 			get = url.parse request.url,true .query
 			post = if request.method is \POST and request.headers."content-length" then
@@ -48,7 +55,11 @@ class exports.Server
 				headers: "content-type":"text/html"
 				status: 200
 				onclose: time.~end
-			} <<< if \forEach in res then
+			} <<< if ..error and (
+				"content-type" not in res@headers or
+				res.headers."content-type" is "text/html"
+			) then ..error
+			else if \forEach in res then
 				body: res
 			else res
 	->

@@ -2,7 +2,8 @@ util = require \util
 dirs = require \path
 {Walk,Reloader,Paths} = require "./loader"
 {signal} = require "./signal"
-{async} = require "../magic"
+{async,handle} = require "../magic"
+{Server} = require "../server/server"
 {Log} = require "../log"
 Sync = require \sync
 
@@ -28,7 +29,7 @@ exports.ControllerLoader = (dir)->
 	out = new class
 		reload: signal!
 	for file of Walk dir
-		Reloader file, (exp)->
+		Reloader file, handle (exp)->
 			keys = for id,action in Paths exp
 				out[id] = action
 				action.support.id = id

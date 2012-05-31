@@ -1,13 +1,15 @@
 {Walk,Reloader} = require "./loader"
-{async} = require "../magic"
+{async,handle} = require "../magic"
+{Server} = require "../server/server"
+{Log} = require "../log"
 path = require \path
 Q = require \q
 fs = require \fs
 
 class ViewReloader extends Reloader
 	~> super ...
-	load: async (name = @file)->
-		return fs.readFile.sync fs, name
+	load: async handle (name = @file)->
+			fs.readFile.sync fs, name
 
 class exports.View
 	@renderers = {}
@@ -19,9 +21,10 @@ class exports.View
 exports.ViewLoader = (dir)~>
 	out = {}
 	Walk dir .forEach (file)->
-		ViewReloader file, (view)->
-			ext = path.extname file .substr 1
-			if View.renderers[ext]? then rend = new that view
-			else return
-			out[path.relative dir,file] = new View rend
+		ViewReloader file, handle (view)->
+				ext = path.extname file .substr 1
+				if View.renderers[ext]? then rend = new that view
+				else return
+				out[path.relative dir,file] = new View rend
+
 	return out

@@ -2,7 +2,8 @@ fs = require \fs
 path = require \path
 Q = require \q
 Sync = require \sync
-{async} = require "../magic"
+{async,handle} = require "../magic"
+{Server} = require "../server/server"
 {Log} = require "../log"
 
 exports.Paths = (obj)->
@@ -32,9 +33,9 @@ class exports.Reloader
 			name = with path
 				@join @dirname(file), @basename(name)
 			cb @load.sync this, name
-	load: async (name = @file)->
+	load: async handle (name = @file)->
 		delete require.cache[path.resolve __dirname,name]
-		return require name
+		require name
 
 exports.Walk = walk = (file,acc = [])->
 	stat = fs.stat.sync fs, file

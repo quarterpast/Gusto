@@ -1,3 +1,7 @@
+Q = require \q
+{Log} = require "./log"
+{Server} = require "./server/server"
+
 exports.async = -> it.async!
 exports.future = -> it.future!
 
@@ -27,3 +31,17 @@ class exports.FutureStream extends SyncStream
 	-> super ...
 	out: ->
 		super.future this
+
+exports.handle = (func)-> ->
+	fixed = Q.defer!
+	try
+		func ...
+		fixed.resolve!
+	catch
+		Log.error e.message
+		console.log e.stack
+		Server.hijack {
+			fixed.promise
+			body: [e.message]
+			status: 500
+		}
