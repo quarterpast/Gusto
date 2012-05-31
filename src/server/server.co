@@ -23,7 +23,7 @@ class Timer
 		Log.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
-	serve: (request)->
+	serve: !(request)->
 		time = new Timer request
 		try
 			get = url.parse request.url,true .query
@@ -44,7 +44,7 @@ class exports.Server
 			Log.error e
 			res = body: [e.message] status: 500
 		finally
-			{
+			return {
 				headers: "content-type":"text/html"
 				status: 200
 				onclose: time.~end

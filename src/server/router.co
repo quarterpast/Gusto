@@ -29,7 +29,7 @@ class exports.Route
 				or    request.get[param]
 				or    params[param]
 				or    reqparts.shift!
-				params[param] = type val
+				params[param] = new type val
 		else params <<< request.get <<< request.post
 		return params
 

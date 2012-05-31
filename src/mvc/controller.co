@@ -52,7 +52,7 @@ exports.action = (spec,func)->
 		args .= 0 if @@length is 1 and typeof @@0 is \object
 		pass = {}
 		for param,type in spec
-			pass[param] = args[param] or args.shift!
+			pass[param] = if args[param]? then that else args.shift!
 		return func.call pass,this
 
 	out.expects = spec
