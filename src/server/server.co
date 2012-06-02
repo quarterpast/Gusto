@@ -29,7 +29,7 @@ class exports.Server
 		err.previous = @lasterr
 		err.next = false
 		@error[id] = err
-		if @lasterr then @error[@lasterr].next = err
+		if @lasterr then @error[@lasterr].next = id
 		@lasterr = id
 		promise.then ~>
 			if @error[id].previous
@@ -43,6 +43,7 @@ class exports.Server
 	serve: !(request)-> 
 		out = Q.defer!
 		Sync ->
+			console.log ..error,..lasterr
 			time = new Timer request
 			if ..lasterr and ..error[..lasterr] then
 				return out.resolve {
@@ -71,7 +72,6 @@ class exports.Server
 				console.log e.stack
 				res = body: [e.message] status: 500
 			finally
-				console.log ..error,..lasterr
 				out.resolve {
 					headers: "content-type":"text/html"
 					status: 200
