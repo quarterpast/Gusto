@@ -10,6 +10,7 @@ exports.defaults = ->
 	{View,ViewLoader} = require "./mvc/view"
 	{Server} = require "./server/server"
 	{Log} = require "./log"
+	Q = require \q
 
 	server = new Server
 
