@@ -34,19 +34,22 @@ class exports.FutureStream extends SyncStream
 		super.future this
 
 exports.handle = (func)->
-	trapped = false
-	!->
+	trapped = {}
+	!(...args)->
+		hash = crypto.createHash 'sha1'
+		hash.update (a?.toString! or 'undefined') for a of args
+		id = hash.digest 'hex'
 		try
 			r = func ...
-			if trapped
-				trapped.resolve!
-				trapped := false
+			if trapped[id]?
+				trapped[id].resolve!
+				delete trapped[id]
 			return r
 		catch
-			trapped := Q.defer!
+			trapped[id] = Q.defer!
 			Log.error e.message
 			console.log e.stack
-			Server.hijack trapped.promise, {
+			Server.hijack id,trapped[id].promise, {
 				body: [e.message]
 				status: 500
 			}

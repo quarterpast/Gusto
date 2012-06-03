@@ -23,16 +23,34 @@ class Timer
 		Log.log @id+": "+(@finish-@start)+"ms"
 
 class exports.Server
-	@error = false
-	@hijack = (promise,err)->
-		@error = err
+	@error = {}
+	@lasterr = false
+	@hijack = (id,promise,err)->
+		err.previous = @lasterr
+		err.next = false
+		@error[id] = err
+		if @lasterr then @error[@lasterr].next = id
+		@lasterr = id
 		promise.then ~>
-			@error = false
+			if @error[id].previous
+				@error[@error[id].previous].next = @error[id].next
+			if @error[id].next
+				@error[@error[id].next].previous = @error[id].previous
+			if @lasterr is id
+				@lasterr = @error[id].previous
+			delete @error[id]
 
 	serve: !(request)-> 
 		out = Q.defer!
 		Sync ->
+			console.log ..error,..lasterr
 			time = new Timer request
+			if ..lasterr and ..error[..lasterr] then
+				return out.resolve {
+					headers: "content-type":"text/html"
+					status: 200
+					onclose: time.~end
+				} <<< ..error[..lasterr]
 			res = {}
 			try
 				get = url.parse request.url,true .query
@@ -58,11 +76,7 @@ class exports.Server
 					headers: "content-type":"text/html"
 					status: 200
 					onclose: time.~end
-				} <<< if ..error and (
-					"content-type" not in res@headers or
-					res.headers."content-type" is "text/html"
-				) then ..error
-				else if \forEach in res then
+				} <<< if \forEach in res then
 					body: res
 				else res
 		return out.promise
