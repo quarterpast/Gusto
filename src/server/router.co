@@ -54,18 +54,23 @@ class exports.Router
 	for m of methods
 		::[m] = ::add.bind null,m.toUpperCase!
 
-	use: (obj)->
-		if obj.reload? then obj.reload.connect (keys)~>
-			for key of keys
-				@add obj[key].method, key, obj[key]
+	use: (obj,re=true)->
+		if re and obj.reload?
+			obj.reload.connect (keys)~> @use obj,false
 
 		for own path, func in obj
+			if action.aliases?
+				for p,method in action.aliases
+					@add method, p, func
 			@add func.method, path, func
+
+exports.alias = (obj,func)->
+	func.aliases <<< obj
+	return func
 
 methods.forEach (method)->
 	exports[method.toLowerCase!] = (id,func)->
-		[id,func] = [[],id] if (typeof id) is \function
-		id = [id] if (typeof id) is \string
-		if func.id?
-			id .= concat func.id
-		func <<< {id,method}
+		if typeof id is \string
+			exports.alias (id):method, func
+		else
+			func <<< {method}
