@@ -43,7 +43,6 @@ class exports.Server
 	serve: !(request)-> 
 		out = Q.defer!
 		Sync ->
-			console.log ..error,..lasterr
 			time = new Timer request
 			if ..lasterr and ..error[..lasterr] then
 				return out.resolve {
