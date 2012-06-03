@@ -52,7 +52,7 @@ class exports.Router
 		else new Route method,path,action
 
 	methods.forEach (method)->
-		::[m] = ::add.bind null,method
+		::[method.toLowerCase!] = ::add.bind null,method
 	::any = ::'*'
 
 
