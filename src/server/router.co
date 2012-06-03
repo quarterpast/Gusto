@@ -62,13 +62,10 @@ class exports.Router
 		for own path, func in obj
 			@add func.method, path, func
 
-for m of methods
-	exports[m] = (id,func)->
+methods.forEach (method)->
+	exports[method.toLowerCase!] = (id,func)->
 		[id,func] = [[],id] if (typeof id) is \function
 		id = [id] if (typeof id) is \string
 		if func.id?
 			id .= concat func.id
-		func <<< {
-			id
-			method: m.toUpperCase!
-		}
+		func <<< {id,method}
