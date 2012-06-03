@@ -12,6 +12,10 @@ class ViewReloader extends Reloader
 		fs.readFile.sync fs, name
 
 class exports.View
+	helpers =
+		include: ->
+		extends: ->
+
 	@renderers = {}
 	@use = (extra)->@renderers <<< extra
 	@add = (ext,rend)->@renderers[ext] = rend

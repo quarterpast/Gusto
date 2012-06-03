@@ -8,6 +8,12 @@ dirs = require \path
 Sync = require \sync
 
 class ControllerSupport
+	@resolveView = (paths)->
+		for vpath,view in @views
+			base = with dirs
+				@join (@dirname vpath),@basename vpath,@extname vpath
+			if base is path
+				return view
 	(@action)->
 	call: (action,args)->
 		...
@@ -18,12 +24,7 @@ class ControllerSupport
 	render: (path, args = {})->
 		if typeof path is not "string"
 			[args,path] = [path or args,@id]
-		for vpath,view in ..views
-			base = with dirs
-				@join (@dirname vpath),@basename vpath,@extname vpath
-			if base is path
-				return view.run args
-		return [\fail]
+		..resolveView path .run args or [\fail]
 
 exports.ControllerLoader = (dir)->
 	out = new class
