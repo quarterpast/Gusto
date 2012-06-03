@@ -9,6 +9,12 @@ exports.future = -> it.future!
 exports.SyncPromise = exports.async function SyncPromise pr
 	return pr.then.sync pr
 
+exports.PromiseFuture = exports.async function PromiseFuture fu
+	out = Q.defer!
+	process.nextTick ->
+		out.resolve fu.result
+	return out.promise
+
 class exports.SyncStream
 	$buffer: null
 	(@read,length)~>
