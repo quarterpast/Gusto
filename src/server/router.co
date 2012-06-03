@@ -51,21 +51,24 @@ class exports.Router
 			method
 		else new Route method,path,action
 
-	for m of methods
-		::[m] = ::add.bind null,m.toUpperCase!
+	methods.forEach (method)->
+		::[m] = ::add.bind null,method
+	::any = ::'*'
+
+
 
 	use: (obj,re=true)->
 		if re and obj.reload?
 			obj.reload.connect (keys)~> @use obj,false
 
 		for own path, func in obj
-			if action.aliases?
-				for p,method in action.aliases
+			if func.aliases?
+				for p,method in func.aliases
 					@add method, p, func
 			@add func.method, path, func
 
 exports.alias = (obj,func)->
-	func.aliases <<< obj
+	func@aliases <<< obj
 	return func
 
 methods.forEach (method)->
@@ -74,3 +77,5 @@ methods.forEach (method)->
 			exports.alias (id):method, func
 		else
 			func <<< {method}
+
+exports.any = exports.'*'
