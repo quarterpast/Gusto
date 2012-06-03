@@ -40,13 +40,13 @@ class exports.Server
 					querystring.parse SyncPromise request.body.read!
 				else {}
 				request <<< {get,post}
-				found = false
-				for route of Router.route request
-					if route not instanceof NotFound
-						found = true
-						{action,params} = route
-						break
-				out.resolve status: 404,onclose: time.~end unless found
+				
+				[{action,params}] = Router.route request .filter ->
+					it not instanceof NotFound
+				if (typeof action) is \function
+					res = action params
+				else
+					out.resolve status: 404,onclose: time.~end
 
 				res = action params
 			catch
