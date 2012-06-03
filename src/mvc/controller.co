@@ -31,10 +31,10 @@ exports.ControllerLoader = (dir)->
 	Walk dir .forEach (file)->
 		Reloader file, handle (exp)->
 			keys = for id,action in Paths exp
-				out[id] = action
 				if action.id?
 					for i of action.id
 						out[i] = action
+				out[id] = action
 				action.support.id = id
 			out.reload.fire keys
 	return out
