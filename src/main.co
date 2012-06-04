@@ -1,0 +1,35 @@
+Sync = require \sync
+path = require \path
+vm = require \vm
+
+appDir = process.cwd!
+
+exports.defaults = ->
+	{Router} = require "./server/router"
+	{Controller,ControllerLoader} = require "./mvc/controller"
+	{View,ViewLoader} = require "./mvc/view"
+	{Server} = require "./server/server"
+	{Log} = require "./log"
+
+	server = new Server
+
+	Sync ->
+		View.add "eco",(file)->vm.createScript Coco.compile '["""'+file+'"""]',{+bare}
+		View.add "ejs",(file)->vm.createScript file
+
+		Controller.views ViewLoader path.join appDir,"views"
+
+		with new Router
+			@use ControllerLoader path.join appDir,"controllers"
+	, (e)->
+		if e
+			Log.error e.message
+			console.log e.stack
+			process.exit (e.code or 1)
+
+
+	return server
+	#TODO: implement static
+	#with new Router
+	#	@get "static",Static.dir
+

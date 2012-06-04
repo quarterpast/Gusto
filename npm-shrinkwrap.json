@@ -1,0 +1,34 @@
+{
+  "dependencies": {
+    "sugar": {
+      "version": "1.2.3"
+    },
+    "coco": {
+      "version": "0.7.0"
+    },
+    "q-http": {
+      "version": "0.1.13",
+      "dependencies": {
+        "q-io": {
+          "version": "0.0.12"
+        }
+      }
+    },
+    "q": {
+      "version": "0.8.2",
+      "dependencies": {
+        "event-queue": {
+          "version": "0.2.0"
+        }
+      }
+    },
+    "sync": {
+      "version": "0.2.0",
+      "dependencies": {
+        "fibers": {
+          "version": "0.6.5"
+        }
+      }
+    }
+  }
+}

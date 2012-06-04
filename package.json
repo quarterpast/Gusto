@@ -1,5 +1,66 @@
 {
-	"name" : "gusto",
-	"main" : "./main.js",
-	"version": "0.0.4-1"
+  "name": "gusto",
+  "version": "0.0.1",
+  "description": "Unfancy MVC",
+  "keywords": [
+    "mvc",
+    "framewor,",
+    "coco",
+    "javascript"
+  ],
+  "author": "quarterto <mwr.brennan@gmail.com> (http://github.com/quarterto)",
+  "homepage": "http://github.com/quarterto/Gusto/",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/satyr/coco/raw/master/LICENSE"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.6.2"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "main": "./lib/main",
+  "bin": {
+    "gusto": "./lib/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/quarterto/Gusto.git"
+  },
+  "dependencies": {
+    "sugar": {
+      "version": "1.2.3"
+    },
+    "coco": {
+      "version": "0.7.0"
+    },
+    "q-http": {
+      "version": "0.1.13",
+      "dependencies": {
+        "q-io": {
+          "version": "0.0.12"
+        }
+      }
+    },
+    "q": {
+      "version": "0.8.2",
+      "dependencies": {
+        "event-queue": {
+          "version": "0.2.0"
+        }
+      }
+    },
+    "sync": {
+      "version": "0.2.0",
+      "dependencies": {
+        "fibers": {
+          "version": "0.6.5"
+        }
+      }
+    }
+  }
+
 }
