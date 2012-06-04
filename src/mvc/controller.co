@@ -8,12 +8,7 @@ dirs = require \path
 Sync = require \sync
 
 class ControllerSupport
-	@resolveView = (paths)->
-		for vpath,view in @views
-			base = with dirs
-				@join (@dirname vpath),@basename vpath,@extname vpath
-			if base is path
-				return view
+	@views = []
 	(@action)->
 	call: (action,args)->
 		...
@@ -24,7 +19,10 @@ class ControllerSupport
 	render: (path, args = {})->
 		if typeof path is not "string"
 			[args,path] = [path or args,@id]
-		..resolveView path .run args or [\fail]
+		for system of ..views
+			view = system.resolve path
+			return view.run args if view
+		...
 
 exports.ControllerLoader = (dir)->
 	out = new class
@@ -45,7 +43,7 @@ exports.Controller = (actions)->
 	return actions
 
 exports.Controller.views = (sys)->
-	ControllerSupport.views = sys
+	ControllerSupport.views.push sys
 
 exports.action = (spec,func)->
 	[func,spec] = if spec instanceof Function then [spec,{}] else [func,spec]

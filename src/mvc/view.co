@@ -2,8 +2,7 @@
 {async,handle} = require "../magic"
 {Server} = require "../server/server"
 {Log} = require "../log"
-path = require \path
-Q = require \q
+dirs = require \path
 fs = require \fs
 
 class ViewReloader extends Reloader
@@ -12,23 +11,34 @@ class ViewReloader extends Reloader
 		fs.readFile.sync fs, name
 
 class exports.View
-	helpers =
+	helpers:
 		include: ->
 		extends: ->
-
 	@renderers = {}
 	@use = (extra)->@renderers <<< extra
 	@add = (ext,rend)->@renderers[ext] = rend
 	(@compiled)->
 	run: (args)->@compiled.runInNewContext args
 
+class ViewSystem
+	(@views)->
+		for p,view in views
+			view.system = this
+	resolve: (path)->
+		for vpath,view in @views
+			base = with dirs
+				@join (@dirname vpath),@basename vpath,@extname vpath
+			if base is path
+				return view
+		...
+
 exports.ViewLoader = (dir)~>
 	out = {}
 	Walk dir .forEach (file)->
 		ViewReloader file, handle (view)->
-			ext = path.extname file .substr 1
+			ext = dirs.extname file .substr 1
 			if View.renderers[ext]? then rend = new that view
 			else return
-			out[path.relative dir,file] = new View rend
+			out[dirs.relative dir,file] = new View rend
 
-	return out
+	return ViewSystem out
