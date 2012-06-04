@@ -11,14 +11,14 @@ class ViewReloader extends Reloader
 		fs.readFile.sync fs, name
 
 class exports.View
-	helpers:
-		include: ->
-		extends: ->
+	helpers: ->
+		include: ~>
+		extend: ~> @system
 	@renderers = {}
 	@use = (extra)->@renderers <<< extra
 	@add = (ext,rend)->@renderers[ext] = rend
 	(@compiled)->
-	run: (args)->@compiled.runInNewContext args
+	run: (args)->@compiled.runInNewContext args <<< @helpers!
 
 class ViewSystem
 	(@views)->
@@ -30,7 +30,7 @@ class ViewSystem
 				@join (@dirname vpath),@basename vpath,@extname vpath
 			if base is path
 				return view
-		...
+		return false
 
 exports.ViewLoader = (dir)~>
 	out = {}
@@ -41,4 +41,4 @@ exports.ViewLoader = (dir)~>
 			else return
 			out[dirs.relative dir,file] = new View rend
 
-	return ViewSystem out
+	return new ViewSystem out
