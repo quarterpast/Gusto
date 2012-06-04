@@ -12,13 +12,17 @@ class ViewReloader extends Reloader
 
 class exports.View
 	helpers: ->
-		include: ~>
-		extend: ~> @system
+		include: (path,extra={})~>
+			sub = @system.resolve path
+			sub.run @args <<< extra
+		extend: (path)~>
+			parent = @system.resolve path
+
 	@renderers = {}
 	@use = (extra)->@renderers <<< extra
 	@add = (ext,rend)->@renderers[ext] = rend
 	(@compiled,@system)->
-	run: (args)->@compiled.runInNewContext args <<< @helpers!
+	run: (@args)->@compiled.runInNewContext args <<< @helpers!
 
 class ViewSystem
 	views: {}
