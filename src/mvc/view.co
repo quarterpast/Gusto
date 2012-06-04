@@ -16,13 +16,18 @@ class exports.View
 			sub = @system.resolve path
 			sub.run @args <<< extra
 		extend: (path)~>
-			parent = @system.resolve path
+			@parent = @system.resolve path
+			return ""
 
 	@renderers = {}
 	@use = (extra)->@renderers <<< extra
 	@add = (ext,rend)->@renderers[ext] = rend
 	(@compiled,@system)->
-	run: (@args)->@compiled.runInNewContext args <<< @helpers!
+	parent: false
+	run: (@args)->
+		output = @compiled.runInNewContext args <<< @helpers!
+		output = @parent.run layout:output if @parent
+		return output
 
 class ViewSystem
 	views: {}
