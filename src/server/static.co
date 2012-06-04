@@ -1,0 +1,14 @@
+Q = require \q
+fs = require \fs
+
+{Walk} = require "../mvc/loader"
+
+exports.file = (file)->
+	promise = Q.ncall fs.readFile, fs, file
+	(file):->promise
+
+exports.dir = (dir)->
+	out = {}
+	for file of Walk dir
+		out <<< exports.file file
+	return out

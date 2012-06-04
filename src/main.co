@@ -10,6 +10,7 @@ exports.defaults = ->
 	{View,ViewLoader} = require "./mvc/view"
 	{Server} = require "./server/server"
 	{Log} = require "./log"
+	static = require "./server/static"
 
 	server = new Server
 
@@ -21,6 +22,8 @@ exports.defaults = ->
 
 		with new Router
 			@use ControllerLoader path.join appDir,"controllers"
+			@use "static",static.dir path.join appDir,"static"
+
 	, (e)->
 		if e
 			Log.error e.message
@@ -29,7 +32,4 @@ exports.defaults = ->
 
 
 	return server
-	#TODO: implement static
-	#with new Router
-	#	@get "static",Static.dir
-
+	TODO: implement static
