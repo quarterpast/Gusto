@@ -22,7 +22,7 @@ exports.defaults = ->
 
 		with new Router
 			@use ControllerLoader path.join appDir,"controllers"
-		console.log Static.dir path.join appDir,"static"
+			@use Static.dir "static", path.join appDir,"static"
 
 	, (e)->
 		if e
