@@ -1,53 +1,31 @@
-Struct
-======
-...is a tiny little MVC framework for Node.js, inspired rather loosely by Play!. It uses [JugglingDB](https://github.com/1602/jugglingdb) for the ORM, a [jQote2](https://github.com/quarterto/jQote2)-based template engine, my very own [hot.js](https://github.com/quarterto/hot.js) for hot module reloading, and finally [Sugar](http://sugarjs.com/) to sweeten up the API. It's release under the MIT Licence, so hack away.
+Gusto
+=====
+...is an MVC framework written in [Coco](http://github.com/satyr/coco) for Node. It's geared towards flexibility without sacrificing simplicity, and at a mere ~500loc it's lightweight too. It's released under the MIT Licence, so hack away.
+##Sample
+###controllers/site.co
+```coffeescript
+{Controller,action} = require \gusto/lib/mvc/controller
+{get} = require \gusto/lib/server/router
 
-Let's make a model!
-
-```javascript
-const model = require("mvc/model.js"),
-      models = require("mvc/list.js").models;
-
-exports.post = model.define({
-	title: {type:String},
-	date: {type:Date},
-	content: {type:String}
-});
-exports.post.belongsTo(models.user,{as:"author"});
+exports.site = Controller {
+	index: get "home", action (self)->
+		self.render greet:"world!"
+}
 ```
-And a controller!
-
-```javascript
-const models = require("mvc/list.js").models;
-
-module.exports = {
-	"view": function(params) {
-		var post;
-		if("id" in params) {
-			post = models.post.find(params.id);
-		} else {
-			post = models.post.findAll();
-		}
-		this.render(post);
-	}
-};
+###views/site/index.eco
+```html
+Hello #{greet}
+```
+###run.co
+```coffeescript
+Gusto = require \gusto
+app = Gusto.defaults!
+app.listen 8001
 ```
 
-How about a view‽
-
-```javascript
-{{$.extends("base")}}
-<article>
-	<h1>{{=title}}</h1>
-	<h2>by {{=author.realName}}</h2>
-	<time pubdate="pubdate" datetime="{{=date.toJSON()}}">{{=date.relative()}}</time>
-	<p>{{=content}}</p>
-</article>
+```bash
+$ coco run.co &
+LOG	5174 Listening on *:8001
+$ curl http://localhost/home
+Hello world!
 ```
-The object passed to ```mvc.controller#render``` in the action becomes the global object in the template. The variable ```$``` is an object containing utility methods for templates, such as reverse routing and template inclusion. There's also a list of the controllers passed in on ```_```, to facilitate easy reverse routing.
-
-The internals
-=============
-Events. Events everywhere.
-
-So: main.js sets up the config and takes arguments, then calls server.js, which creates the server, readies the router and hotloader, and waits for a request. On request, the router gets any matching controllers, which are loaded on the fly thanks to the hotloader's getters, then the best match is run by the server. The controller does its business; any call to ```render``` initialises the renderer, loading the templates asynchronously, running jQote and emitting a ```render``` event when it's finished. In ```render```, the event is caught and the rendered content is queued for output to the server, and it emits a ```done``` event. The server listens for ```done```, flushes the headers and runs the queue, which probably includes some calls to response.write.
