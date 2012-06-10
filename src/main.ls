@@ -15,7 +15,7 @@ exports.defaults = ->
 	server = new Server
 
 	Sync ->
-		View.add "eco",(file)->vm.createScript Coco.compile '["""'+file+'"""]',{+bare}
+		View.add "els",(file)->vm.createScript LiveScript.compile '["""'+file+'"""]',{+bare}
 		View.add "ejs",(file)->vm.createScript file
 
 		Controller.views ViewLoader path.join appDir,"views"

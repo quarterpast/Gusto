@@ -9,7 +9,7 @@ Sync = require \sync
 exports.Paths = (obj)->
 	acc = {}
 	function inner o,dir = ''
-		for own k,v in o
+		for own k,v of o
 			p = path.join dir,k
 			if v instanceof Function
 				acc[p] = v
@@ -41,7 +41,7 @@ exports.Walk = walk = (file,acc = [])->
 	stat = fs.stat.sync fs, file
 	if stat.isDirectory!
 		files = fs.readdir.sync fs, file
-		for f of files
+		for f in files
 			acc.concat walk (path.join file,f), acc
 	else
 		acc.push file

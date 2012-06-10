@@ -15,6 +15,6 @@ exports.file = (base,file,dir)->
 
 exports.dir = (base,dir)->
 	out = {}
-	for file of Walk dir
+	for file in Walk dir
 		out <<< exports.file base, file, dir
 	return out

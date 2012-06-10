@@ -7,6 +7,6 @@ exports.signal = function signal def
 			cb.apply this,$queue.shift! if $queue.length
 			$callbacks.push cb
 		fire: ->
-			for cb of $callbacks
+			for cb in $callbacks
 				cb ... 
 			else $queue.push arguments

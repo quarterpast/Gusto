@@ -19,7 +19,7 @@ class ControllerSupport
 	render: (path, args = {})->
 		if typeof path is not "string"
 			[args,path] = [path or args,@id]
-		for system of ..views
+		for system in ..views
 			view = system.resolve path
 			return view.run args if view
 		...
@@ -29,14 +29,14 @@ exports.ControllerLoader = (dir)->
 		reload: signal!
 	Walk dir .forEach (file)->
 		Reloader file, handle (exp)->
-			keys = for id,action in Paths exp
+			keys = for id,action of Paths exp
 				out[id] = action
 				action.support.id = id
 			out.reload.fire keys
 	return out
 
 exports.Controller = (actions)->
-	for r,action in actions
+	for r,action of actions
 		props = {support: new ControllerSupport actions[r]} <<< action
 		actions[r] = action.bind props.support
 		actions[r] <<< props
@@ -51,7 +51,7 @@ exports.action = (spec,func)->
 	out = (...args)->
 		args .= 0 if @@length is 1 and typeof @@0 is \object
 		pass = {}
-		for param,type in spec
+		for param,type of spec
 			pass[param] = if args[param]? then that else args.shift!
 		return func.call pass,this
 
