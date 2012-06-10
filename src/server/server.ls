@@ -58,12 +58,13 @@ class exports.Server
 				else {}
 				request <<< {get,post}
 				
-				[{action,params}] = Router.route request .filter ->
+				routes = [route] = Router.route request .filter ->
 					it not instanceof NotFound
-				if (typeof action) is \function
+				if routes.length
+					{action,params} = route
 					res = action params
 				else
-					out.resolve status: 404,onclose: time.~end
+					out.resolve status: 404,onclose: time.~end,body:["404 #{request.path}"]
 			catch
 				Log.error e.message
 				console.log e.stack
