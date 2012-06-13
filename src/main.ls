@@ -1,6 +1,7 @@
 Sync = require \sync
 path = require \path
 vm = require \vm
+Livescript = require \LiveScript
 
 appDir = process.cwd!
 
