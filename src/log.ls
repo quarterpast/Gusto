@@ -6,8 +6,9 @@ class Logger
 		reset: "\x1b[0m"
 	@levels = []
 	@setLevel = (level)->
-		for lvl,i of @levels
-			log.silent = i<level for log of lvl
+		for lvl,i in @levels
+			for log in lvl
+				log.silent = i<level
 
 	silent: false
 	(@level,@id,@stream=process.stdout)~>

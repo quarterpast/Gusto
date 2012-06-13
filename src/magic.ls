@@ -9,7 +9,7 @@ exports.future = -> it.future!
 exports.SyncPromise = exports.async function SyncPromise pr
 	return pr.then.sync pr
 
-exports.PromiseFuture = exports.async function PromiseFuture fu
+exports.PromiseFuture = exports.async PromiseFuture(fu)=
 	out = Q.defer!
 	process.nextTick ->
 		out.resolve fu.result
@@ -18,17 +18,17 @@ exports.PromiseFuture = exports.async function PromiseFuture fu
 class exports.SyncStream
 	$buffer: null
 	(@read,length)~>
-		off = 0
+		offset = 0
 		@$buffer = new Buffer length or 1024
 		@read.on \error, (e)-> throw e
 		@read.on \data, (chunk)~>
-			if chunk.length > @$buffer.length-off
+			if chunk.length > @$buffer.length-offset
 				bigger = new Buffer @$buffer.length+1024
 				@$buffer.copy bigger
 				@$buffer = bigger
 			
-			chunk.copy @$buffer,off
-			off += chunk.length
+			chunk.copy @$buffer,offset
+			offset += chunk.length
 
 	out: exports.async ->
 		@read.on.sync @read,"end"
@@ -43,7 +43,8 @@ exports.handle = (func)->
 	trapped = {}
 	!(...args)->
 		hash = crypto.createHash 'sha1'
-		hash.update (a?.toString! or 'undefined') for a of args
+		for a in args
+			hash.update (a?.toString! or 'undefined')
 		id = hash.digest 'hex'
 		try
 			r = func ...

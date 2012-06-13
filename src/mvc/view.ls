@@ -35,9 +35,9 @@ class ViewSystem
 	add: (p,view)->
 		@views[p] = new View view,this
 	use: (views)->
-		@add p,view for p,view in views
+		[@add p,view for p,view of views]
 	resolve: (path)->
-		for vpath,view in @views
+		for vpath,view of @views
 			base = with dirs
 				@join (@dirname vpath),@basename vpath,@extname vpath
 			if base is path

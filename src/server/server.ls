@@ -58,14 +58,13 @@ class exports.Server
 				else {}
 				request <<< {get,post}
 				
-				[{action,params}] = Router.route request .filter ->
+				routes = [route] = Router.route request .filter ->
 					it not instanceof NotFound
-				if (typeof action) is \function
+				if routes.length
+					{action,params} = route
 					res = action params
 				else
-					out.resolve status: 404,onclose: time.~end
-
-				res = action params
+					out.resolve status: 404,onclose: time.~end,body:["404 #{request.path}"]
 			catch
 				Log.error e.message
 				console.log e.stack
@@ -75,7 +74,7 @@ class exports.Server
 					headers: "content-type":"text/html"
 					status: 200
 					onclose: time.~end
-				} <<< if \forEach in res then
+				} <<< if \forEach of res then
 					body: res
 				else res
 		return out.promise
