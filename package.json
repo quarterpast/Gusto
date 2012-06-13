@@ -1,11 +1,11 @@
 {
   "name": "gusto",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Unfancy MVC",
   "keywords": [
     "mvc",
     "framework",
-    "coco",
+    "livescript",
     "javascript"
   ],
   "author": "quarterto <mwr.brennan@gmail.com> (http://github.com/quarterto)",
