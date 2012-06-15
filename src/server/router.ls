@@ -46,7 +46,7 @@ class exports.Router
 	routeHash: {}
 	routes:~ -> [v for k,v of @routeHash]
 	-> ..routers.push @
-	add: (method or '*',path,action)-->
+	::add(method or '*',path,action) =
 		@routeHash["#method #path"] = if method instanceof Route 
 			method
 		else new Route method,path,action

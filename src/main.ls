@@ -3,6 +3,8 @@ path = require \path
 vm = require \vm
 LiveScript = require \LiveScript
 
+import require \prelude-ls
+
 exports.defaults = (appDir = process.cwd!)->
 	{Router} = require "./server/router"
 	{Controller,ControllerLoader} = require "./mvc/controller"
