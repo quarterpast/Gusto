@@ -1,10 +1,9 @@
 Sync = require \sync
 path = require \path
 vm = require \vm
+LiveScript = require \LiveScript
 
-appDir = process.cwd!
-
-exports.defaults = ->
+exports.defaults = (appDir = process.cwd!)->
 	{Router} = require "./server/router"
 	{Controller,ControllerLoader} = require "./mvc/controller"
 	{View,ViewLoader} = require "./mvc/view"
