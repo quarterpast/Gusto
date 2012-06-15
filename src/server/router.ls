@@ -80,7 +80,8 @@ exports.any = exports.'*'
 
 class exports.Methods
 	for m in methods => ::(m) = []
-	
-	alias: (obj)->
-		| typeof obj is \string => for m in methods => @[m].push obj
-		| otherwise => for m,url of obj => @[m].push url
+	add: (obj)->
+		|typeof obj is \string => for m in methods=> @"$#m".unshift obj
+		|otherwise=> for m,url of obj=> @[m].unshift url
+	clear: (skip)-->
+		for m in methods when m is not skip => ::"$#m" = []
