@@ -3,7 +3,7 @@
 {signal} = require "../mvc/signal"
 url = require \url
 
-methods = <[ * HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
+methods = <[ HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
 
 class exports.NotFound extends Error
 	-> super "Could not route #it"
@@ -74,6 +74,13 @@ methods.forEach (method)->
 		if typeof id is \string
 			exports.alias (id):method, func
 		else
-			func <<< {method}
+			id <<< {+(method)}
 
 exports.any = exports.'*'
+
+class exports.Methods
+	for m in methods => ::(m) = []
+	
+	alias: (obj)->
+		| typeof obj is \string => for m in methods => @[m].push obj
+		| otherwise => for m,url of obj => @[m].push url
