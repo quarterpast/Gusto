@@ -1,11 +1,11 @@
 {
   "name": "gusto",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Unfancy MVC",
   "keywords": [
     "mvc",
-    "framewor,",
-    "coco",
+    "framework",
+    "livescript",
     "javascript"
   ],
   "author": "quarterto <mwr.brennan@gmail.com> (http://github.com/quarterto)",
@@ -13,11 +13,11 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/satyr/coco/raw/master/LICENSE"
+      "url": "https://github.com/quarterto/Gusto/blob/master/LICENCE.md"
     }
   ],
   "engines": {
-    "node": ">= 0.6.2"
+    "node": ">= 0.6"
   },
   "directories": {
     "lib": "./lib"
@@ -31,36 +31,12 @@
     "url": "git://github.com/quarterto/Gusto.git"
   },
   "dependencies": {
-    "sugar": {
-      "version": "1.2.3"
-    },
-    "coco": {
-      "version": "0.7.0"
-    },
-    "q-http": {
-      "version": "0.1.13",
-      "dependencies": {
-        "q-io": {
-          "version": "0.0.12"
-        }
-      }
-    },
-    "q": {
-      "version": "0.8.2",
-      "dependencies": {
-        "event-queue": {
-          "version": "0.2.0"
-        }
-      }
-    },
-    "sync": {
-      "version": "0.2.0",
-      "dependencies": {
-        "fibers": {
-          "version": "0.6.5"
-        }
-      }
-    }
+    "q-http": "~0.1.13",
+    "sync": "~v0.2.0",
+    "prelude-ls": "~0.2.0",
+    "qq": "~0.3.4",
+    "LiveScript": "~0.9.8c",
+    "mime-magic": "~0.2.6",
+    "q": "~0.8.5"
   }
-
 }
