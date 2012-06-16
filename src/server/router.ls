@@ -4,25 +4,26 @@
 url = require \url
 {flip,each} = require \prelude-ls
 
-methods = <[ HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
+methods = <[ get post put trace delete options patch ]>
 every-method = (flip each) methods
 
 class exports.NotFound extends Error
 	-> super "Could not route #it"
 
 class Aliases
-	for m in methods => ::[m] = []
+	every-method (m)->::[m] = []
 	add: (obj)->
-		|typeof obj is \string => for m in methods=> @[m].unshift obj
+		|typeof obj is \string => every-method (m)~>
+			@[m].unshift obj
 		|otherwise=> for m,url of obj=> @[m].unshift url
 	set-method: (skip)-->
-		for m in methods when m is not skip => @[m] = []
+		every-method (m)~> when m is not skip => @[m] = []
 
 class exports.Route
 	(@action,@path,@method = '*')->
 		action.toString = action.route = @~reverse
 	match: (request)->
-		return false unless @method in ['*',request.method]
+		return false unless @method.toLowerCase! in ['*',request.method]
 		reqparts = request.path.substr 1 .split '/'
 		searchparts = @path.split '/'
 
@@ -50,7 +51,7 @@ exports.alias = (obj,func)->
 	return func
 
 every-method (method)->
-	exports[method.toLowerCase!] = (id,func)->
+	exports[method] = (id,func)->
 		|typeof id is \string => return exports.alias (method):id, func
 		| otherwise => (id.aliases ?= new Aliases).set-method method
 		return id
@@ -62,19 +63,18 @@ class exports.Router
 			for route in router.routes
 				if params = route.match req =>{route.action,params}
 				else new NotFound req.url
-	routeHash: {}
-	routes:~ -> [v for k,v of @routeHash]
+	routes: []
 	-> ..routers.push @
 	register(method,path,action)=
-		| method.toUpperCase! in '*' & methods =>
-			...
+		| method.toLowerCase! in '*' & methods =>
+			#console.log method,path,action
 		| otherwise => throw new Error "invalid method #method"
 	add: (path,action)->
 		if action.aliases?
-			[register m,path,action for path in action.aliases[m] for m in methods]
+			every-method (m)-> console.log path, m, action.aliases[m]
 		register '*',path,action
 
-	every-method (method)->::[method.toLowerCase!] = register method
+	every-method (method)->::[method] = register method
 
 	use: (obj,re=true)->
 		if re and obj.reload?
