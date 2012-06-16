@@ -8,6 +8,14 @@ methods = <[ HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
 class exports.NotFound extends Error
 	-> super "Could not route #it"
 
+class Aliases
+	for m in methods => ::[m] = []
+	add: (obj)->
+		|typeof obj is \string => for m in methods=> @[m].unshift obj
+		|otherwise=> for m,url of obj=> @[m].unshift url
+	set-method: (skip)-->
+		for m in methods when m is not skip => @[m] = []
+
 class exports.Route
 	(@method,@path,@action)->
 		action.toString = action.route = @~reverse
@@ -74,13 +82,3 @@ methods.forEach (method)->
 		|typeof id is \string => return exports.alias (method):id, func
 		| otherwise => (id.aliases ?= new Aliases).set-method method
 		return id
-
-exports.any = exports.'*'
-
-class Aliases
-	for m in methods => ::[m] = []
-	add: (obj)->
-		|typeof obj is \string => for m in methods=> @[m].unshift obj
-		|otherwise=> for m,url of obj=> @[m].unshift url
-	set-method: (skip)-->
-		for m in methods when m is not skip => @[m] = []
