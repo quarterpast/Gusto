@@ -31,12 +31,12 @@
     "url": "git://github.com/quarterto/Gusto.git"
   },
   "dependencies": {
-    "q-http": "~0.1.13",
-    "sync": "~v0.2.0",
-    "prelude-ls": "~0.2.0",
-    "qq": "~0.3.4",
-    "LiveScript": "~0.9.8c",
-    "mime-magic": "~0.2.6",
-    "q": "~0.8.5"
+    "q-http": ">=0.1.13",
+    "sync": ">=v0.2.0",
+    "prelude-ls": ">=0.2.0",
+    "qq": ">=0.3.4",
+    "LiveScript": ">=0.9.8c",
+    "mime-magic": ">=0.2.6",
+    "q": ">=0.8.5"
   }
 }
