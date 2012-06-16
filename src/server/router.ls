@@ -17,7 +17,7 @@ class Aliases
 		for m in methods when m is not skip => @[m] = []
 
 class exports.Route
-	(@method,@path,@action)->
+	(@action,@path,@method = '*')->
 		action.toString = action.route = @~reverse
 	match: (request)->
 		return false unless @method in ['*',request.method]
@@ -43,6 +43,15 @@ class exports.Route
 
 	reverse: (params)->
 		...
+exports.alias = (obj,func)->
+	(func.aliases ?= new Aliases).add obj
+	return func
+
+methods.forEach (method)->
+	exports[method.toLowerCase!] = (id,func)->
+		|typeof id is \string => return exports.alias (method):id, func
+		| otherwise => (id.aliases ?= new Aliases).set-method method
+		return id
 
 class exports.Router
 	@routers = []
@@ -54,13 +63,11 @@ class exports.Router
 	routeHash: {}
 	routes:~ -> [v for k,v of @routeHash]
 	-> ..routers.push @
-	add: (method or '*',path,action)-->
-		@routeHash["#method #path"] = if method instanceof Route 
-			method
-		else new Route method,path,action
+	add: (path,action)-->
+		console.log path,action
 
 	methods.forEach (method)->
-		::[method.toLowerCase!] = ::add method
+		::[method.toLowerCase!] = flip ::add << exports[method]
 	::any = ::add null
 
 	use: (obj,re=true)->
@@ -73,12 +80,3 @@ class exports.Router
 					@add method, p, func
 			@add func.method, path, func
 
-exports.alias = (obj,func)->
-	(func.aliases ?= new Aliases).add obj
-	return func
-
-methods.forEach (method)->
-	exports[method.toLowerCase!] = (id,func)->
-		|typeof id is \string => return exports.alias (method):id, func
-		| otherwise => (id.aliases ?= new Aliases).set-method method
-		return id
