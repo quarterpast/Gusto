@@ -53,7 +53,7 @@ class exports.Router
 
 	methods.forEach (method)->
 		::[method.toLowerCase!] = ::add method
-	::any = ::'*'
+	::any = ::add null
 
 	use: (obj,re=true)->
 		if re and obj.reload?
