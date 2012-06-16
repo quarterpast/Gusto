@@ -22,7 +22,7 @@ class exports.SyncStream
 		@$buffer = new Buffer length or 1024
 		@read.on \error, (e)-> throw e
 		@read.on \data, (chunk)~>
-			if chunk.length > @$buffer.length-offset
+			if chunk.length > @$buffer.length - offset
 				bigger = new Buffer @$buffer.length+1024
 				@$buffer.copy bigger
 				@$buffer = bigger
