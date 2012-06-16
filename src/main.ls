@@ -3,6 +3,8 @@ path = require \path
 vm = require \vm
 LiveScript = require \LiveScript
 
+import require \prelude-ls
+
 exports.defaults = (appDir = process.cwd!)->
 	{Router} = require "./server/router"
 	{Controller,ControllerLoader} = require "./mvc/controller"
@@ -28,6 +30,4 @@ exports.defaults = (appDir = process.cwd!)->
 			Log.error e.message
 			console.log e.stack
 			process.exit (e.code or 1)
-
-
 	return server

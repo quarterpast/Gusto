@@ -2,6 +2,7 @@
 {Config} = require "../main"
 {signal} = require "../mvc/signal"
 url = require \url
+{flip} = require \prelude-ls
 
 methods = <[ HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
 
