@@ -66,14 +66,14 @@ class exports.Router
 			@add func.method, path, func
 
 exports.alias = (obj,func)->
-	func@aliases <<< obj
+	(func.aliases ?= new Aliases).add obj
 	return func
 
 methods.forEach (method)->
 	exports[method.toLowerCase!] = (id,func)->
-		| typeof id is \string =>
-			(func.aliases ?= new Aliases).add (method):id
+		|typeof id is \string => return exports.alias (method):id, func
 		| otherwise => (id.aliases ?= new Aliases).set-method method
+		return id
 
 exports.any = exports.'*'
 
