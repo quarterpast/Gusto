@@ -2,7 +2,7 @@
 {Config} = require "../main"
 {signal} = require "../mvc/signal"
 url = require \url
-{flip,each} = require \prelude-ls
+{flip,each,objToFunc} = require \prelude-ls
 
 methods = <[ get post put trace delete options patch ]>
 every-method = (flip each) methods
@@ -71,7 +71,8 @@ class exports.Router
 		| otherwise => throw new Error "invalid method #method"
 	add: (path,action)->
 		if action.aliases?
-			every-method (m)-> console.log path, m, action.aliases[m]
+			every-method (m)->
+				console.log objToFunc
 		register '*',path,action
 
 	every-method (method)->::[method] = register method
