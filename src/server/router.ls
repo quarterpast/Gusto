@@ -2,9 +2,10 @@
 {Config} = require "../main"
 {signal} = require "../mvc/signal"
 url = require \url
-{flip} = require \prelude-ls
+{flip,each} = require \prelude-ls
 
 methods = <[ HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
+every-method = (flip each) methods
 
 class exports.NotFound extends Error
 	-> super "Could not route #it"
@@ -48,7 +49,7 @@ exports.alias = (obj,func)->
 	(func.aliases ?= new Aliases).add obj
 	return func
 
-methods.forEach (method)->
+every-method (method)->
 	exports[method.toLowerCase!] = (id,func)->
 		|typeof id is \string => return exports.alias (method):id, func
 		| otherwise => (id.aliases ?= new Aliases).set-method method
@@ -64,20 +65,21 @@ class exports.Router
 	routeHash: {}
 	routes:~ -> [v for k,v of @routeHash]
 	-> ..routers.push @
-	add: (path,action)-->
-		console.log path,action
+	register(method,path,action)=
+		| method.toUpperCase! in '*' & methods =>
+			...
+		| otherwise => throw new Error "invalid method #method"
+	add: (path,action)->
+		if action.aliases?
+			[register m,path,action for path in action.aliases[m] for m in methods]
+		register '*',path,action
 
-	methods.forEach (method)->
-		::[method.toLowerCase!] = flip ::add << exports[method]
-	::any = ::add null
+	every-method (method)->::[method.toLowerCase!] = register method
 
 	use: (obj,re=true)->
 		if re and obj.reload?
-			obj.reload.connect (keys)~> @use obj,false
+			obj.reload.connect ~> @use obj,false
 
 		for own path, func of obj
-			if func.aliases?
-				for p,method of func.aliases
-					@add method, p, func
-			@add func.method, path, func
+			@add path, func
 
