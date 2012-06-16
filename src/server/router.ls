@@ -77,7 +77,7 @@ methods.forEach (method)->
 
 exports.any = exports.'*'
 
-class exports.Aliases
+class Aliases
 	for m in methods => ::[m] = []
 	add: (obj)->
 		|typeof obj is \string => for m in methods=> @[m].unshift obj
