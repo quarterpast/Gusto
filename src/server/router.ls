@@ -71,17 +71,16 @@ exports.alias = (obj,func)->
 
 methods.forEach (method)->
 	exports[method.toLowerCase!] = (id,func)->
-		if typeof id is \string
-			exports.alias (id):method, func
-		else
-			id <<< {+(method)}
+		| typeof id is \string =>
+			(func.aliases ?= new Aliases).add (method):id
+		| otherwise => (id.aliases ?= new Aliases).set-method method
 
 exports.any = exports.'*'
 
-class exports.Methods
-	for m in methods => ::(m) = []
+class exports.Aliases
+	for m in methods => ::[m] = []
 	add: (obj)->
-		|typeof obj is \string => for m in methods=> @"$#m".unshift obj
+		|typeof obj is \string => for m in methods=> @[m].unshift obj
 		|otherwise=> for m,url of obj=> @[m].unshift url
-	clear: (skip)-->
-		for m in methods when m is not skip => ::"$#m" = []
+	set-method: (skip)-->
+		for m in methods when m is not skip => @[m] = []
