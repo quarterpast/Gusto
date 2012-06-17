@@ -31,6 +31,7 @@ class exports.Route
 		action.toString = action.route = @~reverse
 	equals: (other)->
 		return all id,zipWith (==), @[\method,\path], other[\method,\path]
+	toString: -> "#{@method.toUpperCase!} #{@path}"
 	match: (request)->
 		return false unless @method.toLowerCase! in ['*',request.method]
 		reqparts = request.path.substr 1 .split '/'
@@ -68,10 +69,13 @@ every-method (method)->
 class exports.Router
 	@routers = []
 	@route = (req)->
-		for router in @routers
-			for route in router.routes
-				if params = route.match req =>{route.action,params}
+		concatMap (router)->
+			map (route)->
+				console.log "#route"
+				if route.match req =>{route.action,params:that}
 				else new NotFound req.url
+			,router.routes
+		,@routers
 	routes: []
 	-> ..routers.push @
 	register: (method,path,action)-->
@@ -84,8 +88,9 @@ class exports.Router
 		| otherwise => throw new Error "invalid method #method"
 	add: (path,action)->
 		if action.aliases?
-			for [method,paths] in zip methods,every-method action.aliases
-				map @~register method, paths |> each -> it action
+			zipWith (method,paths)~>
+				each (~> @register method,it,action),paths
+			,methods,every-method action.aliases
 			
 		@~register '*',path,action
 
