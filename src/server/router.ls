@@ -28,11 +28,11 @@ class Aliases
 
 class exports.Route
 	(@method = '*',@path,@action)->
-		@method .=toUpperCase!
-		action.toString = action.route = @~reverse
+		@method .=to-upper-case!
+		action.to-string = action.route = @~reverse
 	equals: (other)->
-		return all id,zipWith (==), @[\method,\path], other[\method,\path]
-	toString: -> "#{@method.toUpperCase!} #{@path}"
+		return all id,zip-with (==), @[\method,\path], other[\method,\path]
+	to-string: -> "#{@method.to-upper-case!} #{@path}"
 	match: (request)->
 		return false unless @method in ['*',request.method]
 		reqparts = request.path.substr 1 .split '/'
@@ -79,7 +79,7 @@ class exports.Router
 	routes: []
 	-> ..routers.push @
 	register: (method,path,action)-->
-		| method.toLowerCase! in '*' & methods =>
+		| method.to-lower-case! in '*' & methods =>
 			route = new Route method,path,action
 			eq = route~equals
 			if find eq, @routes
@@ -88,7 +88,7 @@ class exports.Router
 		| otherwise => throw new Error "invalid method #method"
 	add: (path,action)->
 		if action.aliases?
-			zipWith (method,paths)~>
+			zip-with (method,paths)~>
 				each (~> @register method,it,action),paths
 			,methods,every-method action.aliases
 			
