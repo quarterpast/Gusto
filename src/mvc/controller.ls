@@ -12,7 +12,7 @@ class ControllerSupport
 	(@action)->
 	call: (action,args)->
 		...
-	renderJSON: ->
+	render-JSON: ->
 		status: 200
 		\content-type : "application/json"
 		body: [JSON.stringify it]
@@ -27,7 +27,7 @@ class ControllerSupport
 exports.ControllerLoader = (dir)->
 	out = new class
 		reload: signal!
-	Walk dir .forEach (file)->
+	Walk dir |> each (file)->
 		Reloader file, handle (exp)->
 			keys = for id,action of Paths exp
 				out[id] = action

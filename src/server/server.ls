@@ -12,7 +12,7 @@ Sync = require \sync
 {Router,NotFound} = require "./router"
 {Loader} = require "../mvc/loader"
 {Log} = require "../log"
-{async,SyncPromise} = require "../magic"
+{async,sync-promise} = require "../magic"
 
 class Timer
 	(req)->
@@ -24,37 +24,37 @@ class Timer
 
 class exports.Server
 	@error = {}
-	@lasterr = false
+	@last-error = false
 	@hijack = (id,promise,err)->
-		err.previous = @lasterr
+		err.previous = @last-error
 		err.next = false
 		@error[id] = err
-		if @lasterr then @error[@lasterr].next = id
-		@lasterr = id
+		if @last-error then @error[@last-error].next = id
+		@last-error = id
 		promise.then ~>
 			if @error[id].previous
 				@error[@error[id].previous].next = @error[id].next
 			if @error[id].next
 				@error[@error[id].next].previous = @error[id].previous
-			if @lasterr is id
-				@lasterr = @error[id].previous
+			if @last-error is id
+				@last-error = @error[id].previous
 			delete @error[id]
 
 	serve: !(request)-> 
 		out = Q.defer!
 		Sync ->
 			time = new Timer request
-			if ..lasterr and ..error[..lasterr] then
+			if ..last-error and ..error[..last-error] then
 				return out.resolve {
 					headers: "content-type":"text/html"
 					status: 200
 					onclose: time.~end
-				} <<< ..error[..lasterr]
+				} <<< ..error[..last-error]
 			res = {}
 			try
 				get = url.parse request.url,true .query
 				post = if request.method is \POST and request.headers."content-length" then
-					querystring.parse SyncPromise request.body.read!
+					querystring.parse sync-promise request.body.read!
 				else {}
 				request <<< {get,post}
 				

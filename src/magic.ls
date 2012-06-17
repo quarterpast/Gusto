@@ -6,16 +6,16 @@ crypto = require \crypto
 exports.async = -> it.async!
 exports.future = -> it.future!
 
-exports.SyncPromise = exports.async function SyncPromise pr
+exports.sync-promise = exports.async function sync-promise pr
 	return pr.then.sync pr
 
-exports.PromiseFuture = exports.async PromiseFuture(fu)=
+exports.promise-future = exports.async promise-future(fu)=
 	out = Q.defer!
 	process.nextTick ->
 		out.resolve fu.result
 	return out.promise
 
-class exports.SyncStream
+class exports.sync-stream
 	$buffer: null
 	(@read,length)~>
 		offset = 0
@@ -34,7 +34,7 @@ class exports.SyncStream
 		@read.on.sync @read,"end"
 		return @$buffer
 
-class exports.FutureStream extends SyncStream
+class exports.future-stream extends sync-stream
 	-> super ...
 	out: ->
 		super.future this
@@ -42,9 +42,9 @@ class exports.FutureStream extends SyncStream
 exports.handle = (func)->
 	trapped = {}
 	!(...args)->
-		hash = crypto.createHash 'sha1'
+		hash = crypto.create-hash 'sha1'
 		for a in args
-			hash.update (a?.toString! or 'undefined')
+			hash.update (a?.to-string! or 'undefined')
 		id = hash.digest 'hex'
 		try
 			r = func ...
