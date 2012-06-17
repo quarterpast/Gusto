@@ -54,6 +54,5 @@ exports.action = (spec,func)->
 		for param,type of spec
 			pass[param] = if args[param]? then that else args.shift!
 		return func.call pass,this
-
 	out.expects = spec
 	return out

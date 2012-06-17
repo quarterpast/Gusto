@@ -58,10 +58,8 @@ class exports.Server
 				else {}
 				request <<< {get,post}
 				
-				routes = [route] = Router.route request .filter ->
-					it not instanceof NotFound
-				if routes.length
-					{action,params} = route
+				if find (-> it not instanceof NotFound), Router.route request
+					{action,params} = that
 					res = action params
 				else
 					out.resolve status: 404,onclose: time.~end,body:["404 #{request.path}"]

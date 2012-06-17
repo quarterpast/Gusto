@@ -2,15 +2,37 @@
 {Config} = require "../main"
 {signal} = require "../mvc/signal"
 url = require \url
+#{flip,each,obj-to-func,map} = require \prelude-ls
 
-methods = <[ * HEAD GET POST PUT TRACE DELETE OPTIONS PATCH ]>
+methods = <[ head get post put trace delete options patch ]>
+fill(args,func)= (...params)-->
+	func ...(for i from 0 to maximum params.length & keys args
+		if args[i]? then that
+		else if params.shift! then that
+		else undefined
+	)
+
+every-method = fill 1:methods, map
 
 class exports.NotFound extends Error
 	-> super "Could not route #it"
 
+class Aliases
+	every-method (m)->::[m] = []
+	add: (obj)->
+		|typeof obj is \string => every-method (m)~>
+			@[m].unshift obj
+		|otherwise=> for m,url of obj=> @[m].unshift url
+	set-method: (skip)-->
+		every-method (m)~> when m is not skip => @[m] = []
+
 class exports.Route
-	(@method,@path,@action)->
+	(@method = '*',@path,@action)->
+		@method .=toUpperCase!
 		action.toString = action.route = @~reverse
+	equals: (other)->
+		return all id,zipWith (==), @[\method,\path], other[\method,\path]
+	toString: -> "#{@method.toUpperCase!} #{@path}"
 	match: (request)->
 		return false unless @method in ['*',request.method]
 		reqparts = request.path.substr 1 .split '/'
@@ -35,45 +57,49 @@ class exports.Route
 
 	reverse: (params)->
 		...
+exports.alias = (obj,func)->
+	(func.aliases ?= new Aliases).add obj
+	return func
+
+every-method (method)->
+	exports[method] = (id,func)->
+		| typeof id is \string => return exports.alias (method):id,func
+		| otherwise => (id.aliases ?= new Aliases).set-method method
+		return id
 
 class exports.Router
 	@routers = []
 	@route = (req)->
-		for router in @routers
-			for route in router.routes
-				if params = route.match req =>{route.action,params}
+		concat-map (router)->
+			map (route)->
+				if route.match req =>{route.action,params:that}
 				else new NotFound req.url
-	routeHash: {}
-	routes:~ -> [v for k,v of @routeHash]
+			,router.routes
+		,@routers
+	routes: []
 	-> ..routers.push @
-	add: (method or '*',path,action)-->
-		@routeHash["#method #path"] = if method instanceof Route 
-			method
-		else new Route method,path,action
+	register: (method,path,action)-->
+		| method.toLowerCase! in '*' & methods =>
+			route = new Route method,path,action
+			eq = route~equals
+			if find eq, @routes
+				that{action} = route
+			else @routes.push route
+		| otherwise => throw new Error "invalid method #method"
+	add: (path,action)->
+		if action.aliases?
+			zipWith (method,paths)~>
+				each (~> @register method,it,action),paths
+			,methods,every-method action.aliases
+			
+		@~register '*',path,action
 
-	methods.forEach (method)->
-		::[method.toLowerCase!] = ::add method
-	::any = ::'*'
+	every-method (method)->::[method] = ::register method
 
 	use: (obj,re=true)->
 		if re and obj.reload?
-			obj.reload.connect (keys)~> @use obj,false
+			obj.reload.connect ~> @use obj,false
 
 		for own path, func of obj
-			if func.aliases?
-				for p,method of func.aliases
-					@add method, p, func
-			@add func.method, path, func
+			@add path, func
 
-exports.alias = (obj,func)->
-	func@aliases <<< obj
-	return func
-
-methods.forEach (method)->
-	exports[method.toLowerCase!] = (id,func)->
-		if typeof id is \string
-			exports.alias (id):method, func
-		else
-			func <<< {method}
-
-exports.any = exports.'*'
