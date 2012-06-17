@@ -6,7 +6,7 @@ url = require \url
 
 methods = <[ head get post put trace delete options patch ]>
 fill(args,func)= (...params)-->
-	func ...(for i from 0 to fold1 max,params.length & keys args
+	func ...(for i from 0 to maximum params.length & keys args
 		if args[i]? then that
 		else if params.shift! then that
 		else undefined
@@ -27,7 +27,7 @@ class Aliases
 		every-method (m)~> when m is not skip => @[m] = []
 
 class exports.Route
-	(@action,@path,@method = '*')->
+	(@method = '*',@path,@action)->
 		action.toString = action.route = @~reverse
 	match: (request)->
 		return false unless @method.toLowerCase! in ['*',request.method]
@@ -72,15 +72,16 @@ class exports.Router
 				else new NotFound req.url
 	routes: []
 	-> ..routers.push @
-	register(method,path,action)=
+	register(routes,method,path,action)=
 		| method.toLowerCase! in '*' & methods =>
-			#console.log method,path,action
+			route = new Route method,path,action
 		| otherwise => throw new Error "invalid method #method"
-	add: (path,action,alias = true)->
-		if alias and action.aliases?
-			every-method (obj-to-func action.aliases)
-			|> each (flip @add) false,action
-		register '*',path,action
+	add: (path,action)->
+		if action.aliases?
+			for [method,paths] in zip methods,every-method action.aliases
+				each (fill 1:action, register @routes,method), paths
+			
+		register @routes,'*',path,action
 
 	every-method (method)->::[method] = register method
 
