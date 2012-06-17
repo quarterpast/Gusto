@@ -28,12 +28,13 @@ class Aliases
 
 class exports.Route
 	(@method = '*',@path,@action)->
+		@method .=toUpperCase!
 		action.toString = action.route = @~reverse
 	equals: (other)->
 		return all id,zipWith (==), @[\method,\path], other[\method,\path]
 	toString: -> "#{@method.toUpperCase!} #{@path}"
 	match: (request)->
-		return false unless @method.toLowerCase! in ['*',request.method]
+		return false unless @method in ['*',request.method]
 		reqparts = request.path.substr 1 .split '/'
 		searchparts = @path.split '/'
 
@@ -69,9 +70,8 @@ every-method (method)->
 class exports.Router
 	@routers = []
 	@route = (req)->
-		concatMap (router)->
+		concat-map (router)->
 			map (route)->
-				console.log "#route"
 				if route.match req =>{route.action,params:that}
 				else new NotFound req.url
 			,router.routes
