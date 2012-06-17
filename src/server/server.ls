@@ -16,7 +16,7 @@ Sync = require \sync
 
 class Timer
 	(req)->
-		@id="#{req.connection.remoteAddress} #{req.path}"
+		@id="#{req.connection.remote-address} #{req.path}"
 		@start = new Date
 	end: ->
 		@finish = new Date
