@@ -30,7 +30,7 @@ class exports.Route
 	(@method = '*',@path,@action)->
 		action.toString = action.route = @~reverse
 	equals: (other)->
-		return all id,zipWith (==), @[method,path], other[method,path]
+		return all id,zipWith (==), @[\method,\path], other[\method,\path]
 	match: (request)->
 		return false unless @method.toLowerCase! in ['*',request.method]
 		reqparts = request.path.substr 1 .split '/'
@@ -77,14 +77,15 @@ class exports.Router
 	register: (method,path,action)-->
 		| method.toLowerCase! in '*' & methods =>
 			route = new Route method,path,action
-			if find any ((a,b)->a.equals b), @routes
+			eq = route~equals
+			if find eq, @routes
 				that{action} = route
 			else @routes.push route
 		| otherwise => throw new Error "invalid method #method"
 	add: (path,action)->
 		if action.aliases?
 			for [method,paths] in zip methods,every-method action.aliases
-				each (fill 1:action, @~register method), paths
+				map @~register method, paths |> each -> it action
 			
 		@~register '*',path,action
 
