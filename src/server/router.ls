@@ -2,10 +2,17 @@
 {Config} = require "../main"
 {signal} = require "../mvc/signal"
 url = require \url
-{flip,each,obj-to-func} = require \prelude-ls
+#{flip,each,obj-to-func,map} = require \prelude-ls
 
-methods = <[ get post put trace delete options patch ]>
-every-method = (flip each) methods
+methods = <[ head get post put trace delete options patch ]>
+fill(args,func)= (...params)-->
+	func ...(for i from 0 to fold1 max,params.length & keys args
+		if args[i]? then that
+		else if params.shift! then that
+		else undefined
+	)
+
+every-method = fill 1:methods, map
 
 class exports.NotFound extends Error
 	-> super "Could not route #it"
@@ -69,9 +76,10 @@ class exports.Router
 		| method.toLowerCase! in '*' & methods =>
 			#console.log method,path,action
 		| otherwise => throw new Error "invalid method #method"
-	add: (path,action)->
-		if action.aliases?
-			every-method console.log << (obj-to-func action.aliases)
+	add: (path,action,alias = true)->
+		if alias and action.aliases?
+			every-method (obj-to-func action.aliases)
+			|> each (flip @add) false,action
 		register '*',path,action
 
 	every-method (method)->::[method] = register method

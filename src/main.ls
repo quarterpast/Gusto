@@ -3,7 +3,7 @@ path = require \path
 vm = require \vm
 LiveScript = require \LiveScript
 
-import require \prelude-ls
+require \prelude-ls .installPrelude global
 
 exports.defaults = (appDir = process.cwd!)->
 	{Router} = require "./server/router"
