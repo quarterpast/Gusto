@@ -50,6 +50,6 @@ exports.action = (spec,func)->
 
 	out = (...args)->
 		args .= 0 if @@length is 1 and typeof @@0 is \object
-		return func.call {[param,if args[param]? then that else args.shift!] for param,type of spec},this
+		func.call {[param,if args[param]? then that else args.shift!] for param,type of spec},this
 	out.expects = spec
 	return out
