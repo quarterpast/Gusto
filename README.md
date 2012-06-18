@@ -1,6 +1,10 @@
 Gusto
 =====
 ...is an MVC framework written in [LiveScript](http://github.com/gkz/LiveScript) for Node. It's geared towards flexibility without sacrificing simplicity, and at a mere ~500loc it's lightweight too. It's released under the MIT Licence, so hack away.
+##Installation
+```bash
+npm install gusto
+```
 ##Sample
 ###controllers/site.ls
 ```coffeescript
