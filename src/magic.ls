@@ -6,7 +6,7 @@ crypto = require \crypto
 exports.async = -> it.async!
 exports.future = -> it.future!
 
-exports.sync-promise = exports.async function sync-promise pr
+exports.sync-promise = exports.async sync-promise(pr)=
 	return pr.then.sync pr
 
 exports.promise-future = exports.async promise-future(fu)=
