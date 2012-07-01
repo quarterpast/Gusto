@@ -5,7 +5,7 @@ class Logger
 		red: "\x1b[31m"
 		reset: "\x1b[0m"
 	@levels = []
-	@setLevel = (level)->
+	@set-level = (level)->
 		for lvl,i in @levels
 			for log in lvl
 				log.silent = i<level

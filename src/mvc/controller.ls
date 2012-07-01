@@ -12,7 +12,7 @@ class ControllerSupport
 	(@action)->
 	call: (action,args)->
 		...
-	renderJSON: ->
+	render-JSON: ->
 		status: 200
 		\content-type : "application/json"
 		body: [JSON.stringify it]
@@ -27,7 +27,7 @@ class ControllerSupport
 exports.ControllerLoader = (dir)->
 	out = new class
 		reload: signal!
-	Walk dir .forEach (file)->
+	Walk dir |> each (file)->
 		Reloader file, handle (exp)->
 			keys = for id,action of Paths exp
 				out[id] = action
@@ -50,9 +50,6 @@ exports.action = (spec,func)->
 
 	out = (...args)->
 		args .= 0 if @@length is 1 and typeof @@0 is \object
-		pass = {}
-		for param,type of spec
-			pass[param] = if args[param]? then that else args.shift!
-		return func.call pass,this
+		func.call {[param,if args[param]? then that else args.shift!] for param,type of spec},this
 	out.expects = spec
 	return out

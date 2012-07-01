@@ -6,7 +6,7 @@ Sync = require \sync
 {Server} = require "../server/server"
 {Log} = require "../log"
 
-exports.Paths = (obj)->
+exports.Paths(obj)=
 	acc = {}
 	function inner o,dir = ''
 		for own k,v of o

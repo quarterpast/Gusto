@@ -3,9 +3,9 @@ path = require \path
 vm = require \vm
 LiveScript = require \LiveScript
 
-require \prelude-ls .installPrelude global
+global <<< require \prelude-ls
 
-exports.defaults = (appDir = process.cwd!)->
+exports.defaults = (app-dir = process.cwd!)->
 	{Router} = require "./server/router"
 	{Controller,ControllerLoader} = require "./mvc/controller"
 	{View,ViewLoader} = require "./mvc/view"
@@ -16,14 +16,14 @@ exports.defaults = (appDir = process.cwd!)->
 	server = new Server
 
 	Sync ->
-		View.add "els",(file)->vm.createScript LiveScript.compile '["""'+file+'"""]',{+bare}
-		View.add "ejs",(file)->vm.createScript file
+		View.add "els",(file)->vm.create-script LiveScript.compile '["""'+file+'"""]',{+bare}
+		View.add "ejs",(file)->vm.create-script file
 
-		Controller.views ViewLoader path.join appDir,"views"
+		Controller.views ViewLoader path.join app-dir,"views"
 
 		with new Router
-			@use ControllerLoader path.join appDir,"controllers"
-			@use Static.dir "static", path.join appDir,"static"
+			@use ControllerLoader path.join app-dir,"controllers"
+			@use Static.dir "static", path.join app-dir,"static"
 
 	, (e)->
 		if e
