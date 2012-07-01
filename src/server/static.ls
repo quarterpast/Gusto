@@ -6,7 +6,7 @@ path = require \path
 
 munge(a,b) = a <<< b
 
-exports.file = (base,dir,file)-->
+exports.file(base,dir,file)=
 	promise = Q.ncall fs.read-file, fs, file
 	key = path.join base,path.relative dir,file
 	type = mime.future null,file
@@ -14,7 +14,7 @@ exports.file = (base,dir,file)-->
 		body: promise.then ->[it] # wrap in an array
 		headers: 'content-type': type.result
 
-exports.dir = (base,dir)->
+exports.dir(base,dir)=
 	Walk dir
 	|> map exports.file base, dir
 	|> fold munge, {}
