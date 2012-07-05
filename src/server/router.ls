@@ -70,12 +70,10 @@ every-method (method)->
 class exports.Router
 	@routers = []
 	@route = (req)->
-		concat-map (router)->
-			map (route)->
+		@routers |> concat-map (router)->
+			router.routes |> map (route)->
 				if route.match req =>{route.action,params:that}
 				else new NotFound req.url
-			,router.routes
-		,@routers
 	routes: []
 	-> ..routers.push @
 	register: (method,path,action)-->
