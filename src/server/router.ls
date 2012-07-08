@@ -5,14 +5,8 @@ url = require \url
 #{flip,each,obj-to-func,map} = require \prelude-ls
 
 methods = <[ head get post put trace delete options patch ]>
-fill(args,func)= (...params)-->
-	func ...(for i from 0 to maximum params.length & keys args
-		if args[i]? then that
-		else if params.shift! then that
-		else undefined
-	)
 
-every-method = fill 1:methods, map
+every-method = map _,methods
 
 class exports.NotFound extends Error
 	-> super "Could not route #it"
