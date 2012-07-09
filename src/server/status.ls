@@ -47,11 +47,11 @@ codes = {
 	506: "Variant Also Negotiates"
 }
 
-class HTTPError extends Error
+class HTTPStatus extends Error
 	-> super ...
 
 for code,message of codes
-	exports[code] = class extends HTTPError
+	exports[code] = class extends HTTPStatus
 		message: message
 		code: code
 		-> super "Error #code: #message"
