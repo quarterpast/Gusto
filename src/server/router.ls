@@ -63,7 +63,7 @@ class exports.Router
 		@routers |> concat-map (router)->
 			router.routes |> map (route)->
 				if route.match req =>{route.action,params:that}
-				else new NotFound req.url
+				else status.404 req.url
 	routes: []
 	-> ..routers.push @
 	register: (method,path,action)-->

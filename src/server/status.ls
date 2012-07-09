@@ -47,7 +47,7 @@ codes = {
 	506: "Variant Also Negotiates"
 }
 
-class HTTPStatus extends Error
+class exports.HTTPStatus extends Error
 	~> super ...
 
 for code,message of codes

@@ -9,7 +9,8 @@ fs = require \fs
 util = require \util
 Sync = require \sync
 
-{Router,NotFound} = require "./router"
+{Router} = require "./router"
+{HTTPStatus} = status = require "./status"
 {Loader} = require "../mvc/loader"
 {Log} = require "../log"
 {async,sync-promise} = require "../magic"
@@ -58,7 +59,7 @@ class exports.Server
 				else {}
 				request <<< {get,post}
 				
-				if find (-> it not instanceof NotFound), Router.route request
+				if find (-> it not instanceof HTTPStatus), Router.route request
 					{action,params} = that
 					res = action params
 				else
