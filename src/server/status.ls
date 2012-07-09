@@ -48,11 +48,11 @@ codes = {
 }
 
 class HTTPStatus extends Error
-	-> super ...
+	~> super ...
 
 for code,message of codes
 	exports[code] = class extends HTTPStatus
 		message: message
 		code: code
-		-> super "Error #code: #message"
+		~> super "Error #code: #message"
 		#TODO: provide an action
