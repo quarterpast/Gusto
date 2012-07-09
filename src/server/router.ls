@@ -1,15 +1,11 @@
 # router.co
 {Config} = require "../main"
-{signal} = require "../mvc/signal"
+status = require "./status"
 url = require \url
-#{flip,each,obj-to-func,map} = require \prelude-ls
 
 methods = <[ head get post put trace delete options patch ]>
 
 every-method = map _,methods
-
-class exports.NotFound extends Error
-	-> super "Could not route #it"
 
 class Aliases
 	every-method (m)->::[m] = []
