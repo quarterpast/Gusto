@@ -59,10 +59,10 @@ class exports.Server
 				else {}
 				request <<< {get,post}
 				
-				if find (-> it not instanceof HTTPStatus), Router.route request
+				if find ((not) . (instanceof HTTPStatus)), r = Router.route request
 					{action,params} = that
 					res = action params
-				else
+				else if r.0?
 					out.resolve status: 404,onclose: time.~end,body:["404 #{request.path}"]
 			catch
 				Log.error e.message

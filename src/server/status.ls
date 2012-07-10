@@ -50,9 +50,13 @@ codes = {
 class exports.HTTPStatus extends Error
 	~> super ...
 
-for code,message of codes
+zip (keys codes),(values codes) |> each ->
+	[code,message] = it
 	exports[code] = class extends HTTPStatus
 		message: message
 		code: code
 		~> super "Error #code: #message"
-		#TODO: provide an action
+		to-response(headers): {
+			headers: (headers with "content-type":"text/html")
+			status: code
+		}
