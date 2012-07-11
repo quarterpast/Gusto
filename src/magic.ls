@@ -35,7 +35,6 @@ class exports.sync-stream
 		return @$buffer
 
 class exports.future-stream extends sync-stream
-	-> super ...
 	out: ->
 		super.future this
 
