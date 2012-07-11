@@ -5,6 +5,7 @@ dirs = require \path
 {async,handle} = require "../magic"
 {Server} = require "../server/server"
 {Log} = require "../log"
+status = require "../server/status"
 Sync = require \sync
 
 class ControllerSupport
@@ -22,7 +23,7 @@ class ControllerSupport
 		for system in ..views
 			view = system.resolve path
 			return view.run args if view
-		...
+		throw new status.404 path
 
 exports.ControllerLoader = (dir)->
 	out = new class

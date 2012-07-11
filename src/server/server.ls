@@ -9,7 +9,8 @@ fs = require \fs
 util = require \util
 Sync = require \sync
 
-{Router,NotFound} = require "./router"
+{Router} = require "./router"
+{HTTPStatus} = status = require "./status"
 {Loader} = require "../mvc/loader"
 {Log} = require "../log"
 {async,sync-promise} = require "../magic"
@@ -50,7 +51,6 @@ class exports.Server
 					status: 200
 					onclose: time.~end
 				} <<< ..error[..last-error]
-			res = {}
 			try
 				get = url.parse request.url,true .query
 				post = if request.method is \POST and request.headers."content-length" then
@@ -58,23 +58,14 @@ class exports.Server
 				else {}
 				request <<< {get,post}
 				
-				if find (-> it not instanceof NotFound), Router.route request
-					{action,params} = that
-					res = action params
-				else
-					out.resolve status: 404,onclose: time.~end,body:["404 #{request.path}"]
+				Router.route request 
 			catch
 				Log.error e.message
-				console.log e.stack
-				res = body: [e.message] status: 500
-			finally
-				out.resolve {
-					headers: "content-type":"text/html"
-					status: 200
-					onclose: time.~end
-				} <<< if \forEach of res then
-					body: res
-				else res
+				console.warn e.stack
+				
+				if e instanceof HTTPStatus then e else status.500 wrap:e
+			|> (.to-response request,time) |> out.resolve
+
 		return out.promise
 	->
 		@server = http.Server @~serve
