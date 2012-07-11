@@ -59,14 +59,15 @@ class exports.Server
 				else {}
 				request <<< {get,post}
 				
-				if find ((not) . (instanceof HTTPStatus)), r = Router.route request
-					{action,params} = that
-					res = action params
-				else if r.0?
-					out.resolve status: 404,onclose: time.~end,body:["404 #{request.path}"]
+				Router.route request
+				|> partition (not) . (instanceof HTTPStatus)
+				|> map head
+				|> find id
+				|> (.to-response request)
+				|> out.resolve
 			catch
 				Log.error e.message
-				console.log e.stack
+				console.warn e.stack
 				res = body: [e.message] status: 500
 			finally
 				out.resolve {
