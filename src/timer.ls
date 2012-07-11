@@ -5,7 +5,7 @@ class exports.Timer
 	end():
 		@sections |> filter (instanceof Date) |> keys |> each @~finish
 		Log.log @label+": "+@sections.total+"ms"
-		Log.debug JSON.stringify @sections
+		Log.debug JSON.stringify @sections,null,2
 	start(section):
 		@sections[section] = new Date
 	finish(section):

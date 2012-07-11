@@ -14,14 +14,7 @@ Sync = require \sync
 {Loader} = require "../mvc/loader"
 {Log} = require "../log"
 {async,sync-promise} = require "../magic"
-
-class Timer
-	(req)->
-		@id="#{req.connection.remote-address} #{req.path}"
-		@start = new Date
-	end: ->
-		@finish = new Date
-		Log.log @id+": "+(@finish-@start)+"ms"
+{Timer} = require "../timer"
 
 class exports.Server
 	@error = {}
@@ -44,7 +37,7 @@ class exports.Server
 	serve: !(request)-> 
 		out = Q.defer!
 		Sync ->
-			time = new Timer request
+			time = new Timer "#{request.connection.remote-address} #{request.path}"
 			if ..last-error and ..error[..last-error] then
 				return out.resolve {
 					headers: "content-type":"text/html"
@@ -52,18 +45,26 @@ class exports.Server
 					onclose: time.~end
 				} <<< ..error[..last-error]
 			try
+				time.start \qs-parse
 				get = url.parse request.url,true .query
 				post = if request.method is \POST and request.headers."content-length" then
 					querystring.parse sync-promise request.body.read!
 				else {}
 				request <<< {get,post}
+				time.finish \qs-parse
 				
-				Router.route request 
+				time.start \routing
+				o = Router.route request
+				time.finish \routing
+				o
 			catch
+				time.start \error
 				Log.error e.message
 				console.warn e.stack
 				
-				if e instanceof HTTPStatus then e else status.500 wrap:e
+				o = if e instanceof HTTPStatus then e else status.500 wrap:e
+				time.finish \error
+				o
 			|> (.to-response request,time) |> out.resolve
 
 		return out.promise
