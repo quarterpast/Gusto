@@ -15,26 +15,28 @@ class Aliases
 		|otherwise=> for m,url of obj=> @[m].unshift url
 	set-method: (skip)-->
 		every-method (m)~> when m is not skip => @[m] = []
-
+c=0
 class exports.Route
 	(@method = '*',@path,@action)->
 		@method .=to-upper-case!
 		action.to-string = action.route = @~reverse
 	equals: (other)->
-		return all id,zip-with (==), @[\method,\path], other[\method,\path]
+		return and-list zip-with (==), @[\method,\path], other[\method,\path]
 	to-string: -> "#{@method.to-upper-case!} #{@path}"
 	match: (request)->
 		return false unless @method in ['*',request.method]
-		reqparts = request.path.substr 1 .split '/'
-		searchparts = @path.split '/'
-
+		return and-list zip-with (reqpart,part)->
+			switch
+			| head part is ":" => true
+			| otherwise => reqpart is part
+		,(tail request.path .split '/'),(@path.split '/')
+	to-response: (request,time)->
 		params = {}
-		for part,i in searchparts
-			reqpart = reqparts.shift!
-			if part.0 is '#'
-				params[part.substr 1] = reqpart
-			else
-				if reqpart is not part then return false
+		@path.split "/"
+		|> zip-with (reqpart,part)->
+			| head part is ":" => params[tail part] = reqpart
+		, (tail request.path .split '/')
+
 		if @action.expects?
 			for own param,type of @action.expects
 				val = request.post[param]
@@ -43,10 +45,17 @@ class exports.Route
 				or    reqparts.shift!
 				params[param] = new type val
 		else params <<< request.get <<< request.post
-		return params
 
+		body = @action params
+		{
+			headers: "content-type":"text/html"
+			status: 200
+			onclose: time.~end
+		} with if \forEach of body then {body} else body
 	reverse: (params)->
 		...
+
+
 exports.alias = (obj,func)->
 	(func.aliases ?= new Aliases).add obj
 	return func
@@ -59,18 +68,17 @@ every-method (method)->
 
 class exports.Router
 	@routers = []
-	@route = (req)->
-		@routers |> concat-map (router)->
-			router.routes |> map (route)->
-				if route.match req =>{route.action,params:that}
-				else status.404 req.url
+	@route = (req)-> switch concat-map (.route req), @routers
+		| empty that => status.404 req.path
+		| _ => head that
 	routes: []
 	-> ..routers.push @
+	route: (req)->
+		filter (.match req), @routes
 	register: (method,path,action)-->
 		| method.to-lower-case! in '*' & methods =>
 			route = new Route method,path,action
-			eq = route~equals
-			if find eq, @routes
+			if find (.equals route), @routes
 				that{action} = route
 			else @routes.push route
 		| otherwise => throw new Error "invalid method #method"

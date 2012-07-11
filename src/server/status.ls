@@ -50,13 +50,13 @@ codes = {
 class exports.HTTPStatus extends Error
 	~> super ...
 
-zip (keys codes),(values codes) |> each ->
-	[code,message] = it
+zip-with (code,message)->
 	exports[code] = class extends HTTPStatus
 		message: message
 		code: code
 		~> super "Error #code: #message"
-		to-response(headers): {
+		to-response(headers = {}): {
 			headers: (headers with "content-type":"text/html")
 			status: code
 		}
+, (keys codes),(values codes)

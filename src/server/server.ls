@@ -60,23 +60,13 @@ class exports.Server
 				request <<< {get,post}
 				
 				Router.route request
-				|> partition (not) . (instanceof HTTPStatus)
-				|> map head
-				|> find id
-				|> (.to-response request)
+				|> (.to-response request,time)
 				|> out.resolve
 			catch
 				Log.error e.message
 				console.warn e.stack
-				res = body: [e.message] status: 500
-			finally
-				out.resolve {
-					headers: "content-type":"text/html"
-					status: 200
-					onclose: time.~end
-				} <<< if \forEach of res then
-					body: res
-				else res
+				out.resolve e.to-response!
+
 		return out.promise
 	->
 		@server = http.Server @~serve
