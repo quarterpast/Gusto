@@ -31,12 +31,14 @@ class exports.Route
 			| otherwise => reqpart is part
 		,(tail request.path .split '/'),(@path.split '/')
 	to-response: (request,time)->
+		time.start \param-snarf
 		params = {}
 		@path.split "/"
 		|> zip-with (reqpart,part)->
 			| head part is ":" => params[tail part] = reqpart
 		, (tail request.path .split '/')
-
+		time.finish \param-snarf
+		time.start \param-munge
 		if @action.expects?
 			for own param,type of @action.expects
 				val = request.post[param]
@@ -45,8 +47,12 @@ class exports.Route
 				or    reqparts.shift!
 				params[param] = new type val
 		else params <<< request.get <<< request.post
+		time.finish \param-munge
 
-		body = @action params
+		time.start \action-run
+		body = @action params with {time}
+		time.finish \action-run
+		time.start \promise-wait
 		{
 			headers: "content-type":"text/html"
 			status: 200

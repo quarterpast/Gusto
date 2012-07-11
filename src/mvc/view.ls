@@ -46,7 +46,7 @@ class ViewSystem
 
 exports.ViewLoader = (dir)~>
 	out = new ViewSystem
-	Walk dir .forEach (file)->
+	Walk dir |> each (file)->
 		ViewReloader file, handle (view)->
 			ext = dirs.extname file .substr 1
 			if View.renderers[ext]? then rend = new that view else return
