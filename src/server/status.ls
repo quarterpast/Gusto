@@ -48,15 +48,22 @@ codes = {
 }
 
 class exports.HTTPStatus extends Error
-	~> super ...
 
-zip-with (code,message)->
+zip-with (code,explanation)->
 	exports[code] = class extends HTTPStatus
-		message: message
+		explanation: explanation
 		code: code
-		~> super "Error #code: #message"
+		to-string(): "Error #code: #explanation"
+		(@info)~> super ...
+		body(err = this):filter id,[
+			"<h1>#{err}</h1>"
+			"<h2>#{that}</h2>" if err.message?
+			"<h3>#{that}</h3>" if @info.path?
+			"<pre>#{unlines tail lines that}</pre>" if err.stack?
+		]
 		to-response(headers = {}): {
 			headers: (headers with "content-type":"text/html")
 			status: code
+			body: @body if @info.wrap? => that
 		}
 , (keys codes),(values codes)

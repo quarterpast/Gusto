@@ -51,7 +51,6 @@ class exports.Server
 					status: 200
 					onclose: time.~end
 				} <<< ..error[..last-error]
-			res = {}
 			try
 				get = url.parse request.url,true .query
 				post = if request.method is \POST and request.headers."content-length" then
@@ -59,13 +58,13 @@ class exports.Server
 				else {}
 				request <<< {get,post}
 				
-				Router.route request
-				|> (.to-response request,time)
-				|> out.resolve
+				Router.route request 
 			catch
 				Log.error e.message
 				console.warn e.stack
-				out.resolve e.to-response!
+				
+				if e instanceof HTTPStatus then e else status.500 wrap:e
+			|> (.to-response request,time) |> out.resolve
 
 		return out.promise
 	->

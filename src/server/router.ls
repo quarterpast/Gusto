@@ -68,9 +68,11 @@ every-method (method)->
 
 class exports.Router
 	@routers = []
-	@route = (req)-> switch concat-map (.route req), @routers
-		| empty that => status.404 req.path
-		| _ => head that
+	@route = (req)->
+		that = concat-map (.route req), @routers
+		switch
+			| empty that => status.404 {req.path}
+			| _ => head that
 	routes: []
 	-> ..routers.push @
 	route: (req)->
