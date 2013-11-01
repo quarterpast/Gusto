@@ -24,5 +24,8 @@
   "devDependencies": {
     "regis": "0.0.0",
     "LiveScript": "~1.2.0"
+  },
+  "scripts": {
+    "test": "make test"
   }
 }
