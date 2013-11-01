@@ -16,27 +16,13 @@
       "url": "https://github.com/quarterto/Gusto/blob/master/LICENCE.md"
     }
   ],
-  "engines": {
-    "node": ">= 0.6"
-  },
-  "directories": {
-    "lib": "./lib"
-  },
-  "main": "./lib/main",
-  "bin": {
-    "gusto": "./lib/main.js"
-  },
   "repository": {
     "type": "git",
     "url": "git://github.com/quarterto/Gusto.git"
   },
-  "dependencies": {
-    "q-http": ">=0.1.13",
-    "sync": ">=v0.2.0",
-    "prelude-ls": ">=0.2.0",
-    "qq": ">=0.3.4",
-    "LiveScript": ">=0.9.8c",
-    "mime-magic": ">=0.2.6",
-    "q": ">=0.8.5"
+  "dependencies": {},
+  "devDependencies": {
+    "regis": "0.0.0",
+    "LiveScript": "~1.2.0"
   }
 }
