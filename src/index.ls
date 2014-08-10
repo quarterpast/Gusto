@@ -11,6 +11,7 @@ require! {
 	brio
 	'data.array'.concat-map
 	aught
+	dram.ok
 }
 
 require-tree-no-index = require-tree _, {-index}
@@ -38,7 +39,8 @@ export class App extends Base
 	base-path: -> path.dirname require.main.filename
 
 	template-compiler: handlebars.compile
-	template: -> brio @template-compiler, @views
+	template: ->
+		(path, data)~> ok brio @template-compiler, @views, path, data
 	template-extensions: [\.html]
 
 	init-views: ->
