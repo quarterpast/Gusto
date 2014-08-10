@@ -9,6 +9,8 @@ require! {
 	path
 	handlebars
 	brio
+	'data.array'.concat-map
+	aught
 }
 
 require-tree-no-index = require-tree _, {-index}
@@ -16,17 +18,13 @@ require-tree-no-index = require-tree _, {-index}
 values = -> [v for k,v of it]
 require-flat-tree = values . flatten . require-tree-no-index
 
-flat-map = (f, xs)--> xs.reduce do
-	(ys, x)-> ys ++ f x
-	[]
-
 export Controller
 export class App extends Base
 	port: 3000
 	paths: {\controllers \views \models}
 
 	routes: ->
-		route flat-map (.routes!), @controllers
+		route concat-map (.routes!), @controllers
 
 	server: ->
 		http.create-server handle @routes!
@@ -41,6 +39,7 @@ export class App extends Base
 
 	template-compiler: handlebars.compile
 	template: -> brio @template-compiler, @views
+	template-extensions: [\.html]
 
 	init-views: ->
 		@views = require-tree-no-index @resolve-path @paths.views
@@ -51,6 +50,7 @@ export class App extends Base
 
 	(options)->
 		import options
+		@template-extensions.for-each aught
 		@init-views!
 		@init-controllers!
 

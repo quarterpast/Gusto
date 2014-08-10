@@ -34,6 +34,7 @@
     "aught": "^0.1.0",
     "awdry": "^0.2.0",
     "brio": "^0.1.1",
+    "data.array": "^0.1.2",
     "estira": "^0.3.2",
     "flat": "^1.2.1",
     "handlebars": "^2.0.0-alpha.4",
