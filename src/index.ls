@@ -47,7 +47,8 @@ export class App extends Base
 		Controller.template = @template!
 		@controllers = require-flat-tree @resolve-path @paths.controllers
 
-	->
+	(options)->
+		import options
 		@init-views!
 		@init-controllers!
 
