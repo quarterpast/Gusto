@@ -1,31 +1,26 @@
 {
   "name": "gusto",
-  "version": "0.0.4b",
+  "version": "0.1.0",
   "description": "Unfancy MVC",
-  "keywords": [
-    "mvc",
-    "framework",
-    "livescript",
-    "javascript"
-  ],
-  "author": "quarterto <mwr.brennan@gmail.com> (http://github.com/quarterto)",
-  "homepage": "http://github.com/quarterto/Gusto/",
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/quarterto/Gusto/blob/master/LICENCE.md"
-    }
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/quarterto/Gusto.git"
-  },
-  "dependencies": {},
-  "devDependencies": {
-    "regis": "0.0.0",
-    "LiveScript": "~1.2.0"
+  "main": "lib",
+  "directories": {
+    "test": "tests"
   },
   "scripts": {
     "test": "make test"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/quarterto/Gusto"
+  },
+  "keywords": [
+    "gusto",
+    "mvc"
+  ],
+  "author": "Matt Brennan <mwrbrennan@gmail.com> (http://blog.153.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/quarterto/Gusto/issues"
+  },
+  "homepage": "https://github.com/quarterto/Gusto"
 }
