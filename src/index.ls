@@ -35,7 +35,9 @@ export class App extends Base
 		@server!.listen @port
 
 	resolve-path: (file)->
-		path.resolve (path.dirname require.main.filename), file
+		path.resolve @base-path!, file
+
+	base-path: -> path.dirname require.main.filename
 
 	template-compiler: handlebars.compile
 	template: -> brio @template-compiler, @views
