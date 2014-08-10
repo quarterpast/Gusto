@@ -42,6 +42,7 @@ export class App extends Base
 	template-extensions: [\.html]
 
 	init-views: ->
+		@template-extensions.for-each aught
 		@views = require-tree-no-index @resolve-path @paths.views
 	
 	init-controllers: ->
@@ -50,7 +51,7 @@ export class App extends Base
 
 	(options)->
 		import options
-		@template-extensions.for-each aught
+		
 		@init-views!
 		@init-controllers!
 
