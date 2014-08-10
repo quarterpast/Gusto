@@ -26,11 +26,13 @@ export class App extends Base
 	paths: {\controllers \views \models}
 
 	routes: ->
-		flat-map (.routes!), @controllers
+		route flat-map (.routes!), @controllers
+
+	server: ->
+		http.create-server handle @routes!
 
 	run: ->
-		http.create-server handle route @routes!
-			.listen @port
+		@server!.listen @port
 
 	resolve-path: (file)->
 		path.resolve (path.dirname require.main.filename), file
