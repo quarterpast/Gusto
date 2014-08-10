@@ -1,21 +1,6 @@
-LIB=lib
-SRC=src
+TEST_FILES = test/*.ls
 
-LS_OPTS=-k
+include node_modules/make-livescript/livescript.mk
 
-LS_FILES = $(shell find $(SRC)/ -type f -name '*.ls')
-JS_FILES = $(patsubst $(SRC)/%.ls, $(LIB)/%.js, $(LS_FILES))
-
-.PHONY: all
-all: $(JS_FILES)
-
-$(LIB)/%.js: $(SRC)/%.ls
-	@mkdir -p "$(@D)"
-	node_modules/.bin/lsc -pc $(LS_OPTS) "$<" > "$@"
-
-clean:
-	rm -rf lib
-
-.PHONY: test
-test: all
-	node_modules/.bin/regis
+test: all $(TEST_FILES)
+	node_modules/.bin/mocha -r LiveScript $(TEST_FILES)
