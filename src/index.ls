@@ -39,6 +39,6 @@ export class App extends Base
 
 	->
 		@views = require-tree-no-index @resolve-path @paths.views
-		Controller.set-templates brio @templater, @views
+		Controller.template = brio @templater, @views
 		@controllers = require-flat-tree @resolve-path @paths.controllers
 
