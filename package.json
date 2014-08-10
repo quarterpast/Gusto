@@ -32,6 +32,10 @@
   "dependencies": {
     "any-db": "^2.1.0",
     "aught": "^0.1.0",
+    "awdry": "^0.2.0",
+    "estira": "^0.3.2",
+    "flat": "^1.2.1",
+    "handlebars": "^2.0.0-alpha.4",
     "highland": "^1.26.3",
     "livewire": "^0.6.0",
     "muck": "0.0.0",

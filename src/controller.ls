@@ -1,6 +1,11 @@
-BaseController = require \sodor .Controller
+require! {
+	BaseController: sodor.Controller
+	awdry
+	estira.extend
+}
 
 module.exports = class Controller extends BaseController
-	@extended = (subclass)->
-		@[]subclasses.push subclass
+	import awdry
+	import {extend}
 
+	@set-templates = (@template =)
