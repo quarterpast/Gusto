@@ -37,10 +37,17 @@ export class App extends Base
 	resolve-path: (file)->
 		path.resolve (path.dirname require.main.filename), file
 
-	templater: handlebars.compile
+	template-compiler: handlebars.compile
+	template: -> brio @template-compiler, @views
+
+	init-views: ->
+		@views = require-tree-no-index @resolve-path @paths.views
+	
+	init-controllers: ->
+		Controller.template = @template!
+		@controllers = require-flat-tree @resolve-path @paths.controllers
 
 	->
-		@views = require-tree-no-index @resolve-path @paths.views
-		Controller.template = brio @templater, @views
-		@controllers = require-flat-tree @resolve-path @paths.controllers
+		@init-views!
+		@init-controllers!
 
