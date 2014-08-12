@@ -18,17 +18,17 @@ require-tree-configure = (app, path)-->
 	require-tree path, index: no each: (import {app})
 
 values = -> [v for k,v of it]
+flat-values = values . flatten
 
 export Controller
 export class App extends Base
 	require-tree: -> require-tree-configure this, it
-	require-flat-tree: -> values flatten @require-tree it
 
 	port: 3000
 	paths: {\controllers \views \models}
 
 	routes: ->
-		route concat-map (.routes!), @controllers
+		route concat-map (.routes!), flat-values @controllers
 
 	server: ->
 		http.create-server handle @routes!
@@ -42,20 +42,24 @@ export class App extends Base
 	base-path: -> path.dirname require.main.filename
 
 	template-compiler: handlebars.compile
-	template: ->
-		(path, data)~> ok brio @template-compiler, @views, path, data
 	template-extensions: [\.html]
+	template: -> (path, data)~>
+		ok brio do
+			@template-compiler
+			@views
+			path
+			data
 
-	init-views: ->
+	views-preload: ->
 		@template-extensions.for-each aught
-		@views = @require-tree @resolve-path @paths.views
-	
-	init-controllers: ->
-		@controllers = @require-flat-tree @resolve-path @paths.controllers
+
+	load: (thing)->
+		@"#{thing}Preload"?!
+		@[thing] = @require-tree @resolve-path @paths[thing]
 
 	(options)->
 		import options
-		
-		@init-views!
-		@init-controllers!
+
+		@load \views
+		@load \controllers
 
