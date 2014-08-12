@@ -9,4 +9,4 @@ module.exports = class Controller extends BaseController
 	import {extend}
 
 	@template = ->
-		@app.template!
+		@app.template! ...

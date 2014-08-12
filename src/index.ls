@@ -51,7 +51,6 @@ export class App extends Base
 		@views = @require-tree @resolve-path @paths.views
 	
 	init-controllers: ->
-		Controller.template = @template!
 		@controllers = @require-flat-tree @resolve-path @paths.controllers
 
 	(options)->
