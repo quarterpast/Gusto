@@ -5,7 +5,7 @@ require! {
 	handle: oban
 	http
 	\require-tree
-	flat.flatten
+	flat
 	path
 	handlebars
 	brio
@@ -13,19 +13,24 @@ require! {
 	aught
 	dram.ok
 	Symbol: \es6-symbol
+	deepmerge
 }
 
-require-tree-configure = (app, path)-->
-	require-tree path, index: no each: (import {app})
+require-tree-configure = (each, path)-->
+	require-tree path, {-index, each}
 
 values = -> [v for k,v of it]
-flat-values = values . flatten
+flat-values = values . flat.flatten
+tree-map = (f,t)--> flat.unflatten {[k, (f v,k)] for k, v of flat.flatten t}
 
 server = Symbol \server
 
 export Controller
 export class App extends Base
-	require-tree: -> require-tree-configure this, it
+	load-tree: ->
+		require-tree-configure @~configure, it
+
+	configure: (import app:this)
 
 	port: 3000
 	paths: {\controllers \views \models}
@@ -56,9 +61,12 @@ export class App extends Base
 	views-preload: ->
 		@template-extensions.for-each aught
 
+	controllers-preload: ->
+		tree-map @~configure, Controller{}subclasses
+
 	load: (thing)->
-		@"#{thing}Preload"?!
-		@[thing] = @require-tree @resolve-path @paths[thing]
+		existing = @"#{thing}Preload"?! ? {}
+		@[thing] = existing `deepmerge` @load-tree @resolve-path @paths[thing]
 
 	(options)->
 		import options
