@@ -22,6 +22,9 @@
   "bugs": {
     "url": "https://github.com/quarterto/Gusto/issues"
   },
+  "bin": {
+    "gusto": "lib/cli.js"
+  },
   "homepage": "https://github.com/quarterto/Gusto",
   "devDependencies": {
     "LiveScript": "^1.2.0",
@@ -47,6 +50,7 @@
     "oban": "^0.2.0",
     "require-tree": "git://github.com/quarterto/require-tree#patch-1",
     "sodor": "^0.3.0",
-    "sql": "^0.39.0"
+    "sql": "^0.39.0",
+    "subarg": "0.0.1"
   }
 }

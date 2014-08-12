@@ -69,7 +69,7 @@ export class App extends Base
 		@[thing] = existing `deepmerge` @load-tree @resolve-path @paths[thing]
 
 	(options)->
-		import options
+		this `deepmerge` options
 
 		@load \views
 		@load \controllers
