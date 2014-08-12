@@ -3,6 +3,7 @@
 require! {
 	subarg
 	'./index'.App
+	path
 }
 
 argv = subarg do
@@ -19,6 +20,9 @@ if argv.version
 
 for m in [] ++ argv.require
 	require m
+
+if argv.app or argv._.0
+	App = require path.resolve that
 
 class CliApp extends App
 	port: process.env.PORT ? 3000
