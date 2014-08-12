@@ -62,11 +62,11 @@ export class App extends Base
 		@template-extensions.for-each aught
 
 	controllers-preload: ->
-		tree-map @~configure, Controller{}subclasses
+		@controllers = @{}controllers `deepmerge` tree-map @~configure, Controller{}subclasses
 
 	load: (thing)->
-		existing = @"#{thing}Preload"?! ? {}
-		@[thing] = existing `deepmerge` @load-tree @resolve-path @paths[thing]
+		@"#{thing}Preload"?!
+		@[thing] = @{}[thing] `deepmerge` @load-tree @resolve-path @paths[thing]
 
 	(options)->
 		import this `deepmerge` options
