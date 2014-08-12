@@ -12,6 +12,7 @@ require! {
 	'data.array'.concat-map
 	aught
 	dram.ok
+	Symbol: \es6-symbol
 }
 
 require-tree-configure = (app, path)-->
@@ -19,6 +20,8 @@ require-tree-configure = (app, path)-->
 
 values = -> [v for k,v of it]
 flat-values = values . flatten
+
+server = Symbol \server
 
 export Controller
 export class App extends Base
@@ -31,7 +34,7 @@ export class App extends Base
 		route concat-map (.routes!), flat-values @controllers
 
 	server: ->
-		http.create-server handle @routes!
+		@[server] ?= http.create-server handle @routes!
 
 	run: ->
 		@server!.listen @port
