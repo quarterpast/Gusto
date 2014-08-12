@@ -2,7 +2,7 @@
 
 require! {
 	subarg
-	'./index'.App
+	gusto: './index'
 	path
 }
 
@@ -21,10 +21,11 @@ if argv.version
 for m in [] ++ argv.require
 	require m
 
-if argv.app or argv._.0
-	App = require path.resolve that
+BaseApp = if argv.app or argv._.0
+	require path.resolve that
+else gusto.App
 
-class CliApp extends App
+class CliApp extends BaseApp
 	port: process.env.PORT ? 3000
 	base-path: -> process.cwd!
 
