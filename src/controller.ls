@@ -7,3 +7,6 @@ require! {
 module.exports = class Controller extends BaseController
 	import awdry
 	import {extend}
+
+	@template = ->
+		@app.template!

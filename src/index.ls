@@ -14,13 +14,16 @@ require! {
 	dram.ok
 }
 
-require-tree-no-index = require-tree _, {-index}
+require-tree-configure = (app, path)-->
+	require-tree path, index: no each: (import {app})
 
 values = -> [v for k,v of it]
-require-flat-tree = values . flatten . require-tree-no-index
 
 export Controller
 export class App extends Base
+	require-tree: -> require-tree-configure this, it
+	require-flat-tree: -> values flatten @require-tree it
+
 	port: 3000
 	paths: {\controllers \views \models}
 
@@ -45,11 +48,11 @@ export class App extends Base
 
 	init-views: ->
 		@template-extensions.for-each aught
-		@views = require-tree-no-index @resolve-path @paths.views
+		@views = @require-tree @resolve-path @paths.views
 	
 	init-controllers: ->
 		Controller.template = @template!
-		@controllers = require-flat-tree @resolve-path @paths.controllers
+		@controllers = @require-flat-tree @resolve-path @paths.controllers
 
 	(options)->
 		import options
