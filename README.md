@@ -12,7 +12,7 @@ nothing
 
 #### views/foo/bar.html
 ```html
-<h1>{{greeting}} world</h1>
+{{greeting}} world
 ```
 
 #### controllers/foo.js
