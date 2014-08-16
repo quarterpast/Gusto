@@ -68,6 +68,7 @@ export class App extends Base
 			path
 			data
 	
+	db-url: -> "sqlite3://#{display-name.to-lower-case!}.db"
 	db-connection: ->
 		@[connection] ?= any-db.create-connection @db-url!
 
