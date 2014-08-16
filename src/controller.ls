@@ -20,6 +20,7 @@ module.exports = class Controller extends BaseController implements muck.mixin
 		@[schema] ?= if @@@model?
 			sql.define that.schema!
 
-
 	connection: @private ->
 		@@@app.db-connection!
+	
+	-> @init! .to-array -> console.log \created
