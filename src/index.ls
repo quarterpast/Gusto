@@ -44,7 +44,7 @@ export class App extends Base
 	paths: {\controllers \views \models}
 
 	routes: ->
-		route concat-map (.routes?!), flat-values @controllers
+		route concat-map (.routes!), flat-values @controllers
 
 	server: ->
 		@[server] ?= http.create-server handle @routes!
@@ -76,7 +76,7 @@ export class App extends Base
 		@merge-property \controllers tree-map @~configure, Controller{}subclasses
 
 	models-preload: ->
-		@merge-property \controllers tree-map @~configure, Model{}subclasses
+		@merge-property \models tree-map @~configure, Model{}subclasses
 
 	merge-property: (prop, obj)->
 		@[prop] = @{}[prop] `deepmerge` obj
