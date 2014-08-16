@@ -52,7 +52,7 @@
     "pluralize": "0.0.11",
     "require-tree": "git://github.com/quarterto/require-tree#patch-1",
     "snake-case": "^0.1.1",
-    "sodor": "^0.3.0",
+    "sodor": "^0.3.1",
     "sql": "^0.39.0",
     "subarg": "0.0.1",
     "taike": "^0.1.2"
