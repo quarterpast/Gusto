@@ -15,6 +15,7 @@ require! {
 	dram.ok
 	Symbol: \es6-symbol
 	deepmerge
+	\any-db
 }
 
 require-tree-configure = (each, path)-->
@@ -25,6 +26,7 @@ flat-values = values . flat.flatten
 tree-map = (f,t)--> flat.unflatten {[k, (f v,k)] for k, v of flat.flatten t}
 
 server = Symbol \server
+connection = Symbol \connection
 
 extended = (subclass)->
 	@{}subclasses[subclass.display-name] = subclass
@@ -65,9 +67,9 @@ export class App extends Base
 			@views
 			path
 			data
-
+	
 	db-connection: ->
-		@[connection] ?= any-db.create-connection
+		@[connection] ?= any-db.create-connection @db-url!
 
 	views-preload: ->
 		@template-extensions.for-each aught

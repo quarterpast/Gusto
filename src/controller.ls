@@ -3,7 +3,11 @@ require! {
 	awdry
 	estira.extend
 	muck
+	sql
+	Symbol: \es6-symbol
 }
+
+schema = Symbol \schema
 
 module.exports = class Controller extends BaseController implements muck.mixin
 	import awdry
@@ -13,8 +17,9 @@ module.exports = class Controller extends BaseController implements muck.mixin
 		@app.template! ...
 
 	model: @private ->
-		if @@model?
-			that.schema
+		@[schema] ?= if @@@model?
+			sql.define that.schema!
+
 
 	connection: @private ->
-		@@app.db-connection!
+		@@@app.db-connection!

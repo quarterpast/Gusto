@@ -7,7 +7,7 @@ module.exports = class Model
     name: @get-table!
     columns: taike @fields!
 
-  @get-table = -> @table ? snake-case pluralise @display-name
+  @get-table = -> @table ? snake-case pluralize @display-name
   @fields = -> {[k,v] for k,v of this when k not of Model}
   @convert = cajole @fields!
 
