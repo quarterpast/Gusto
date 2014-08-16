@@ -25,4 +25,6 @@ module.exports = class Controller extends BaseController implements private-mixi
 	connection: @private ->
 		@@@app.db-connection!
 	
-	-> @init!
+	->
+		if @@@model?
+			then @init!
