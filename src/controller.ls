@@ -2,14 +2,19 @@ require! {
 	BaseController: sodor.Controller
 	awdry
 	estira.extend
+	muck
 }
 
-module.exports = class Controller extends BaseController
+module.exports = class Controller extends BaseController implements muck.mixin
 	import awdry
 	import {extend}
 
-	@extended = (subclass)->
-		@{}subclasses[subclass.display-name] = subclass
-
 	@template = ->
 		@app.template! ...
+
+	model: @private ->
+		if @@model?
+			that.schema
+
+	connection: @private ->
+		@@app.db-connection!

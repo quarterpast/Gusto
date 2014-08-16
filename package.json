@@ -39,6 +39,7 @@
     "aught": "^0.1.0",
     "awdry": "^0.2.0",
     "brio": "^0.1.1",
+    "cajole": "^0.1.0",
     "data.array": "^0.1.2",
     "dram": "^0.3.1",
     "estira": "^0.3.2",
@@ -48,9 +49,12 @@
     "livewire": "^0.6.0",
     "muck": "0.0.0",
     "oban": "^0.2.0",
+    "pluralize": "0.0.11",
     "require-tree": "git://github.com/quarterto/require-tree#patch-1",
+    "snake-case": "^0.1.1",
     "sodor": "^0.3.0",
     "sql": "^0.39.0",
-    "subarg": "0.0.1"
+    "subarg": "0.0.1",
+    "taike": "^0.1.2"
   }
 }

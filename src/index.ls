@@ -1,6 +1,7 @@
 require! {
 	Base: estira
 	Controller: './controller'
+	Model: './model'
 	livewire.route
 	handle: oban
 	http
@@ -25,7 +26,14 @@ tree-map = (f,t)--> flat.unflatten {[k, (f v,k)] for k, v of flat.flatten t}
 
 server = Symbol \server
 
+extended = (subclass)->
+	@{}subclasses[subclass.display-name] = subclass
+
+Controller import {extended}
+Model import {extended}
+
 export Controller
+export Model
 export class App extends Base
 	load-tree: ->
 		require-tree-configure @~configure, it
@@ -36,7 +44,7 @@ export class App extends Base
 	paths: {\controllers \views \models}
 
 	routes: ->
-		route concat-map (.routes!), flat-values @controllers
+		route concat-map (.routes?!), flat-values @controllers
 
 	server: ->
 		@[server] ?= http.create-server handle @routes!
@@ -58,11 +66,17 @@ export class App extends Base
 			path
 			data
 
+	db-connection: ->
+		@[connection] ?= any-db.create-connection
+
 	views-preload: ->
 		@template-extensions.for-each aught
 
 	controllers-preload: ->
 		@merge-property \controllers tree-map @~configure, Controller{}subclasses
+
+	models-preload: ->
+		@merge-property \controllers tree-map @~configure, Model{}subclasses
 
 	merge-property: (prop, obj)->
 		@[prop] = @{}[prop] `deepmerge` obj
@@ -76,4 +90,5 @@ export class App extends Base
 
 		@load \views
 		@load \controllers
+		@load \models
 
