@@ -28,3 +28,5 @@ module.exports = class Controller extends BaseController implements private-mixi
 	->
 		if @@@model?
 			then @init!
+
+		super ...
