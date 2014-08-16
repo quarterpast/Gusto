@@ -9,7 +9,9 @@ require! {
 
 schema = Symbol \schema
 
-module.exports = class Controller extends BaseController implements muck.mixin
+private-mixin = {[k, BaseController.private v] for k,v of muck.mixin}
+
+module.exports = class Controller extends BaseController implements private-mixin
 	import awdry
 	import {extend}
 
@@ -23,4 +25,4 @@ module.exports = class Controller extends BaseController implements muck.mixin
 	connection: @private ->
 		@@@app.db-connection!
 	
-	-> @init! .to-array -> console.log \created
+	-> @init!
