@@ -50,7 +50,7 @@
     "handlebars": "^2.0.0-alpha.4",
     "highland": "^1.26.3",
     "livewire": "^0.6.0",
-    "muck": "0.0.0",
+    "muck": "^0.1.0",
     "oban": "^0.2.0",
     "pluralize": "0.0.11",
     "require-tree": "git://github.com/quarterto/require-tree#patch-1",
@@ -58,6 +58,6 @@
     "sodor": "^0.3.1",
     "sql": "^0.39.0",
     "subarg": "0.0.1",
-    "taike": "^0.1.3"
+    "taike": "^0.1.4"
   }
 }

@@ -13,6 +13,7 @@ require! {
 	'data.array'.concat-map
 	aught
 	dram.ok
+	dram.not-found
 	Symbol: \es6-symbol
 	deepmerge
 	\any-db
@@ -45,11 +46,16 @@ export class App extends Base
 	port: 3000
 	paths: {\controllers \views \models}
 
-	routes: ->
+	controller-routes: ->
 		route concat-map (.routes!), flat-values @controllers
 
+	404: -> (req)-> not-found req.url
+
+	routes: ->
+		@404!
+		
 	server: ->
-		@[server] ?= http.create-server handle @routes!
+		@[server] ?= http.create-server handle route [@controller-routes!, @routes!]
 
 	run: ->
 		@server!.listen @port
