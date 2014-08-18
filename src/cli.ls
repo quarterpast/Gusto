@@ -2,9 +2,9 @@
 
 require! {
 	subarg
-	gusto: './index'
 	path
 	deepmerge
+	resolve
 }
 
 argv = subarg do
@@ -26,7 +26,13 @@ for m in [] ++ argv.require
 
 BaseApp = if argv.app or argv._.0
 	require path.resolve that
-else gusto.App
+else
+	try
+		gusto-path = resolve.sync \gusto basedir: process.cwd!
+		gusto = require gusto-path
+		gusto.App
+	catch
+		require './index' .App
 
 extra-config = if argv.config?
 	require path.resolve that
