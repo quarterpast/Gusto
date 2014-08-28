@@ -1,4 +1,4 @@
-TEST_FILES = test/*.ls
+TEST_FILES = $(shell find test -name '*.ls')
 
 include node_modules/make-livescript/livescript.mk
 
