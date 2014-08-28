@@ -7,7 +7,7 @@ npm install gusto
 ```
 ##Sample
 ###controllers/site.ls
-```coffeescript
+```livescript
 {Controller,action} = require \gusto/lib/mvc/controller
 {get} = require \gusto/lib/server/router
 
@@ -21,7 +21,7 @@ exports.site = Controller {
 Hello #{greet}
 ```
 ###run.ls
-```coffeescript
+```livescript
 Gusto = require \gusto
 app = Gusto.defaults!
 app.listen 8001
