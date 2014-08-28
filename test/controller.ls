@@ -12,4 +12,11 @@ export 'Controller':
 
     expect Foo.template \a \b .to.be r
     expect t .to.be.called-with \a \b
-    
+
+  'can be extended via Estira': ->
+    Foo = Controller.extend \Foo bar: ->
+
+    expect new Foo .to.be.a Controller
+    expect new Foo .to.have.property \bar
+    expect Foo.display-name .to.be \Foo
+
