@@ -17,6 +17,7 @@ require! {
 	Symbol: \es6-symbol
 	deepmerge
 	\any-db
+	fs
 }
 
 require-tree-configure = (each, path)-->
@@ -53,9 +54,12 @@ export class App extends Base
 
 	routes: ->
 		@404!
-		
+
+	handler: ->
+		handle route [@controller-routes!, @routes!]
+
 	server: ->
-		@[server] ?= http.create-server handle route [@controller-routes!, @routes!]
+		@[server] ?= http.create-server @handler!
 
 	run: ->
 		@server!.listen @port
@@ -92,9 +96,11 @@ export class App extends Base
 
 	load: (thing)->
 		@"#{thing}Preload"?!
-		@merge-property thing, @load-tree @resolve-path @paths[thing]
+		exists <- fs.exists @paths[thing]
+		if exists
+			@merge-property thing, @load-tree @resolve-path @paths[thing]
 
-	(options)->
+	(options = {})->
 		import this `deepmerge` options
 
 		@load \views
