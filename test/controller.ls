@@ -22,6 +22,18 @@ export
       expect new Foo .to.have.property \bar
       expect Foo.display-name .to.be \Foo
 
+    'render':
+      'renders things from template': ->
+        class Foo extends Controller
+          @app = template: ->
+            expect.sinon.stub!.with-args \foo.bar .returns 'hello world'
+
+          bar: -> @render {}
+
+        expect (Foo.handle \bar []) {}
+          .to.be 'hello world'
+
+
   'AppController':
     'keeps track of subclasses': ->
       class Foo extends AppController
