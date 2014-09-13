@@ -21,7 +21,8 @@ $btn-default-color: $secondary-text-color;
 $headings-color: $color-blue-grey-900;
 $logo-color: $color-blue-grey-900;
 
-$navbar-background-gusto: #3B819E;
+$navbar-gusto-background: #4E88A4;
+$navbar-gusto-hover: #6C93A9;
 
 @import 'bootstrap';
 $fa-font-path: '/bower_components/font-awesome/fonts';
@@ -66,12 +67,12 @@ h1, h2, h3 {
 }
 
 .triangles {
-	background: url(/images/background.svg);
+	background-image: url(/images/background.svg);
 	background-size: cover;
 }
 
 .jumbotron.cover {
-	height: 100vh;
+	min-height: 100vh;
 	margin-bottom: 100vh;
 	text-align: center;
 	.row { text-align: left; }
@@ -102,7 +103,7 @@ h1, h2, h3 {
 		color: inherit;
 		border: 0 none;
 	}
-	border-radius: 4px;
+	border-radius: $border-radius-base;
 }
 
 pre {
@@ -120,7 +121,7 @@ pre {
 }
 
 .navbar-gusto {
-	background: $navbar-background-gusto;;
+	background-color: $navbar-gusto-background;
 
 	.nav > li > {
 		a:link, a:visited {
@@ -129,7 +130,11 @@ pre {
 
 		a:hover, a:active {
 			color: $color-blue-grey-50;
-			background: rgba($color-grey-1000, 0.1);
+			background: $navbar-gusto-hover;
 		}
+	}
+
+	.navbar-toggle {
+		.icon-bar { background: $headings-color; }
 	}
 }
