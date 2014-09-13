@@ -2,19 +2,20 @@
 ---
 
 $font-family-base: Lato, sans-serif;
+$headings-font-family: Montserrat, sans-serif;
 $font-family-monospace: 'Source Code Pro', Monaco, Consolas, monospace;
 $font-size-base: 14px;
 
 $off-black: #263238;
-$header-color: $off-black;
+$headings-color: $off-black;
 $logo-color: $off-black;
 
 @import 'bootstrap';
+@import 'font-awesome';
 @import url('/bower_components/Lanai/lanai.css');
 
 h1, h2, h3 {
-	font-family: Montserrat, sans-serif;
-	color: $header-color;
+	letter-spacing: -0.02em;
 }
 
 .jumbotron {
@@ -28,6 +29,7 @@ h1, h2, h3 {
 	text-align: center;
 	line-height: 0.7em;
 	display: inline-block;
+	letter-spacing: -0.05em;
 
 	small {
 		font-family: $font-family-base;
@@ -35,6 +37,7 @@ h1, h2, h3 {
 		font-style: italic;
 		display: block;
 		font-size: 0.59em;
+		letter-spacing: -0.04em;
 	}
 
 	.jumbotron &, {
@@ -67,7 +70,6 @@ h1, h2, h3 {
 	}
 }
 
-
 .highlight {
 	pre {
 		background: none;
@@ -77,4 +79,14 @@ h1, h2, h3 {
 	border-radius: 4px;
 }
 
-
+pre {
+	&.command {
+		text-align: center;
+		&:before {
+			content: '❯ ';
+			color: #666;
+		}
+	}
+	
+	letter-spacing: -0.05em;
+}

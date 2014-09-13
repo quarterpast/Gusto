@@ -1,4 +1,4 @@
 sass:
   load_paths:
     - bower_components/bootstrap-sass-official/assets/stylesheets
-    - bower_components/Lanai
+    - bower_components/font-awesome/scss
