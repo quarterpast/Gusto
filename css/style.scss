@@ -1,14 +1,25 @@
 ---
 ---
 
+@import 'material-design-theme-sass/colors';
+
 $font-family-base: Lato, sans-serif;
 $headings-font-family: Montserrat, sans-serif;
 $font-family-monospace: 'Source Code Pro', Monaco, Consolas, monospace;
 $font-size-base: 14px;
 
-$off-black: #263238;
-$headings-color: $off-black;
-$logo-color: $off-black;
+$brand-primary: $color-light-blue;
+$brand-success: $color-green-400;
+$brand-info:    $color-teal-A400;
+$brand-warning: $color-amber-A400;
+$brand-error:   $color-red-400;
+
+$text-color: rgba($color-grey-1000, 0.87);
+$secondary-text-color: rgba($color-grey-1000, 0.54);
+$btn-default-color: $secondary-text-color;
+
+$headings-color: $color-blue-grey-900;
+$logo-color: $color-blue-grey-900;
 
 @import 'bootstrap';
 @import 'font-awesome';
@@ -41,7 +52,7 @@ h1, h2, h3 {
 	}
 
 	.jumbotron &, {
-		&, small { color: $header-color; }
+		&, small { color: $headings-color; }
 	}
 }
 
@@ -84,7 +95,7 @@ pre {
 		text-align: center;
 		&:before {
 			content: '❯ ';
-			color: #666;
+			color: $gray-light;;
 		}
 	}
 	

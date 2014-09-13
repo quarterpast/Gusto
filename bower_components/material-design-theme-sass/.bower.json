@@ -1,0 +1,32 @@
+{
+  "name": "Material Design Theme Sass",
+  "homepage": "https://github.com/dmglab/Material-Design-Theme-Sass",
+  "authors": [
+    "Daniel Gehrlein <dmg.lab@outlook.com>"
+  ],
+  "description": "Base Theme Components of Google's Material Design (maintained at angular/material)",
+  "main": "_theme.scss",
+  "keywords": [
+    "google",
+    "material",
+    "sass"
+  ],
+  "license": "Apache",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "6adc76dc5f",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "6adc76dc5fb10ec93f76cdbd1af070895f90f8c2"
+  },
+  "_source": "git://github.com/dmglab/Material-Design-Theme-Sass.git",
+  "_target": "*",
+  "_originalSource": "material-design-theme-sass",
+  "_direct": true
+}
