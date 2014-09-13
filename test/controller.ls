@@ -28,11 +28,29 @@ export
           @app = template: ->
             expect.sinon.stub!.with-args \foo.bar .returns 'hello world'
 
-          bar: -> @render {}
+          bar: -> @render!
 
         expect (Foo.handle \bar []) {}
           .to.be 'hello world'
 
+      'passes object to render': ->
+        render = expect.sinon.stub!.with-args \foo.bar .returns 'hello world'
+        o = {}
+
+        class Foo extends Controller
+          @app = template: -> render
+          bar: -> @render o
+
+        (Foo.handle \bar []) {}
+        expect render .to.be.called-with 'foo.bar', o
+
+      'renders to json if no template': ->
+        class Foo extends Controller
+          @app = {}
+          bar: -> @render {}
+
+        expect (Foo.handle \bar []) {}
+          .to.be '{}'
 
   'AppController':
     'keeps track of subclasses': ->

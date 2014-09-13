@@ -18,6 +18,7 @@ require! {
 	deepmerge
 	\any-db
 	fs
+	σ: \highland
 }
 
 require-tree-configure = (each, path)-->
@@ -26,6 +27,10 @@ require-tree-configure = (each, path)-->
 values = -> [v for k,v of it]
 flat-values = values . flat.flatten
 tree-map = (f,t)--> flat.unflatten {[k, (f v,k)] for k, v of flat.flatten t}
+
+stream-handle-error = (fn)->
+	(...args)->
+		σ [null] .map fn
 
 server = Symbol \server
 connection = Symbol \connection
