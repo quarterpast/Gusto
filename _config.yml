@@ -1,0 +1,3 @@
+sass:
+  load_paths:
+    - bower_components/bootstrap-sass-official/assets/stylesheets
