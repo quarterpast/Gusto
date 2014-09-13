@@ -1,0 +1,14 @@
+{
+  "name": "Lanai",
+  "homepage": "https://github.com/quarterto/Lanai",
+  "_release": "8b35baa928",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "8b35baa92815fe03a5745f019248111013834c03"
+  },
+  "_source": "git://github.com/quarterto/Lanai.git",
+  "_target": "*",
+  "_originalSource": "quarterto/Lanai",
+  "_direct": true
+}
