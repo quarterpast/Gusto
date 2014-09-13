@@ -21,6 +21,8 @@ $btn-default-color: $secondary-text-color;
 $headings-color: $color-blue-grey-900;
 $logo-color: $color-blue-grey-900;
 
+$navbar-background-gusto: #3B819E;
+
 @import 'bootstrap';
 $fa-font-path: '/bower_components/font-awesome/fonts';
 @import 'font-awesome';
@@ -33,6 +35,12 @@ h1, h2, h3 {
 .jumbotron {
 	h1 { font-size: 80px; }
 	h2 { font-size: 36px; }
+}
+
+.navbar h1 {
+	margin: 0;
+	font-size: 30px;
+
 }
 
 .logo {
@@ -52,7 +60,7 @@ h1, h2, h3 {
 		letter-spacing: -0.04em;
 	}
 
-	.jumbotron &, {
+	.jumbotron &, .navbar & {
 		&, small { color: $headings-color; }
 	}
 }
@@ -64,22 +72,28 @@ h1, h2, h3 {
 
 .jumbotron.cover {
 	height: 100vh;
+	margin-bottom: 100vh;
 	text-align: center;
 	.row { text-align: left; }
+	position: relative;
+	z-index: 1040; // above navbar (1030)
 }
 
 .whisk {
 	background: url(/images/logo.svg) no-repeat;
-	background-size: 260px 100px;
-	
+	background-size: contain;
+
 	background-position: center top;
 	padding-top: 110px;
 
-	@media (min-width: $screen-sm-min) {
+	@mixin whisk-side($padding: 3.8em) {
 		background-position: left center;
-		padding-left: 270px;
+		padding-left: $padding;
 		padding-top: 0;
 	}
+
+	@media (min-width: $screen-sm-min) { @include whisk-side; }
+	.navbar & { @include whisk-side(2.1em); }
 }
 
 .highlight {
@@ -96,11 +110,26 @@ pre {
 		text-align: center;
 		&:before {
 			content: '❯';
-			color: $gray-light;
+			color: $secondary-text-color;
 			float: left;
 			width: 18px;
 		}
 	}
 	
 	letter-spacing: -0.05em;
+}
+
+.navbar-gusto {
+	background: $navbar-background-gusto;;
+
+	.nav > li > {
+		a:link, a:visited {
+			color: $color-grey-0;
+		}
+
+		a:hover, a:active {
+			color: $color-blue-grey-50;
+			background: rgba($color-grey-1000, 0.1);
+		}
+	}
 }
