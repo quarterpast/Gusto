@@ -20,7 +20,23 @@
 						<div class="col-md-6">
 							{% highlight livescript %}
 class Post extends Model
-  @title = String
+  @title   = String
+  @content = String
+  @posted  = Date
+
+class Posts extends Controller
+  @model = Post
+
+class Blog extends App
+  views:
+    posts: show: """
+    <article>
+      <h1>{{title}}</h1>
+      <time>{{posted}}</time>
+      {{content}}
+    </article>
+    """
+  
 							{% endhighlight %}
 						</div>
 						<div class="col-md-6">
