@@ -1,43 +1,16 @@
 ---
+layout: base
 ---
-<!doctype html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Gusto</title>
-	<link rel="stylesheet" href="css/style.css">
-	<link href='http://fonts.googleapis.com/css?family=Lato:400,700,300italic,400italic,700italic|Source+Code+Pro|Montserrat:700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-</head>
-<body>
-	<div class="jumbotron triangles cover">
-		<div class="container">
-			<h1 class="logo whisk">Gusto <small>Framework</small></h1>
-			<h2>Write delicious web apps.</h2>
-			<div class="row">
-				<div class="col-md-6 col-md-push-3">
-					<div class="row">
-						<div class="col-md-6">
-							{% highlight livescript %}
-class Post extends Model
-  @title   = String
-  @content = String
-  @posted  = Date
 
-class Posts extends Controller
-  @model = Post
-
-class Blog extends App
-  views:
-    posts: show: """
-    <article>
-      <h1>{{title}}</h1>
-      <time>{{posted}}</time>
-      {{content}}
-    </article>
-    """
-  
-							{% endhighlight %}
+<div class="jumbotron triangles cover">
+	<div class="container">
+		<h1 class="logo whisk">Gusto <small>Framework</small></h1>
+		<h2>Write delicious web apps.</h2>
+		<div class="row">
+			<div class="col-md-6 col-md-push-3">
+				<div class="row">
+					<div class="col-md-6">
+						{% highlight livescript %}{% include sample.ls %}{% endhighlight %}
 						</div>
 						<div class="col-md-6">
 							<pre class="command btn-lg btn-block">npm install gusto</pre>
@@ -59,5 +32,4 @@ class Blog extends App
 			</div>
 		</div>
 	</div>
-</body>
-</html>
+
