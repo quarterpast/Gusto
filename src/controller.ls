@@ -5,6 +5,7 @@ require! {
 	muck
 	sql
 	Symbol: \es6-symbol
+	brio.errors
 }
 
 schema = Symbol \schema
@@ -15,8 +16,14 @@ module.exports = class Controller extends BaseController implements private-mixi
 	import awdry
 	import {extend}
 
-	@template = ->
-		@app.template! ...
+	@template = (path, data)->
+		try
+			@app.template! ...
+		catch
+			if e instanceof errors.PathNotFoundError
+				JSON.stringify data
+			else throw e
+
 
 	model: @private ->
 		@[schema] ?= if @@@model?

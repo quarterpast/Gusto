@@ -2,6 +2,7 @@ require! {
   'karma-sinon-expect'.expect
   Controller: '../lib/controller'
   AppController: '../lib'.Controller
+  brio.errors
 }
 
 export
@@ -46,7 +47,7 @@ export
 
       'renders to json if no template': ->
         class Foo extends Controller
-          @app = {}
+          @app = template: -> -> throw new errors.PathNotFoundError
           bar: -> @render {}
 
         expect (Foo.handle \bar []) {}
