@@ -13,14 +13,11 @@ export 'App':
 				expect status .to.have.property \code 200
 				done!
 
-		'to flip a shit if template not found': (done)->
+		'to flip a shit if template not found': ->
 			class Foo extends App
 				views: {}
 
-			(new Foo).template! 'bar.baz' {} .to-array ([status])->
-				expect status .to.have.property \code 200
-				done!
-
+			expect (-> (new Foo).template! 'bar.baz' {}) .to.throw-exception /Path 'bar\.baz' not found/
 		'finds paths from views': (done)->
 			class Foo extends App
 				views: bar: baz: 'hello'
