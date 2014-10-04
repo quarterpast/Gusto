@@ -35,7 +35,7 @@ else
 		require './index' .App
 
 extra-config = if argv.config?
-	require path.resolve that
+	require path.resolve argv.config
 else {}
 
 class CliApp extends BaseApp

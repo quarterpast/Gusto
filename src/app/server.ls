@@ -1,5 +1,5 @@
 require! {
-	'./symbols'.server
+	server-sym: './symbols'.server
 	handle: oban
 	livewire.route
 	dram.not-found
@@ -25,7 +25,7 @@ export handler = ->
 	handle route [@controller-routes!, @routes!]
 
 export server = ->
-	@[server] ?= http.create-server @handler!
+	@[server-sym] ?= http.create-server @handler!
 
 export run = ->
 	@server!.listen @port

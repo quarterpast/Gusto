@@ -28,6 +28,7 @@
   "homepage": "https://github.com/quarterto/Gusto",
   "devDependencies": {
     "LiveScript": "^1.2.0",
+    "blanket": "^1.1.6",
     "karma-sinon-expect": "^0.1.4",
     "make-livescript": "0.0.0",
     "mocha": "^1.21.4"
@@ -60,5 +61,10 @@
     "sql": "^0.39.0",
     "subarg": "0.0.1",
     "taike": "^0.1.4"
+  },
+  "config": {
+    "blanket": {
+      "pattern": "/Gusto/lib/"
+    }
   }
 }
