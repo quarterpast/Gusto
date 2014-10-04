@@ -3,7 +3,7 @@
 require! {
 	subarg
 	path
-	deepmerge
+	\deep-extend
 	resolve
 }
 
@@ -42,5 +42,5 @@ class CliApp extends BaseApp
 	port: process.env.PORT ? 3000
 	base-path: -> process.cwd!
 
-app = new CliApp (argv `deepmerge` extra-config)
+app = new CliApp (argv `deep-extend` extra-config)
 app.run!

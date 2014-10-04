@@ -3,7 +3,7 @@ require! {
 	Controller: './controller'
 	Model: './model'
 	flat
-	deepmerge
+	\deep-extend
 	\any-db
 
 	'./app/template'
@@ -22,7 +22,14 @@ Model import {extended}
 
 export Controller
 export Model
-export class App extends Base implements template, load, server
+export class BaseApp extends Base
+	@mixin = (...modules)->
+		for m in modules
+			@prototype `deep-extend` m
+
+export class App extends BaseApp
+	@mixin load, template, server
+
 	paths: {\controllers \views \models}
 
 	db-url: -> "sqlite3://#{display-name.to-lower-case!}.db"
@@ -35,11 +42,8 @@ export class App extends Base implements template, load, server
 	models-preload: ->
 		@merge-property \models tree-map @~configure, Model{}subclasses
 
-	merge-property: (prop, obj)->
-		@[prop] = @{}[prop] `deepmerge` obj
-
 	(options = {})->
-		import this `deepmerge` options
+		this `deep-extend` options
 
 		@load \views
 		@load \controllers

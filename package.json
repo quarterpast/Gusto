@@ -43,7 +43,7 @@
     "brio": "^0.1.1",
     "cajole": "^0.1.0",
     "data.array": "^0.1.2",
-    "deepmerge": "^0.2.7",
+    "deep-extend": "^0.3.2",
     "dram": "^0.3.1",
     "es6-symbol": "^0.1.0",
     "estira": "^0.3.2",
