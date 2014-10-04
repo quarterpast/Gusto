@@ -8,17 +8,15 @@ require! {
 	\require-tree
 	flat
 	path
-	handlebars
-	brio
 	'data.array'.concat-map
-	aught
-	dram.ok
 	dram.not-found
 	Symbol: \es6-symbol
 	deepmerge
 	\any-db
 	fs
 	σ: \highland
+
+	'./app/template'
 }
 
 require-tree-configure = (each, path)-->
@@ -43,7 +41,7 @@ Model import {extended}
 
 export Controller
 export Model
-export class App extends Base
+export class App extends Base implements template
 	load-tree: ->
 		require-tree-configure @~configure, it
 
@@ -74,21 +72,10 @@ export class App extends Base
 
 	base-path: -> path.dirname require.main.filename
 
-	template-compiler: handlebars.compile
-	template-extensions: [\.html]
-	template: -> (path, data)~>
-		ok brio do
-			@template-compiler
-			@views
-			path
-			data
-	
+
 	db-url: -> "sqlite3://#{display-name.to-lower-case!}.db"
 	db-connection: ->
 		@[connection] ?= any-db.create-connection @db-url!
-
-	views-preload: ->
-		@template-extensions.for-each aught
 
 	controllers-preload: ->
 		@merge-property \controllers tree-map @~configure, Controller{}subclasses
