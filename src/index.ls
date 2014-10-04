@@ -8,9 +8,7 @@ require! {
 	\require-tree
 	flat
 	path
-	'data.array'.concat-map
 	dram.not-found
-	Symbol: \es6-symbol
 	deepmerge
 	\any-db
 	fs
@@ -18,20 +16,17 @@ require! {
 
 	'./app/template'
 	'./app/load'
+	'./app/server'
 }
 
 
 
-values = -> [v for k,v of it]
-flat-values = values . flat.flatten
 tree-map = (f,t)--> flat.unflatten {[k, (f v,k)] for k, v of flat.flatten t}
 
 stream-handle-error = (fn)->
 	(...args)->
 		σ [null] .map fn
 
-server = Symbol \server
-connection = Symbol \connection
 
 extended = (subclass)->
 	@{}subclasses[subclass.display-name] = subclass
@@ -41,26 +36,9 @@ Model import {extended}
 
 export Controller
 export Model
-export class App extends Base implements template, load
-	port: 3000
+export class App extends Base implements template, load, server
 	paths: {\controllers \views \models}
-
-	controller-routes: ->
-		route concat-map (.routes!), flat-values @controllers
-
-	404: -> (req)-> not-found req.url
-
-	routes: ->
-		@404!
-
-	handler: ->
-		handle route [@controller-routes!, @routes!]
-
-	server: ->
-		@[server] ?= http.create-server @handler!
-
-	run: ->
-		@server!.listen @port
+	
 
 	resolve-path: (file)->
 		path.resolve @base-path!, file
