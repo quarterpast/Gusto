@@ -2,31 +2,17 @@ require! {
 	Base: estira
 	Controller: './controller'
 	Model: './model'
-	livewire.route
-	handle: oban
-	http
-	\require-tree
 	flat
-	path
-	dram.not-found
 	deepmerge
 	\any-db
-	fs
-	σ: \highland
 
 	'./app/template'
 	'./app/load'
 	'./app/server'
+	'./app/symbols'.connection
 }
 
-
-
 tree-map = (f,t)--> flat.unflatten {[k, (f v,k)] for k, v of flat.flatten t}
-
-stream-handle-error = (fn)->
-	(...args)->
-		σ [null] .map fn
-
 
 extended = (subclass)->
 	@{}subclasses[subclass.display-name] = subclass
@@ -38,7 +24,6 @@ export Controller
 export Model
 export class App extends Base implements template, load, server
 	paths: {\controllers \views \models}
-
 
 	db-url: -> "sqlite3://#{display-name.to-lower-case!}.db"
 	db-connection: ->
@@ -52,8 +37,6 @@ export class App extends Base implements template, load, server
 
 	merge-property: (prop, obj)->
 		@[prop] = @{}[prop] `deepmerge` obj
-
-	
 
 	(options = {})->
 		import this `deepmerge` options
