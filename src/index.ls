@@ -17,10 +17,10 @@ require! {
 	σ: \highland
 
 	'./app/template'
+	'./app/load'
 }
 
-require-tree-configure = (each, path)-->
-	require-tree path, {-index, each}
+
 
 values = -> [v for k,v of it]
 flat-values = values . flat.flatten
@@ -41,12 +41,7 @@ Model import {extended}
 
 export Controller
 export Model
-export class App extends Base implements template
-	load-tree: ->
-		require-tree-configure @~configure, it
-
-	configure: (import app:this)
-
+export class App extends Base implements template, load
 	port: 3000
 	paths: {\controllers \views \models}
 
