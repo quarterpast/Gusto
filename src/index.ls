@@ -38,12 +38,6 @@ export Controller
 export Model
 export class App extends Base implements template, load, server
 	paths: {\controllers \views \models}
-	
-
-	resolve-path: (file)->
-		path.resolve @base-path!, file
-
-	base-path: -> path.dirname require.main.filename
 
 
 	db-url: -> "sqlite3://#{display-name.to-lower-case!}.db"
@@ -59,11 +53,7 @@ export class App extends Base implements template, load, server
 	merge-property: (prop, obj)->
 		@[prop] = @{}[prop] `deepmerge` obj
 
-	load: (thing)->
-		@"#{thing}Preload"?!
-		exists <- fs.exists @paths[thing]
-		if exists
-			@merge-property thing, @load-tree @resolve-path @paths[thing]
+	
 
 	(options = {})->
 		import this `deepmerge` options
