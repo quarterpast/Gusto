@@ -1,6 +1,6 @@
 require! {
-	'karma-sinon-expect'.expect
-	'../lib'.App
+	'karma-sinon-expect': {expect}
+	'../lib': {App}
 }
 
 export 'App':

@@ -1,8 +1,8 @@
 require! {
-  'karma-sinon-expect'.expect
-  Controller: '../lib/controller'
-  AppController: '../lib'.Controller
-  brio.errors
+  'karma-sinon-expect': {expect}
+  '../lib/controller': Controller
+  '../lib': {Controller: AppController}
+  brio: {errors}
 }
 
 export
